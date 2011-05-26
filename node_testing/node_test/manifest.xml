@@ -1,0 +1,14 @@
+<package>
+  <description brief="node_test">
+
+     node_test
+
+  </description>
+  <author>James</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/node_test</url>
+
+</package>
+
+
