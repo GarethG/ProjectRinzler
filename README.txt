@@ -4,3 +4,5 @@ Project Rinzler commences!
 
 This should be the readme for the code section, I mistakenly commited a readme for the 
 github pages
+
+Added a skeleton file structure, assuming everyone wants to use cmake - 26/05/11
