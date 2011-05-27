@@ -58,6 +58,8 @@ SET(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/ROSBUILD_gensrv_cpp.dir/DependInfo.cmake"
   "CMakeFiles/ROSBUILD_gensrv_lisp.dir/DependInfo.cmake"
   "CMakeFiles/ROSBUILD_gensrv_py.dir/DependInfo.cmake"
+  "CMakeFiles/add_two_ints_client.dir/DependInfo.cmake"
+  "CMakeFiles/add_two_ints_server.dir/DependInfo.cmake"
   "CMakeFiles/clean-test-results.dir/DependInfo.cmake"
   "CMakeFiles/listener.dir/DependInfo.cmake"
   "CMakeFiles/rosbuild_precompile.dir/DependInfo.cmake"

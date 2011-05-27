@@ -177,6 +177,32 @@ ROSBUILD_gensrv_py/fast:
 .PHONY : ROSBUILD_gensrv_py/fast
 
 #=============================================================================
+# Target rules for targets named add_two_ints_client
+
+# Build rule for target.
+add_two_ints_client: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 add_two_ints_client
+.PHONY : add_two_ints_client
+
+# fast build rule for target.
+add_two_ints_client/fast:
+	$(MAKE) -f CMakeFiles/add_two_ints_client.dir/build.make CMakeFiles/add_two_ints_client.dir/build
+.PHONY : add_two_ints_client/fast
+
+#=============================================================================
+# Target rules for targets named add_two_ints_server
+
+# Build rule for target.
+add_two_ints_server: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 add_two_ints_server
+.PHONY : add_two_ints_server
+
+# fast build rule for target.
+add_two_ints_server/fast:
+	$(MAKE) -f CMakeFiles/add_two_ints_server.dir/build.make CMakeFiles/add_two_ints_server.dir/build
+.PHONY : add_two_ints_server/fast
+
+#=============================================================================
 # Target rules for targets named clean-test-results
 
 # Build rule for target.
@@ -372,6 +398,36 @@ tests/fast:
 .PHONY : tests/fast
 
 # target to build an object file
+src/add_two_ints_client.o:
+	$(MAKE) -f CMakeFiles/add_two_ints_client.dir/build.make CMakeFiles/add_two_ints_client.dir/src/add_two_ints_client.o
+.PHONY : src/add_two_ints_client.o
+
+# target to preprocess a source file
+src/add_two_ints_client.i:
+	$(MAKE) -f CMakeFiles/add_two_ints_client.dir/build.make CMakeFiles/add_two_ints_client.dir/src/add_two_ints_client.i
+.PHONY : src/add_two_ints_client.i
+
+# target to generate assembly for a file
+src/add_two_ints_client.s:
+	$(MAKE) -f CMakeFiles/add_two_ints_client.dir/build.make CMakeFiles/add_two_ints_client.dir/src/add_two_ints_client.s
+.PHONY : src/add_two_ints_client.s
+
+# target to build an object file
+src/add_two_ints_server.o:
+	$(MAKE) -f CMakeFiles/add_two_ints_server.dir/build.make CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o
+.PHONY : src/add_two_ints_server.o
+
+# target to preprocess a source file
+src/add_two_ints_server.i:
+	$(MAKE) -f CMakeFiles/add_two_ints_server.dir/build.make CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.i
+.PHONY : src/add_two_ints_server.i
+
+# target to generate assembly for a file
+src/add_two_ints_server.s:
+	$(MAKE) -f CMakeFiles/add_two_ints_server.dir/build.make CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.s
+.PHONY : src/add_two_ints_server.s
+
+# target to build an object file
 src/listener.o:
 	$(MAKE) -f CMakeFiles/listener.dir/build.make CMakeFiles/listener.dir/src/listener.o
 .PHONY : src/listener.o
@@ -413,6 +469,8 @@ help:
 	@echo "... ROSBUILD_gensrv_cpp"
 	@echo "... ROSBUILD_gensrv_lisp"
 	@echo "... ROSBUILD_gensrv_py"
+	@echo "... add_two_ints_client"
+	@echo "... add_two_ints_server"
 	@echo "... clean-test-results"
 	@echo "... edit_cache"
 	@echo "... listener"
@@ -430,6 +488,12 @@ help:
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
+	@echo "... src/add_two_ints_client.o"
+	@echo "... src/add_two_ints_client.i"
+	@echo "... src/add_two_ints_client.s"
+	@echo "... src/add_two_ints_server.o"
+	@echo "... src/add_two_ints_server.i"
+	@echo "... src/add_two_ints_server.s"
 	@echo "... src/listener.o"
 	@echo "... src/listener.i"
 	@echo "... src/listener.s"

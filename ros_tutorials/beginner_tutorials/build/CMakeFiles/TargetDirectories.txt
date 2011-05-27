@@ -4,6 +4,8 @@
 /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/ROSBUILD_gensrv_cpp.dir
 /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir
 /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/ROSBUILD_gensrv_py.dir
+/home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/add_two_ints_client.dir
+/home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/add_two_ints_server.dir
 /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/clean-test-results.dir
 /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/listener.dir
 /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/rosbuild_precompile.dir

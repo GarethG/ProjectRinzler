@@ -31,3 +31,5 @@ rosbuild_gensrv()
 
 rosbuild_add_executable(talker src/talker.cpp)
 rosbuild_add_executable(listener src/listener.cpp)
+rosbuild_add_executable(add_two_ints_server src/add_two_ints_server.cpp)
+rosbuild_add_executable(add_two_ints_client src/add_two_ints_client.cpp)
