@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/james/ros_tutorials/beginner_tutorials
+CMAKE_SOURCE_DIR = /home/jamest/ros_tutorials/beginner_tutorials
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/james/ros_tutorials/beginner_tutorials/build
+CMAKE_BINARY_DIR = /home/jamest/ros_tutorials/beginner_tutorials/build
 
 # Utility rule file for test.
 
@@ -57,6 +57,6 @@ CMakeFiles/test.dir/clean:
 .PHONY : CMakeFiles/test.dir/clean
 
 CMakeFiles/test.dir/depend:
-	cd /home/james/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/james/ros_tutorials/beginner_tutorials /home/james/ros_tutorials/beginner_tutorials /home/james/ros_tutorials/beginner_tutorials/build /home/james/ros_tutorials/beginner_tutorials/build /home/james/ros_tutorials/beginner_tutorials/build/CMakeFiles/test.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jamest/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/test.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/test.dir/depend
 

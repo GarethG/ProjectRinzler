@@ -28,3 +28,6 @@ rosbuild_gensrv()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+rosbuild_add_executable(talker src/talker.cpp)
+rosbuild_add_executable(listener src/listener.cpp)

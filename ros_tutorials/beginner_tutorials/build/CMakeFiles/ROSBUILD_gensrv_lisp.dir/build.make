@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/james/ros_tutorials/beginner_tutorials
+CMAKE_SOURCE_DIR = /home/jamest/ros_tutorials/beginner_tutorials
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/james/ros_tutorials/beginner_tutorials/build
+CMAKE_BINARY_DIR = /home/jamest/ros_tutorials/beginner_tutorials/build
 
 # Utility rule file for ROSBUILD_gensrv_lisp.
 
@@ -68,9 +68,9 @@ CMakeFiles/ROSBUILD_gensrv_lisp: ../srv_gen/lisp/_package_AddTwoInts.lisp
 ../srv_gen/lisp/AddTwoInts.lisp: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 ../srv_gen/lisp/AddTwoInts.lisp: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 ../srv_gen/lisp/AddTwoInts.lisp: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/james/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../srv_gen/lisp/AddTwoInts.lisp, ../srv_gen/lisp/_package.lisp, ../srv_gen/lisp/_package_AddTwoInts.lisp"
-	/opt/ros/diamondback/stacks/ros_comm/clients/roslisp/scripts/genmsg_lisp.py /home/james/ros_tutorials/beginner_tutorials/srv/AddTwoInts.srv
+	/opt/ros/diamondback/stacks/ros_comm/clients/roslisp/scripts/genmsg_lisp.py /home/jamest/ros_tutorials/beginner_tutorials/srv/AddTwoInts.srv
 
 ../srv_gen/lisp/_package.lisp: ../srv_gen/lisp/AddTwoInts.lisp
 
@@ -92,6 +92,6 @@ CMakeFiles/ROSBUILD_gensrv_lisp.dir/clean:
 .PHONY : CMakeFiles/ROSBUILD_gensrv_lisp.dir/clean
 
 CMakeFiles/ROSBUILD_gensrv_lisp.dir/depend:
-	cd /home/james/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/james/ros_tutorials/beginner_tutorials /home/james/ros_tutorials/beginner_tutorials /home/james/ros_tutorials/beginner_tutorials/build /home/james/ros_tutorials/beginner_tutorials/build /home/james/ros_tutorials/beginner_tutorials/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jamest/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ROSBUILD_gensrv_lisp.dir/depend
 
