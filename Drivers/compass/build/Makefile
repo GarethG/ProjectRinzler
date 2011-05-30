@@ -164,6 +164,19 @@ clean-test-results/fast:
 .PHONY : clean-test-results/fast
 
 #=============================================================================
+# Target rules for targets named compass
+
+# Build rule for target.
+compass: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 compass
+.PHONY : compass
+
+# fast build rule for target.
+compass/fast:
+	$(MAKE) -f CMakeFiles/compass.dir/build.make CMakeFiles/compass.dir/build
+.PHONY : compass/fast
+
+#=============================================================================
 # Target rules for targets named rosbuild_precompile
 
 # Build rule for target.
@@ -293,6 +306,21 @@ tests/fast:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
+# target to build an object file
+src/compassDriver.o:
+	$(MAKE) -f CMakeFiles/compass.dir/build.make CMakeFiles/compass.dir/src/compassDriver.o
+.PHONY : src/compassDriver.o
+
+# target to preprocess a source file
+src/compassDriver.i:
+	$(MAKE) -f CMakeFiles/compass.dir/build.make CMakeFiles/compass.dir/src/compassDriver.i
+.PHONY : src/compassDriver.i
+
+# target to generate assembly for a file
+src/compassDriver.s:
+	$(MAKE) -f CMakeFiles/compass.dir/build.make CMakeFiles/compass.dir/src/compassDriver.s
+.PHONY : src/compassDriver.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -304,6 +332,7 @@ help:
 	@echo "... ROSBUILD_gensrv_cpp"
 	@echo "... ROSBUILD_gensrv_lisp"
 	@echo "... clean-test-results"
+	@echo "... compass"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... rosbuild_precompile"
@@ -316,6 +345,9 @@ help:
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
+	@echo "... src/compassDriver.o"
+	@echo "... src/compassDriver.i"
+	@echo "... src/compassDriver.s"
 .PHONY : help
 
 

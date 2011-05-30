@@ -3,6 +3,7 @@
 /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/ROSBUILD_gensrv_cpp.dir
 /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir
 /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/clean-test-results.dir
+/home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/compass.dir
 /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/rosbuild_precompile.dir
 /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/rosbuild_premsgsrvgen.dir
 /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/rospack_genmsg.dir

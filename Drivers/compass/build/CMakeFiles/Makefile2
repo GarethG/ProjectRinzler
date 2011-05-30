@@ -208,6 +208,41 @@ clean: CMakeFiles/clean-test-results.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/compass.dir
+
+# All Build rule for target.
+CMakeFiles/compass.dir/all: CMakeFiles/rosbuild_precompile.dir/all
+	$(MAKE) -f CMakeFiles/compass.dir/build.make CMakeFiles/compass.dir/depend
+	$(MAKE) -f CMakeFiles/compass.dir/build.make CMakeFiles/compass.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles  1
+	@echo "Built target compass"
+.PHONY : CMakeFiles/compass.dir/all
+
+# Include target in all.
+all: CMakeFiles/compass.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/compass.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles 1
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/compass.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles 0
+.PHONY : CMakeFiles/compass.dir/rule
+
+# Convenience name for target.
+compass: CMakeFiles/compass.dir/rule
+.PHONY : compass
+
+# clean rule for target.
+CMakeFiles/compass.dir/clean:
+	$(MAKE) -f CMakeFiles/compass.dir/build.make CMakeFiles/compass.dir/clean
+.PHONY : CMakeFiles/compass.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/compass.dir/clean
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/rosbuild_precompile.dir
 
 # All Build rule for target.
