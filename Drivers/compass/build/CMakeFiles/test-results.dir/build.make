@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ProjectRinzler/Drivers/compass
+CMAKE_SOURCE_DIR = /home/james/ProjectRinzler/Drivers/compass
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ProjectRinzler/Drivers/compass/build
+CMAKE_BINARY_DIR = /home/james/ProjectRinzler/Drivers/compass/build
 
 # Utility rule file for test-results.
 
@@ -58,6 +58,6 @@ CMakeFiles/test-results.dir/clean:
 .PHONY : CMakeFiles/test-results.dir/clean
 
 CMakeFiles/test-results.dir/depend:
-	cd /home/jamest/ProjectRinzler/Drivers/compass/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ProjectRinzler/Drivers/compass /home/jamest/ProjectRinzler/Drivers/compass /home/jamest/ProjectRinzler/Drivers/compass/build /home/jamest/ProjectRinzler/Drivers/compass/build /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/test-results.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/james/ProjectRinzler/Drivers/compass/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/james/ProjectRinzler/Drivers/compass /home/james/ProjectRinzler/Drivers/compass /home/james/ProjectRinzler/Drivers/compass/build /home/james/ProjectRinzler/Drivers/compass/build /home/james/ProjectRinzler/Drivers/compass/build/CMakeFiles/test-results.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/test-results.dir/depend
 

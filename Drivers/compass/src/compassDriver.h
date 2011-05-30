@@ -1,4 +1,5 @@
 /*Function Declerations*/
 
-int open_port(void);
-int start_pni(void);
+int openPort(void);
+int startPni(void);
+char *readPni(void);

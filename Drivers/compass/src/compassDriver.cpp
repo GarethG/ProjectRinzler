@@ -13,9 +13,14 @@
 #include <sstream>
 #include "compassDriver.h"
 
-int fd;
+
+//global for accessing the serial port.
+int serialPort;
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
+	
+	char *returnPtr;
+
 
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
@@ -28,12 +33,12 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
-	if(!open_port()){
+	if(!openPort()){
 		printf("Port Open Failure\n");
 		return 0;
 	}
 	
-	if(!start_pni()){
+	if(!startPni()){
 		printf("Port Write Failed\n");
 		return 0;
 	}
@@ -54,9 +59,9 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		loop_rate.sleep();
 		++count;*/
 
-		fcntl(fd, F_SETFL, 0);
-
-		printf("Read: %d\n",read);
+		returnPtr = strtok(readPni(),"&");		//reads serial and cuts off any garbage present
+		printf("Read: %s\n",returnPtr);
+		
 
 	}
 
@@ -64,16 +69,47 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	return 0;
 }
 
-int open_port(void){
+/*****************************************
+** Opens the port to allow data to be 	**
+** read by the software. Prints to 	**
+** standard error in case of failure	**
+*****************************************/
+int openPort(void){
 
-	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
-	if (fd == -1){
+	serialPort = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
+	if (serialPort == -1){
 		perror("open_port: Unable to open /dev/ttyS0 - ");
 	}
 
-	return (fd);
+	return (serialPort);
 }
 
-int start_pni(void){
-	return write(fd, "go", 2);
+/*****************************************
+** Sends the go command to the compass	**
+*****************************************/
+
+int startPni(void){
+	return write(serialPort, "go", 2);
+}
+
+/*****************************************
+** Reads from the serial port and 	**
+** places a & at the end to ensure any	**
+** garbage is removed from the string	**
+*****************************************/
+
+char *readPni(void){
+	
+	char returnBuffer[1000];
+	int ok;
+
+	ok = read(serialPort,returnBuffer,1000);	//reads data into the buffer stores the number of characters read into ok
+
+	if(!ok){
+		return "";
+	}
+	else{
+		strcat(returnBuffer,"&");
+		return returnBuffer;
+	}
 }

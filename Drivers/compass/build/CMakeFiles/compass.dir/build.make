@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ProjectRinzler/Drivers/compass
+CMAKE_SOURCE_DIR = /home/james/ProjectRinzler/Drivers/compass
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ProjectRinzler/Drivers/compass/build
+CMAKE_BINARY_DIR = /home/james/ProjectRinzler/Drivers/compass/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/compass.dir/depend.make
@@ -70,17 +70,17 @@ CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/james/ProjectRinzler/Drivers/compass/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/compass.dir/src/compassDriver.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/compass.dir/src/compassDriver.o -c /home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/compass.dir/src/compassDriver.o -c /home/james/ProjectRinzler/Drivers/compass/src/compassDriver.cpp
 
 CMakeFiles/compass.dir/src/compassDriver.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/compass.dir/src/compassDriver.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.cpp > CMakeFiles/compass.dir/src/compassDriver.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/james/ProjectRinzler/Drivers/compass/src/compassDriver.cpp > CMakeFiles/compass.dir/src/compassDriver.i
 
 CMakeFiles/compass.dir/src/compassDriver.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/compass.dir/src/compassDriver.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.cpp -o CMakeFiles/compass.dir/src/compassDriver.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/james/ProjectRinzler/Drivers/compass/src/compassDriver.cpp -o CMakeFiles/compass.dir/src/compassDriver.s
 
 CMakeFiles/compass.dir/src/compassDriver.o.requires:
 .PHONY : CMakeFiles/compass.dir/src/compassDriver.o.requires
@@ -117,6 +117,6 @@ CMakeFiles/compass.dir/clean:
 .PHONY : CMakeFiles/compass.dir/clean
 
 CMakeFiles/compass.dir/depend:
-	cd /home/jamest/ProjectRinzler/Drivers/compass/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ProjectRinzler/Drivers/compass /home/jamest/ProjectRinzler/Drivers/compass /home/jamest/ProjectRinzler/Drivers/compass/build /home/jamest/ProjectRinzler/Drivers/compass/build /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/compass.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/james/ProjectRinzler/Drivers/compass/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/james/ProjectRinzler/Drivers/compass /home/james/ProjectRinzler/Drivers/compass /home/james/ProjectRinzler/Drivers/compass/build /home/james/ProjectRinzler/Drivers/compass/build /home/james/ProjectRinzler/Drivers/compass/build/CMakeFiles/compass.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/compass.dir/depend
 
