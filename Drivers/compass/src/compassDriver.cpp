@@ -13,7 +13,7 @@
 #include <sstream>
 #include "compassDriver.h"
 
-
+int fd;
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
@@ -28,7 +28,15 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
-	int read;
+	if(!open_port()){
+		printf("Port Open Failure\n");
+		return 0;
+	}
+	
+	if(!start_pni()){
+		printf("Port Write Failed\n");
+		return 0;
+	}
 
 	//int count = 0;
 	while (ros::ok()){
@@ -46,7 +54,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		loop_rate.sleep();
 		++count;*/
 
-		open_port();
+		fcntl(fd, F_SETFL, 0);
 
 		printf("Read: %d\n",read);
 
@@ -58,20 +66,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 int open_port(void){
 
-	int fd, data; /* File descriptor for the port */
-
-
 	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
 	if (fd == -1){
 		perror("open_port: Unable to open /dev/ttyS0 - ");
 	}
-	else{
-		fcntl(fd, F_SETFL, 0);
-	}
 
-	data = fd;
+	return (fd);
+}
 
-	close(fd);
-
-	return (data);
+int start_pni(void){
+	return write(fd, "go", 2);
 }
