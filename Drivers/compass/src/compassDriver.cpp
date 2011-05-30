@@ -1,3 +1,12 @@
+#include <stdio.h>   /* Standard input/output definitions */
+#include <string.h>  /* String function definitions */
+#include <unistd.h>  /* UNIX standard function definitions */
+#include <fcntl.h>   /* File control definitions */
+#include <errno.h>   /* Error number definitions */
+#include <termios.h> /* POSIX terminal control definitions */
+
+
+
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 
@@ -16,13 +25,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 											also define the size of the buffer, so if we are producing
 											data faster than we can send a large buffer is needed, else
 											a smaller buffer should suffice */
-	rosConfig(); //setup the ros stuff
 
-	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
-	int count = 0;
+	int read;
+
+	//int count = 0;
 	while (ros::ok()){
-		std_msgs::String msg;
+		/*std_msgs::String msg;
 		std::stringstream ss;
 		ss << "hello world " << count;
 		msg.data = ss.str();
@@ -34,9 +44,34 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		ros::spinOnce();
 
 		loop_rate.sleep();
-		++count;
+		++count;*/
+
+		open_port();
+
+		printf("Read: %d\n",read);
+
 	}
 
 
 	return 0;
+}
+
+int open_port(void){
+
+	int fd, data; /* File descriptor for the port */
+
+
+	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
+	if (fd == -1){
+		perror("open_port: Unable to open /dev/ttyS0 - ");
+	}
+	else{
+		fcntl(fd, F_SETFL, 0);
+	}
+
+	data = fd;
+
+	close(fd);
+
+	return (data);
 }
