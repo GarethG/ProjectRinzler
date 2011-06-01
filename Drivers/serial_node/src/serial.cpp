@@ -90,13 +90,21 @@ void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
 
 int startPni(void){
 
+	unsigned char buff[5] ={0,5,4,191,113};
+
+	int i;
+
 	time_t now;
 
 	time(&now);
 
+	for(i=0;i<5;i++){
+		ROS_DEBUG("buff %d: %d\n",i,buff[i]);
+	}
+
 	ROS_INFO("Writing to serial driver");
 	//fputs(asctime(localtime(&now)), fpSerial);
-	fputs("\\0x00\\0x05\\0x04", fpSerial);
+	fputs(buff, fpSerial);
 	return 1;
 }
 
