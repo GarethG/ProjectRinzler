@@ -88,7 +88,7 @@ void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
 } //ucCommandCallback
 
 
-//Receive command responses from robot uController
+//Receive data from the SVP 
 //and publish as a ROS message
 void *rcvThread(void *arg){
 	int rcvBufSize = 200;
@@ -96,17 +96,10 @@ void *rcvThread(void *arg){
 	char *bufPos;
 
 
-//	char buffer[MAX_BUFFER+1];
-//	char p_buff[MAX_BUFFER+1];
-//	char c[MAX_BUFFER+1];
-//	int n,i,fi_col;
-
-//	char * tok_ptr; //this is for splitting the serial stream into 2
-
 	std_msgs::String msg;
 	std::stringstream ss;
 
-	ROS_INFO("rcvThread: receive thread running");
+	ROS_INFO("rcvThread: receive thread running on SVP node");
 
 	while (ros::ok()) {
 		bufPos = fgets(ucResponse, rcvBufSize, fpSerial);
@@ -116,26 +109,7 @@ void *rcvThread(void *arg){
 			ucResponseMsg.publish(msg);
 			printf("%s \n",bufPos); //print the buffer to the screen - should remove this when everything is working
 			
-			//String manipulation			
-//			tok_ptr = strtok(buffer,"$");
-
-//			strcpy(buffer,tok_ptr);
-	
-//			tok_ptr = strtok (buffer," ");
-//			strcpy(p_buff,"");
-//			fi_col = 1;
-//			while (tok_ptr != NULL){
-//				if(fi_col){
-//					fi_col = 0;
-//				}
-//				else{
-//					strcat(p_buff,"  ");
-//				}
-//				strcat(p_buff,tok_ptr);
-//				tok_ptr = strtok (NULL," ");
-//			}
-
-			
+		
 		}
 	}
 	return NULL;
@@ -155,7 +129,7 @@ int main(int argc, char **argv){
 	//Initialize ROS
 	ros::init(argc, argv, "r2SerialDriver");
 	ros::NodeHandle rosNode;
-	ROS_INFO("r2Serial starting");
+	ROS_INFO("SVP starting");
 
 	//Open and initialize the serial port to the uController
 	if (argc > 1) {
@@ -164,7 +138,7 @@ int main(int argc, char **argv){
 			sprintf(topicPublish, "uc%dResponse",ucIndex);
 		}
 		else {
-			ROS_ERROR("ucontroller index parameter invalid");
+			ROS_ERROR("SVP index parameter invalid");
 			return 1;
 		}
 	}
@@ -173,7 +147,7 @@ int main(int argc, char **argv){
 		strcpy(topicPublish, "uc0Response");
 	}
 
-	//this is taking the argv argc stuff to configure the baud rate, we may implemtn this later but for now.
+	//this is taking the argv argc stuff to configure the baud rate, we may implement this later but for now.
 	strcpy(port, DEFAULT_SERIALPORT); //copy the #define for serial port and assign it to the port
 	if (argc > 2){
 		strcpy(port, argv[2]);
@@ -216,7 +190,7 @@ int main(int argc, char **argv){
 	ros::spin();
 
 	fclose(fpSerial);
-	ROS_INFO("r2Serial stopping");
+	ROS_INFO("SVP stopping");
 	return 0;
 }
 
