@@ -1,5 +1,10 @@
+//testing to
+//next to thrusters and next to aluminium pole
+
+
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Float64.h"
 #include <sstream>
 #include <pthread.h>
 #include <sys/types.h>
@@ -10,15 +15,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
+
+using namespace std;
+
 
 #define DEFAULT_BAUDRATE 19200
 #define DEFAULT_SERIALPORT "/dev/ttyUSB0"
 
 //Global data
 FILE *fpSerial = NULL;   //serial port file pointer
-ros::Publisher ucResponseMsg;
-ros::Subscriber ucCommandMsg;
-int ucIndex;          //ucontroller index number
+ros::Publisher svpResponseMsg;
+ros::Publisher svpDepthMsg;
+ros::Publisher svpSVelocityMsg;
+//ros::Subscriber svpCommandMsg;
+
 
 
 //Initialize serial port, return file descriptor
@@ -80,36 +91,72 @@ FILE *serialInit(char * port, int baud){
 	return fp;
 } //serialInit
 
-
+//**********Transmit to SVP - Not currently implemented
 //Process ROS command message, send to uController
-void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
-	ROS_DEBUG("uc%dCommand: %s", ucIndex, msg->data.c_str());
-	fprintf(fpSerial, "%s", msg->data.c_str()); //appends newline
-} //ucCommandCallback
-
+//void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
+//	ROS_DEBUG("uc%dCommand: %s", ucIndex, msg->data.c_str());
+//	fprintf(fpSerial, "%s", msg->data.c_str()); //appends newline
+//} //ucCommandCallback
 
 //Receive data from the SVP 
 //and publish as a ROS message
 void *rcvThread(void *arg){
 	int rcvBufSize = 200;
-	char ucResponse[rcvBufSize];   //response string from uController
+	char svpResponse[rcvBufSize];   //response string from uController
+	double svpDepth;
 	char *bufPos;
+	
+	char depth[10] = "0000000", *dEnd;
+	float depthFloat;
+	
+	char velo[10] = "0000000", *vEnd;
+	float veloFloat;
+	
+	int i;
 
 
+
+	//std_msgs::String depth;
 	std_msgs::String msg;
+	std_msgs::Float64 dMsg;
+	std_msgs::Float64 vMsg;
 	std::stringstream ss;
 
 	ROS_INFO("rcvThread: receive thread running on SVP node");
 
 	while (ros::ok()) {
-		bufPos = fgets(ucResponse, rcvBufSize, fpSerial);
+		bufPos = fgets(svpResponse, rcvBufSize, fpSerial);
 		if (bufPos != NULL) {
-			ROS_DEBUG("uc%dResponse: %s", ucIndex, ucResponse);
-			msg.data = ucResponse;
-			ucResponseMsg.publish(msg);
-			printf("%s \n",bufPos); //print the buffer to the screen - should remove this when everything is working
+			ROS_DEBUG("svpResponse: %s", svpResponse);
+			msg.data = svpResponse;
+			printf("%s\n",bufPos);
+			//split svpResponse
+
+			//The Depth			
+			for (i = 0; i < 6; i++){
+				depth[i] = bufPos[i+1]; 
+				//cout << depth[i];				
+			}
+			double depthFloat = strtod(depth, &dEnd);
+			dMsg.data = depthFloat;			
+			printf("depth - %lf\n", depthFloat);
 			
-		
+			//The Velocity
+			for (i = 1; i < 10; i++){
+				
+				velo[i] = bufPos[i+7]; 
+				//cout << velo[i];				
+			}
+			printf("raw velo %s\n",velo);
+			double veloFloat = strtod(velo, &vEnd);
+			printf("Velocity - %lf\n", veloFloat);
+
+			svpResponseMsg.publish(msg); //the whole message
+			svpDepthMsg.publish(dMsg); //the whole message 
+			svpSVelocityMsg.publish(vMsg); //the whole message 
+			//printf("%s \n",bufPos); //print the buffer to the screen - should remove this when everything is working
+			
+					
 		}
 	}
 	return NULL;
@@ -122,30 +169,31 @@ int main(int argc, char **argv){
 
 	char topicSubscribe[20];
 	char topicPublish[20];
-
+	char topicPubDepth[20];
 	pthread_t rcvThrID;   //receive thread ID
 	int err;
 
 	//Initialize ROS
-	ros::init(argc, argv, "r2SerialDriver");
+	ros::init(argc, argv, "svpDriver");
 	ros::NodeHandle rosNode;
 	ROS_INFO("SVP starting");
 
 	//Open and initialize the serial port to the uController
-	if (argc > 1) {
-		if(sscanf(argv[1],"%d", &ucIndex)==1) {
-			sprintf(topicSubscribe, "uc%dCommand",ucIndex);
-			sprintf(topicPublish, "uc%dResponse",ucIndex);
-		}
-		else {
-			ROS_ERROR("SVP index parameter invalid");
-			return 1;
-		}
-	}
-	else {
-		strcpy(topicSubscribe, "uc0Command");
-		strcpy(topicPublish, "uc0Response");
-	}
+	//if (argc > 1) {
+	//	if(sscanf(argv[1],"%d", &svpIndex)==1) {
+	//		//sprintf(topicSubscribe, "svp%dCommand",ucIndex);
+	//		sprintf(topicPublish, "svp%dResponse",svpIndex);
+	//	}
+	//	else {
+	//		ROS_ERROR("SVP index parameter invalid");
+	//		return 1;
+	//	}
+	//}
+	//else {
+		//strcpy(topicSubscribe, "svpCommand");
+		strcpy(topicPublish, "svpResponse");
+		strcpy(topicPubDepth, "svpResponsa");
+	//}
 
 	//this is taking the argv argc stuff to configure the baud rate, we may implement this later but for now.
 	strcpy(port, DEFAULT_SERIALPORT); //copy the #define for serial port and assign it to the port
@@ -174,10 +222,11 @@ int main(int argc, char **argv){
 	ROS_INFO("serial connection successful");
 
 	//Subscribe to ROS messages
-	ucCommandMsg = rosNode.subscribe(topicSubscribe, 100, ucCommandCallback);
+	//svpCommandMsg = rosNode.subscribe(topicSubscribe, 100, svpCommandCallback);
 
 	//Setup to publish ROS messages
-	ucResponseMsg = rosNode.advertise<std_msgs::String>(topicPublish, 100);
+	svpResponseMsg = rosNode.advertise<std_msgs::String>(topicPublish, 100); //This is the raw serial data, is this worth keeping?
+	svpDepthMsg = rosNode.advertise<std_msgs::Float64>("svpDepth", 100); 
 
 	//Create receive thread
 	err = pthread_create(&rcvThrID, NULL, rcvThread, NULL);
