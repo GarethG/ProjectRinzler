@@ -4,7 +4,7 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "std_msgs/Float64.h"
+#include <std_msgs/Float64.h>
 #include <sstream>
 #include <pthread.h>
 #include <sys/types.h>
@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+//#include <math.h>
 
 using namespace std;
 
@@ -27,7 +28,7 @@ using namespace std;
 FILE *fpSerial = NULL;   //serial port file pointer
 ros::Publisher svpResponseMsg;
 ros::Publisher svpDepthMsg;
-ros::Publisher svpSVelocityMsg;
+ros::Publisher svpVeloMsg;
 //ros::Subscriber svpCommandMsg;
 
 
@@ -108,10 +109,11 @@ void *rcvThread(void *arg){
 	
 	char depth[10] = "0000000", *dEnd;
 	float depthFloat;
-	
+	float oldDepth;
+
 	char velo[10] = "0000000", *vEnd;
 	float veloFloat;
-	
+	float oldVelo;
 	int i;
 
 
@@ -129,31 +131,40 @@ void *rcvThread(void *arg){
 		if (bufPos != NULL) {
 			ROS_DEBUG("svpResponse: %s", svpResponse);
 			msg.data = svpResponse;
-			printf("%s\n",bufPos);
+			//printf("%s\n",bufPos);
 			//split svpResponse
 
 			//The Depth			
 			for (i = 0; i < 6; i++){
 				depth[i] = bufPos[i+1]; 
-				//cout << depth[i];				
 			}
 			double depthFloat = strtod(depth, &dEnd);
-			dMsg.data = depthFloat;			
-			printf("depth - %lf\n", depthFloat);
+			//heres a little idea on how to handle NaN(Not a Number) cases			
+			//if (isnan(depthFloat) != NULL){
+			//	printf("ERROR wierdness happened\n");
+			//}
 			
+
+			//if depthfloat != to a float...
+			dMsg.data = depthFloat;	//dMsg = 1.01240;//
+			//printf("depth - %lf\n", depthFloat);
+			
+
 			//The Velocity
 			for (i = 1; i < 10; i++){
 				
 				velo[i] = bufPos[i+7]; 
-				//cout << velo[i];				
+				
 			}
 			printf("raw velo %s\n",velo);
 			double veloFloat = strtod(velo, &vEnd);
-			printf("Velocity - %lf\n", veloFloat);
+			vMsg.data = veloFloat;
+			//printf("Velocity - %lf\n", veloFloat);
 
+			
 			svpResponseMsg.publish(msg); //the whole message
 			svpDepthMsg.publish(dMsg); //the whole message 
-			svpSVelocityMsg.publish(vMsg); //the whole message 
+			svpVeloMsg.publish(vMsg); //the whole message 
 			//printf("%s \n",bufPos); //print the buffer to the screen - should remove this when everything is working
 			
 					
@@ -170,6 +181,7 @@ int main(int argc, char **argv){
 	char topicSubscribe[20];
 	char topicPublish[20];
 	char topicPubDepth[20];
+	char topicPubVelo[20];
 	pthread_t rcvThrID;   //receive thread ID
 	int err;
 
@@ -191,8 +203,9 @@ int main(int argc, char **argv){
 	//}
 	//else {
 		//strcpy(topicSubscribe, "svpCommand");
-		strcpy(topicPublish, "svpResponse");
-		strcpy(topicPubDepth, "svpResponsa");
+		strcpy(topicPublish, "svpRawResponse");
+		strcpy(topicPubDepth, "svpDepth");
+		strcpy(topicPubVelo, "svpVelocity");
 	//}
 
 	//this is taking the argv argc stuff to configure the baud rate, we may implement this later but for now.
@@ -226,8 +239,8 @@ int main(int argc, char **argv){
 
 	//Setup to publish ROS messages
 	svpResponseMsg = rosNode.advertise<std_msgs::String>(topicPublish, 100); //This is the raw serial data, is this worth keeping?
-	svpDepthMsg = rosNode.advertise<std_msgs::Float64>("svpDepth", 100); 
-
+	svpDepthMsg = rosNode.advertise<std_msgs::Float64>(topicPubDepth, 100); 
+	svpVeloMsg = rosNode.advertise<std_msgs::Float64>(topicPubVelo, 100);
 	//Create receive thread
 	err = pthread_create(&rcvThrID, NULL, rcvThread, NULL);
 	if (err != 0) {
@@ -235,7 +248,7 @@ int main(int argc, char **argv){
 		return 1;
 	}
 
-	//Process ROS messages and send serial commands to uController
+	//Process ROS messages
 	ros::spin();
 
 	fclose(fpSerial);

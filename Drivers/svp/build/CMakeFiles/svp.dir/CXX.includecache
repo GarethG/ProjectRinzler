@@ -12,7 +12,7 @@ ros/ros.h
 std_msgs/String.h
 /home/garethg/dev/ProjectRinzler/Drivers/svp/src/std_msgs/String.h
 std_msgs/Float64.h
-/home/garethg/dev/ProjectRinzler/Drivers/svp/src/std_msgs/Float64.h
+-
 sstream
 -
 pthread.h
