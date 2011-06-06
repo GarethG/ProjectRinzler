@@ -22,7 +22,7 @@
 #define kTemperature	7
 #define kSetDataComponents 3
 
-
+using namespace std;
 
 //Global data
 FILE *fpSerial = NULL;   //serial port file pointer
@@ -188,7 +188,7 @@ unsigned char hex2bcd (unsigned char x){
 //and publish as a ROS message
 void *rcvThread(void *arg){
 	int rcvBufSize = 500,i;
-	unsigned char response[rcvBufSize];   //response string from uController
+	char response[rcvBufSize];   //response string from uController
 	unsigned char pBuff[rcvBufSize];
 	char *bufPos;
 	size_t bytes_read;
@@ -211,6 +211,7 @@ void *rcvThread(void *arg){
 			msg.data = ucResponse;
 			ucResponseMsg.publish(msg);*/
 			printf("I read %s\n",response);
+			cout << response << endl;
 			/*for(i=0;i<rcvBufSize;i++){
 				printf("%c",response[i]);
 			}*/
