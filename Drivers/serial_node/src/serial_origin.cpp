@@ -151,13 +151,13 @@ void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
 
 
 void serialWrite(void){
-	//unsigned char buffer[]={0x00,0x05,0x04,0xbf,0x71};
+	unsigned char buffer[]={0x00,0x05,0x04,0xbf,0x71};
 	
 	int wr;
-	unsigned int sz;
+	//unsigned int sz;
 
 
-	unsigned char pkt[kDataCount + 1];
+	/*unsigned char pkt[kDataCount + 1];
 
 	pkt[0] = kDataCount;
 	pkt[1] = kHeading;
@@ -167,7 +167,9 @@ void serialWrite(void){
 
 	sz = sendData(kSetDataComponents,pkt,kDataCount+1);
 
-	wr=write(fd,mOutData,sz);
+	wr=write(fd,mOutData,sz);*/
+
+	wr=write(fd,buffer,sizeof(buffer));
 
 	printf("Write returned: %d\n",wr);
 
@@ -180,6 +182,7 @@ void *rcvThread(void *arg){
 	int rcvBufSize = 500,i;
 	char response[rcvBufSize];   //response string from uController
 	char *bufPos;
+	size_t bytes_read;
 	std_msgs::String msg;
 	std::stringstream ss;
 	ros::Rate loop_rate(1); 
@@ -191,20 +194,25 @@ void *rcvThread(void *arg){
 			response[i] = 'X';
 		}
 
-		serialWrite();		
-		bufPos = fgets(response, rcvBufSize, fpSerial);
-		if (bufPos != NULL) {
+		serialWrite();
+		//bufPos = fgets(response, rcvBufSize, fpSerial);
+		bytes_read = fread(response,sizeof(response),1,fpSerial);
+		//if (bufPos != NULL) {
 			/*ROS_DEBUG("uc%dResponse: %s", ucIndex, ucResponse);
 			msg.data = ucResponse;
 			ucResponseMsg.publish(msg);*/
-			printf("I read %s\n",bufPos);
+			printf("I read %s\n",response);
 			for(i=0;i<rcvBufSize;i++){
+				printf("%c",response[i]);
+			}
+			printf("\nBuffer size: %zu\n",bytes_read);
+			/*for(i=0;i<rcvBufSize;i++){
 				printf("%d: %c\n",i,response[i]);
 			}
-		}
+		/*}
 		else{
 			printf("no data\n");
-		}
+		}*/
 		loop_rate.sleep();
 	}
 	return NULL;
