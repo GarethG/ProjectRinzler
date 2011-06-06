@@ -13,12 +13,76 @@
 #define DEFAULT_BAUDRATE 38400
 #define DEFAULT_SERIALPORT "/dev/ttyS0"
 
+#define kBufferSize	512
+#define kPacketMinSize	5 
+#define kDataCount	4
+#define kHeading	5
+#define kPAngle		24
+#define	kRAngle		25
+#define kTemperature	7
+#define kSetDataComponents 3
+
+
+
 //Global data
 FILE *fpSerial = NULL;   //serial port file pointer
 ros::Publisher ucResponseMsg;
 ros::Subscriber ucCommandMsg;
 int ucIndex;          //ucontroller index number
 int fd = -1;
+char mOutData[kBufferSize];
+
+unsigned int CRC(char * pData, unsigned int numBytes){
+    unsigned int index = 0;
+    unsigned int crc = 0;
+
+    while(index < numBytes){
+        crc = (unsigned int)(crc >> 8) | (crc << 8);
+        crc ^= pData[index++];
+        crc ^= (unsigned int)(crc & 0xff) >> 4;
+        crc ^= (crc << 8) << 4;
+        crc ^= ((crc & 0xff) << 4) << 1;
+    }
+    
+    return crc;
+}
+
+unsigned int sendData(unsigned int frameType, void * dataPtr, unsigned int len){
+
+
+	char * data = (char *)dataPtr;
+	unsigned int index = 0;
+
+	unsigned int crc;
+
+	unsigned int count;
+
+
+	count = (unsigned int)len + kPacketMinSize;
+
+	if(len > kBufferSize - kPacketMinSize) return 0;
+
+	mOutData[index++] = count >> 8;
+	mOutData[index++] = count & 0xFF;
+		
+	mOutData[index++] = frameType ;
+	
+	while(len--) mOutData[index++] = *data++;
+
+	crc = CRC(mOutData, index);
+	mOutData[index++] = crc >> 8 ;
+	mOutData[index++] = crc & 0xFF ;
+
+	/*printf("index: %d\n",index);
+	printf("%s\n",mOutData);
+	for(index=0;index<10;index++){
+		printf("%d %c\n",index,mOutData[index]);
+	}*/
+
+	return index;
+}
+
+
 
 //Initialize serial port, return file descriptor
 FILE *serialInit(char * port, int baud){
@@ -87,11 +151,23 @@ void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
 
 
 void serialWrite(void){
-	unsigned char buffer[]={0x00,0x05,0x04,0xbf,0x71};
-
+	//unsigned char buffer[]={0x00,0x05,0x04,0xbf,0x71};
+	
 	int wr;
+	unsigned int sz;
 
-	wr=write(fd,buffer,sizeof(buffer));
+
+	unsigned char pkt[kDataCount + 1];
+
+	pkt[0] = kDataCount;
+	pkt[1] = kHeading;
+	pkt[2] = kPAngle;
+	pkt[3] = kRAngle;
+	pkt[4] = kTemperature;
+
+	sz = sendData(kSetDataComponents,pkt,kDataCount+1);
+
+	wr=write(fd,mOutData,sz);
 
 	printf("Write returned: %d\n",wr);
 
@@ -101,8 +177,8 @@ void serialWrite(void){
 //Receive command responses from robot uController
 //and publish as a ROS message
 void *rcvThread(void *arg){
-	int rcvBufSize = 200;
-	char ucResponse[rcvBufSize];   //response string from uController
+	int rcvBufSize = 500,i;
+	char response[rcvBufSize];   //response string from uController
 	char *bufPos;
 	std_msgs::String msg;
 	std::stringstream ss;
@@ -111,13 +187,23 @@ void *rcvThread(void *arg){
 	ROS_INFO("rcvThread: receive thread running");
 
 	while (ros::ok()) {
+		for(i=0;i<rcvBufSize;i++){
+			response[i] = 'X';
+		}
+
 		serialWrite();		
-		bufPos = fgets(ucResponse, rcvBufSize, fpSerial);
+		bufPos = fgets(response, rcvBufSize, fpSerial);
 		if (bufPos != NULL) {
-			ROS_DEBUG("uc%dResponse: %s", ucIndex, ucResponse);
+			/*ROS_DEBUG("uc%dResponse: %s", ucIndex, ucResponse);
 			msg.data = ucResponse;
-			ucResponseMsg.publish(msg);
+			ucResponseMsg.publish(msg);*/
 			printf("I read %s\n",bufPos);
+			for(i=0;i<rcvBufSize;i++){
+				printf("%d: %c\n",i,response[i]);
+			}
+		}
+		else{
+			printf("no data\n");
 		}
 		loop_rate.sleep();
 	}
