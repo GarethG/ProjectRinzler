@@ -9,8 +9,6 @@
 #include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <unistd.h>  /* UNIX standard function definitions */
 
 #define DEFAULT_BAUDRATE 38400
 #define DEFAULT_SERIALPORT "/dev/ttyS0"
@@ -20,13 +18,13 @@ FILE *fpSerial = NULL;   //serial port file pointer
 ros::Publisher ucResponseMsg;
 ros::Subscriber ucCommandMsg;
 int ucIndex;          //ucontroller index number
-
+int fd = -1;
 
 //Initialize serial port, return file descriptor
 FILE *serialInit(char * port, int baud){
 
 	int BAUD = 0;
-	int fd = -1;
+
 	struct termios newtio;
 	FILE *fp = NULL;
 
@@ -88,25 +86,17 @@ void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
 } //ucCommandCallback
 
 
-/*int startPni(void){
+void serialWrite(void){
+	unsigned char buffer[]={0x00,0x05,0x04,0xbf,0x71};
 
-	unsigned char buff[5] ={0,5,4,191,113};
+	int wr;
 
-	int i;
+	wr=write(fd,buffer,sizeof(buffer));
 
-	time_t now;
+	printf("Write returned: %d\n",wr);
 
-	time(&now);
-
-	for(i=0;i<5;i++){
-		ROS_DEBUG("buff %d: %d\n",i,buff[i]);
-	}
-
-	ROS_INFO("Writing to serial driver");
-	//fputs(asctime(localtime(&now)), fpSerial);
-	fputs(buff, fpSerial);
-	return 1;
-}*/
+	return;
+}
 
 //Receive command responses from robot uController
 //and publish as a ROS message
@@ -121,24 +111,18 @@ void *rcvThread(void *arg){
 	ROS_INFO("rcvThread: receive thread running");
 
 	while (ros::ok()) {
+		serialWrite();		
 		bufPos = fgets(ucResponse, rcvBufSize, fpSerial);
 		if (bufPos != NULL) {
 			ROS_DEBUG("uc%dResponse: %s", ucIndex, ucResponse);
 			msg.data = ucResponse;
 			ucResponseMsg.publish(msg);
-			printf("I read: %s\n",bufPos);
+			printf("I read %s\n",bufPos);
 		}
-		/*else{
-			if(!startPni()){
-				ROS_ERROR("failed to transmit message");
-			}
-		}*/
 		loop_rate.sleep();
 	}
 	return NULL;
 } //rcvThread
-
-
 
 
 int main(int argc, char **argv){
@@ -184,12 +168,9 @@ int main(int argc, char **argv){
 		}
 	}
 
-	baud = DEFAULT_BAUDRATE;
-	strcpy(port, DEFAULT_SERIALPORT);
-
 	ROS_INFO("connection initializing (%s) at %d baud", port, baud);
 	fpSerial = serialInit(port, baud);
-	
+
 	if (!fpSerial ){
 		ROS_ERROR("unable to create a new serial port");
 		return 1;
@@ -202,11 +183,6 @@ int main(int argc, char **argv){
 
 	//Setup to publish ROS messages
 	ucResponseMsg = rosNode.advertise<std_msgs::String>(topicPublish, 100);
-
-	/*if(!startPni()){
-		ROS_ERROR("failed to transmit message");
-		return 1;
-	}*/
 
 	//Create receive thread
 	err = pthread_create(&rcvThrID, NULL, rcvThread, NULL);
@@ -222,4 +198,3 @@ int main(int argc, char **argv){
 	ROS_INFO("r2Serial stopping");
 	return 0;
 }
-

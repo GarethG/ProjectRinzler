@@ -183,7 +183,7 @@ TOOLCHAINCONFIG:FILEPATH=TOOLCHAINCONFIG-NOTFOUND
 USERCONFIG:FILEPATH=USERCONFIG-NOTFOUND
 
 //Path to a file.
-_file_name:FILEPATH=/home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_new.cpp
+_file_name:FILEPATH=/home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp
 
 //Value Computed by CMake
 serial_node_BINARY_DIR:STATIC=/home/jamest/ProjectRinzler/Drivers/serial_node/build

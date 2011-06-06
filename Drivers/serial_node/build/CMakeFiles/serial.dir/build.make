@@ -49,56 +49,56 @@ include CMakeFiles/serial.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/serial.dir/flags.make
 
-CMakeFiles/serial.dir/src/serial_new.o: CMakeFiles/serial.dir/flags.make
-CMakeFiles/serial.dir/src/serial_new.o: ../src/serial_new.cpp
-CMakeFiles/serial.dir/src/serial_new.o: ../manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/ros/tools/rospack/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/ros/core/roslib/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/ros/core/rosbuild/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/ros/core/roslang/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/utilities/cpp_common/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/utilities/rostime/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_serialization/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/utilities/xmlrpcpp/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/manifest.xml
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/generated
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
-CMakeFiles/serial.dir/src/serial_new.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
+CMakeFiles/serial.dir/src/serial_origin.o: CMakeFiles/serial.dir/flags.make
+CMakeFiles/serial.dir/src/serial_origin.o: ../src/serial_origin.cpp
+CMakeFiles/serial.dir/src/serial_origin.o: ../manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/ros/tools/rospack/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/ros/core/roslib/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/ros/core/rosbuild/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/ros/core/roslang/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/utilities/cpp_common/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/utilities/rostime/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_serialization/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/utilities/xmlrpcpp/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/manifest.xml
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/generated
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
+CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ProjectRinzler/Drivers/serial_node/build/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/serial.dir/src/serial_new.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/serial.dir/src/serial_new.o -c /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_new.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/serial.dir/src/serial_origin.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/serial.dir/src/serial_origin.o -c /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp
 
-CMakeFiles/serial.dir/src/serial_new.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/serial.dir/src/serial_new.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_new.cpp > CMakeFiles/serial.dir/src/serial_new.i
+CMakeFiles/serial.dir/src/serial_origin.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/serial.dir/src/serial_origin.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp > CMakeFiles/serial.dir/src/serial_origin.i
 
-CMakeFiles/serial.dir/src/serial_new.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/serial.dir/src/serial_new.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_new.cpp -o CMakeFiles/serial.dir/src/serial_new.s
+CMakeFiles/serial.dir/src/serial_origin.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/serial.dir/src/serial_origin.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp -o CMakeFiles/serial.dir/src/serial_origin.s
 
-CMakeFiles/serial.dir/src/serial_new.o.requires:
-.PHONY : CMakeFiles/serial.dir/src/serial_new.o.requires
+CMakeFiles/serial.dir/src/serial_origin.o.requires:
+.PHONY : CMakeFiles/serial.dir/src/serial_origin.o.requires
 
-CMakeFiles/serial.dir/src/serial_new.o.provides: CMakeFiles/serial.dir/src/serial_new.o.requires
-	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_new.o.provides.build
-.PHONY : CMakeFiles/serial.dir/src/serial_new.o.provides
+CMakeFiles/serial.dir/src/serial_origin.o.provides: CMakeFiles/serial.dir/src/serial_origin.o.requires
+	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_origin.o.provides.build
+.PHONY : CMakeFiles/serial.dir/src/serial_origin.o.provides
 
-CMakeFiles/serial.dir/src/serial_new.o.provides.build: CMakeFiles/serial.dir/src/serial_new.o
-.PHONY : CMakeFiles/serial.dir/src/serial_new.o.provides.build
+CMakeFiles/serial.dir/src/serial_origin.o.provides.build: CMakeFiles/serial.dir/src/serial_origin.o
+.PHONY : CMakeFiles/serial.dir/src/serial_origin.o.provides.build
 
 # Object files for target serial
 serial_OBJECTS = \
-"CMakeFiles/serial.dir/src/serial_new.o"
+"CMakeFiles/serial.dir/src/serial_origin.o"
 
 # External object files for target serial
 serial_EXTERNAL_OBJECTS =
 
-../bin/serial: CMakeFiles/serial.dir/src/serial_new.o
+../bin/serial: CMakeFiles/serial.dir/src/serial_origin.o
 ../bin/serial: CMakeFiles/serial.dir/build.make
 ../bin/serial: CMakeFiles/serial.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable ../bin/serial"
@@ -108,7 +108,7 @@ serial_EXTERNAL_OBJECTS =
 CMakeFiles/serial.dir/build: ../bin/serial
 .PHONY : CMakeFiles/serial.dir/build
 
-CMakeFiles/serial.dir/requires: CMakeFiles/serial.dir/src/serial_new.o.requires
+CMakeFiles/serial.dir/requires: CMakeFiles/serial.dir/src/serial_origin.o.requires
 .PHONY : CMakeFiles/serial.dir/requires
 
 CMakeFiles/serial.dir/clean:

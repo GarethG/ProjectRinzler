@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_new.cpp" "/home/jamest/ProjectRinzler/Drivers/serial_node/build/CMakeFiles/serial.dir/src/serial_new.o"
+  "/home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp" "/home/jamest/ProjectRinzler/Drivers/serial_node/build/CMakeFiles/serial.dir/src/serial_origin.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -307,19 +307,19 @@ tests/fast:
 .PHONY : tests/fast
 
 # target to build an object file
-src/serial_new.o:
-	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_new.o
-.PHONY : src/serial_new.o
+src/serial_origin.o:
+	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_origin.o
+.PHONY : src/serial_origin.o
 
 # target to preprocess a source file
-src/serial_new.i:
-	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_new.i
-.PHONY : src/serial_new.i
+src/serial_origin.i:
+	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_origin.i
+.PHONY : src/serial_origin.i
 
 # target to generate assembly for a file
-src/serial_new.s:
-	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_new.s
-.PHONY : src/serial_new.s
+src/serial_origin.s:
+	$(MAKE) -f CMakeFiles/serial.dir/build.make CMakeFiles/serial.dir/src/serial_origin.s
+.PHONY : src/serial_origin.s
 
 # Help Target
 help:
@@ -345,9 +345,9 @@ help:
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
-	@echo "... src/serial_new.o"
-	@echo "... src/serial_new.i"
-	@echo "... src/serial_new.s"
+	@echo "... src/serial_origin.o"
+	@echo "... src/serial_origin.i"
+	@echo "... src/serial_origin.s"
 .PHONY : help
 
 

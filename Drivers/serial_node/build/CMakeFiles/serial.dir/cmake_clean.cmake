@@ -1,5 +1,5 @@
 FILE(REMOVE_RECURSE
-  "CMakeFiles/serial.dir/src/serial_new.o"
+  "CMakeFiles/serial.dir/src/serial_origin.o"
   "../bin/serial.pdb"
   "../bin/serial"
 )
