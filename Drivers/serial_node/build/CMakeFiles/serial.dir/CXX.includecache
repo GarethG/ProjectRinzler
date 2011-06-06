@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/uwesub/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp
+/home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp
 ros/ros.h
-/home/uwesub/ProjectRinzler/Drivers/serial_node/src/ros/ros.h
+/home/jamest/ProjectRinzler/Drivers/serial_node/src/ros/ros.h
 std_msgs/String.h
-/home/uwesub/ProjectRinzler/Drivers/serial_node/src/std_msgs/String.h
+/home/jamest/ProjectRinzler/Drivers/serial_node/src/std_msgs/String.h
 sstream
 -
 pthread.h

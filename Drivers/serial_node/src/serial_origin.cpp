@@ -176,11 +176,20 @@ void serialWrite(void){
 	return;
 }
 
+unsigned char hex2bcd (unsigned char x){
+    unsigned char y;
+    y = (x / 10) << 4;
+    y = y | (x % 10);
+    return (y);
+}
+
+
 //Receive command responses from robot uController
 //and publish as a ROS message
 void *rcvThread(void *arg){
 	int rcvBufSize = 500,i;
-	char response[rcvBufSize];   //response string from uController
+	unsigned char response[rcvBufSize];   //response string from uController
+	unsigned char pBuff[rcvBufSize];
 	char *bufPos;
 	size_t bytes_read;
 	std_msgs::String msg;
@@ -191,7 +200,7 @@ void *rcvThread(void *arg){
 
 	while (ros::ok()) {
 		for(i=0;i<rcvBufSize;i++){
-			response[i] = 'X';
+			response[i] = 0;
 		}
 
 		serialWrite();
@@ -202,10 +211,15 @@ void *rcvThread(void *arg){
 			msg.data = ucResponse;
 			ucResponseMsg.publish(msg);*/
 			printf("I read %s\n",response);
-			for(i=0;i<rcvBufSize;i++){
+			/*for(i=0;i<rcvBufSize;i++){
 				printf("%c",response[i]);
-			}
-			printf("\nBuffer size: %zu\n",bytes_read);
+			}*/
+			//printf("\nBuffer size: %zu\n",bytes_read);
+			for(i=0;i<rcvBufSize;i++){
+				pBuff[i] = hex2bcd(response[i]);
+				printf("%d: %cB ",i,pBuff[i]);
+			} 
+				
 			/*for(i=0;i<rcvBufSize;i++){
 				printf("%d: %c\n",i,response[i]);
 			}

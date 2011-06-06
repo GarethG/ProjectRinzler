@@ -31,11 +31,14 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/uwesub/ProjectRinzler/Drivers/serial_node
+CMAKE_SOURCE_DIR = /home/jamest/ProjectRinzler/Drivers/serial_node
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/uwesub/ProjectRinzler/Drivers/serial_node/build
+CMAKE_BINARY_DIR = /home/jamest/ProjectRinzler/Drivers/serial_node/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/serial.dir/depend.make
@@ -66,17 +69,17 @@ CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/
 CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 CMakeFiles/serial.dir/src/serial_origin.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/uwesub/ProjectRinzler/Drivers/serial_node/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ProjectRinzler/Drivers/serial_node/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/serial.dir/src/serial_origin.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/serial.dir/src/serial_origin.o -c /home/uwesub/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/serial.dir/src/serial_origin.o -c /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp
 
 CMakeFiles/serial.dir/src/serial_origin.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/serial.dir/src/serial_origin.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/uwesub/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp > CMakeFiles/serial.dir/src/serial_origin.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp > CMakeFiles/serial.dir/src/serial_origin.i
 
 CMakeFiles/serial.dir/src/serial_origin.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/serial.dir/src/serial_origin.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/uwesub/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp -o CMakeFiles/serial.dir/src/serial_origin.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/jamest/ProjectRinzler/Drivers/serial_node/src/serial_origin.cpp -o CMakeFiles/serial.dir/src/serial_origin.s
 
 CMakeFiles/serial.dir/src/serial_origin.o.requires:
 .PHONY : CMakeFiles/serial.dir/src/serial_origin.o.requires
@@ -113,6 +116,6 @@ CMakeFiles/serial.dir/clean:
 .PHONY : CMakeFiles/serial.dir/clean
 
 CMakeFiles/serial.dir/depend:
-	cd /home/uwesub/ProjectRinzler/Drivers/serial_node/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uwesub/ProjectRinzler/Drivers/serial_node /home/uwesub/ProjectRinzler/Drivers/serial_node /home/uwesub/ProjectRinzler/Drivers/serial_node/build /home/uwesub/ProjectRinzler/Drivers/serial_node/build /home/uwesub/ProjectRinzler/Drivers/serial_node/build/CMakeFiles/serial.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jamest/ProjectRinzler/Drivers/serial_node/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ProjectRinzler/Drivers/serial_node /home/jamest/ProjectRinzler/Drivers/serial_node /home/jamest/ProjectRinzler/Drivers/serial_node/build /home/jamest/ProjectRinzler/Drivers/serial_node/build /home/jamest/ProjectRinzler/Drivers/serial_node/build/CMakeFiles/serial.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/serial.dir/depend
 
