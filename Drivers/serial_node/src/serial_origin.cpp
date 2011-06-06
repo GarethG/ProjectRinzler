@@ -204,9 +204,9 @@ void *rcvThread(void *arg){
 		}
 
 		serialWrite();
-		//bufPos = fgets(response, rcvBufSize, fpSerial);
-		bytes_read = fread(response,sizeof(response),1,fpSerial);
-		//if (bufPos != NULL) {
+		bufPos = fgets(response, rcvBufSize, fpSerial);
+		//bytes_read = fread(response,sizeof(response),1,fpSerial);
+		if (bufPos != NULL) {
 			/*ROS_DEBUG("uc%dResponse: %s", ucIndex, ucResponse);
 			msg.data = ucResponse;
 			ucResponseMsg.publish(msg);*/
@@ -215,18 +215,18 @@ void *rcvThread(void *arg){
 				printf("%c",response[i]);
 			}*/
 			//printf("\nBuffer size: %zu\n",bytes_read);
-			for(i=0;i<rcvBufSize;i++){
+			for(i=0;i<100;i++){
 				pBuff[i] = hex2bcd(response[i]);
 				printf("%d: %cB ",i,pBuff[i]);
 			} 
 				
 			/*for(i=0;i<rcvBufSize;i++){
 				printf("%d: %c\n",i,response[i]);
-			}
-		/*}
+			}*/
+		}
 		else{
 			printf("no data\n");
-		}*/
+		}
 		loop_rate.sleep();
 	}
 	return NULL;
