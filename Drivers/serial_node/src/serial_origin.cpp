@@ -176,8 +176,8 @@ void serialWrite(void){
 	return;
 }
 
-unsigned char hex2bcd (unsigned char x){
-    unsigned char y;
+unsigned int hex2bcd (unsigned char x){
+    unsigned int y;
     y = (x / 10) << 4;
     y = y | (x % 10);
     return (y);
@@ -189,7 +189,7 @@ unsigned char hex2bcd (unsigned char x){
 void *rcvThread(void *arg){
 	int rcvBufSize = 500,i;
 	char response[rcvBufSize];   //response string from uController
-	unsigned char pBuff[rcvBufSize];
+	unsigned int pBuff[rcvBufSize];
 	char *bufPos;
 	size_t bytes_read;
 	std_msgs::String msg;
@@ -218,7 +218,7 @@ void *rcvThread(void *arg){
 			//printf("\nBuffer size: %zu\n",bytes_read);
 			for(i=0;i<100;i++){
 				pBuff[i] = hex2bcd(response[i]);
-				printf("%d: %cB ",i,pBuff[i]);
+				printf("%d: %dB ",i,pBuff[i]);
 			} 
 				
 			/*for(i=0;i<rcvBufSize;i++){
