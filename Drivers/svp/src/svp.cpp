@@ -156,7 +156,7 @@ void *rcvThread(void *arg){
 				velo[i] = bufPos[i+7]; 
 				
 			}
-			printf("raw velo %s\n",velo);
+			//printf("raw velo %s\n",velo);
 			double veloFloat = strtod(velo, &vEnd);
 			vMsg.data = veloFloat;
 			//printf("Velocity - %lf\n", veloFloat);
@@ -209,7 +209,7 @@ int main(int argc, char **argv){
 	//}
 
 	//this is taking the argv argc stuff to configure the baud rate, we may implement this later but for now.
-	strcpy(port, DEFAULT_SERIALPORT); //copy the #define for serial port and assign it to the port
+	/*strcpy(port, DEFAULT_SERIALPORT); //copy the #define for serial port and assign it to the port
 	if (argc > 2){
 		strcpy(port, argv[2]);
 		baud = DEFAULT_BAUDRATE; //assign the 
@@ -219,7 +219,7 @@ int main(int argc, char **argv){
 			ROS_ERROR("SVP baud rate parameter invalid");
 			return 1;
 		}
-	}
+	}*/
 
 	//for now force the default baud and port.
 	strcpy(port, DEFAULT_SERIALPORT); //copy the #define for serial port and assign it to the port
