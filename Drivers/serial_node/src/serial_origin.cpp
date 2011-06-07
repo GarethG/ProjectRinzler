@@ -277,6 +277,8 @@ int main(int argc, char **argv){
 		}
 	}
 
+	baud = DEFAULT_BAUDRATE;
+
 	ROS_INFO("connection initializing (%s) at %d baud", port, baud);
 	fpSerial = serialInit(port, baud);
 
@@ -302,7 +304,7 @@ int main(int argc, char **argv){
 
 	//Process ROS messages and send serial commands to uController
 	ros::spin();
-
+	printf("Shutting Down\n");
 	fclose(fpSerial);
 	ROS_INFO("r2Serial stopping");
 	return 0;
