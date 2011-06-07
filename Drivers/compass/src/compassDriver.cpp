@@ -10,6 +10,7 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Float32.h"
 
 #include <sstream>
 #include "compassDriver.h"
@@ -17,19 +18,26 @@
 int fd; 				/* File descriptor for the port */
 unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;			/*Ptr*/
+float heading, pitch, roll;		/*Floats for the returned values*/
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
 
-	ros::Publisher chatter_pub = n.advertise<std_msgs::String>("output", 1000);	/*advertise publishes a message, informs of the type of data
-											and what the data is known by (i.e. its name). From here we
-											also define the size of the buffer, so if we are producing
-											data faster than we can send a large buffer is needed, else
-											a smaller buffer should suffice */
+	/*Advertises our various messages*/
 
-	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
+	ros::Publisher compassHeadingMsg = n.advertise<std_msgs::Float32>("compassHeading", 100);
+	ros::Publisher compassPitchMsg = n.advertise<std_msgs::Float32>("compassPitch", 100);
+	ros::Publisher compassRollMsg = n.advertise<std_msgs::Float32>("compassRoll", 100);
+
+	/*Sets up the message structures*/
+
+	std_msgs::Float32 headingMsg;
+	std_msgs::Float32 pitchMsg;
+	std_msgs::Float32 rollMsg;
+
+	ros::Rate loop_rate(2); //how many times a second (i.e. Hz) the code should run
 
 	if(!open_port()){
 		return 0;	//we failed to open the port so end
@@ -42,6 +50,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		if(write_port()){	//if we send correctly
 			if(read_port()){	//if we read correctly
 				parseBuffer();	//parse the buffer
+				//printf("H: %f P: %f R: %f\n",heading,pitch,roll);
+
+				/* Below here sets up the messages ready for transmission*/
+
+				headingMsg.data = heading;	
+				pitchMsg.data = pitch;
+				rollMsg.data = roll;
+				
 			}
 			else{
 				ROS_ERROR("Read no data");
@@ -51,10 +67,23 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			ROS_ERROR("Failed to write");
 		}
 
+		/*Below here we publish our readings*/
+
+		compassHeadingMsg.publish(headingMsg);
+		compassRollMsg.publish(rollMsg);
+		compassPitchMsg.publish(pitchMsg);
+
+		/*Have a snooze*/
+
 		loop_rate.sleep();
 
 	}
 
+	ros::spin();
+
+	close(fd);
+	ROS_INFO("Shutting Down");
+	printf("Shutting Down\n");
 
 	return 0;
 }
@@ -72,7 +101,7 @@ int open_port(void){
 	}
 	else{
 		fcntl(fd, F_SETFL, 0);
-		ROS_INFO("Port opened with a descritor of %d",fd);
+		ROS_INFO("Port opened with a descriptor of %d",fd);
 	}
 	return (fd);
 }
@@ -187,53 +216,34 @@ float getF32(void){
 	return *((float*)&tmp1);
 }
 
-/*Parses buffer*/
-	
+/*************************************************
+** Runs through the read data and pulls out all	**
+** of the important information, specifically	**
+** the heading pitch and roll. Items such as 	**
+** bytes transmited frame IDs etc are all 	**
+** stored for debugging purposes. However due	**
+** to the design they must be called else we	**
+** will have to shuffle through the ptrs using	**
+** guess work (or decision work) to get the ptr	**
+** to the correct location to pull the floats	**
+** out.						** 
+*************************************************/	
 
 void parseBuffer(void){
 	
-	unsigned int parsed = 0;
-	float parsedF = 0.0;
+	unsigned int parsed[6];
 
 	rBptr = &returnBuffer[0];	//assign the start of the char buffer
 
-	parsed = getU16();		//get number of bytes transmited
-
-	//printf("bytes recieved: %u\n",parsed);
-
-	parsed = getU8();		//get frame ID
-
-	//printf("frame ID: %u\n",parsed);
-
-	parsed = getU8();		//get ID count
-
-	//printf("ID count: %u\n",parsed);
-
-	parsed = getU8();		//get ID
-
-	//printf("first ID: %u\n",parsed);
-
-	parsedF = getF32();		//get compass
-
-	printf("Compass: %f ",parsedF);
-
-	parsed = getU8();		//get ID
-
-	//printf("second ID: %u\n",parsed);
-
-	parsedF = getF32();		//get pitch
-
-	printf("Pitch: %f ",parsedF);
-
-	parsed = getU8();		//get ID
-
-	//printf("third ID: %u\n",parsed);
-
-	parsedF = getF32();		//get pitch
-
-	printf("Roll: %f",parsedF);
-
-	printf("\n");
+	parsed[0] = getU16();		//get number of bytes transmited
+	parsed[1] = getU8();		//get frame ID
+	parsed[2] = getU8();		//get ID count
+	parsed[3] = getU8();		//get ID
+	heading = getF32();		//get compass heading
+	parsed[4] = getU8();		//get ID
+	pitch = getF32();		//get pitch
+	parsed[5] = getU8();		//get ID
+	roll = getF32();		//get pitch
 
 	return;
 }

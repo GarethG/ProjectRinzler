@@ -42,6 +42,7 @@ CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/message_operations.h
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/message_traits.h
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/service_traits.h
+CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32.h
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/String.h
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/include/ros/assert.h
 CMakeFiles/compass.dir/src/compassDriver.o: /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/include/ros/console.h
