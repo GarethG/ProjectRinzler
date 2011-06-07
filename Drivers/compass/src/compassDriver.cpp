@@ -1,10 +1,11 @@
-#include <stdio.h>   /* Standard input/output definitions */
-#include <string.h>  /* String function definitions */
-#include <unistd.h>  /* UNIX standard function definitions */
-#include <fcntl.h>   /* File control definitions */
-#include <errno.h>   /* Error number definitions */
-#include <termios.h> /* POSIX terminal control definitions */
-
+#include <stdio.h>   
+#include <unistd.h>  
+#include <fcntl.h>   
+#include <errno.h>   
+#include <termios.h> 
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
 
 
 #include "ros/ros.h"
@@ -13,14 +14,11 @@
 #include <sstream>
 #include "compassDriver.h"
 
-
-//global for accessing the serial port.
-int serialPort;
+int fd; 				/* File descriptor for the port */
+unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
+unsigned char *rBptr;			/*Ptr*/
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
-
-	char *returnPtr;
-
 
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
@@ -33,34 +31,26 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
-	if(!openPort()){
-		printf("Port Open Failure\n");
-		return 0;
+	if(!open_port()){
+		return 0;	//we failed to open the port so end
 	}
 
-	if(!startPni()){
-		printf("Port Write Failed\n");
-		return 0;
-	}
+	config_port();
 
-	//int count = 0;
 	while (ros::ok()){
-		/*std_msgs::String msg;
-		std::stringstream ss;
-		ss << "hello world " << count;
-		msg.data = ss.str();
 
-		ROS_INFO("%s", msg.data.c_str());
+		if(write_port()){	//if we send correctly
+			if(read_port()){	//if we read correctly
+				parseBuffer();	//parse the buffer
+			}
+			else{
+				ROS_ERROR("Read no data");
+			}
+		}
+		else{
+			ROS_ERROR("Failed to write");
+		}
 
-		chatter_pub.publish(msg);
-
-		ros::spinOnce();
-
-		
-		++count;*/
-
-		returnPtr = strtok(readPni(),"&");		//reads serial and cuts off any garbage present
-		printf("Read: %s\n",returnPtr);
 		loop_rate.sleep();
 
 	}
@@ -69,47 +59,183 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	return 0;
 }
 
-/*****************************************
-** Opens the port to allow data to be 	**
-** read by the software. Prints to 	**
-** standard error in case of failure	**
-*****************************************/
-int openPort(void){
+/*********************************
+** Opens serial port S0		**
+*********************************/
 
-	serialPort = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
-	if (serialPort == -1){
-		perror("open_port: Unable to open /dev/ttyS0 - ");
-	}
+int open_port(void){	
 
-	return (serialPort);
-}
-
-/*****************************************
-** Sends the go command to the compass	**
-*****************************************/
-
-int startPni(void){
-	return write(serialPort, "00 05 04 bf 71", 13);
-}
-
-/*****************************************
-** Reads from the serial port and 	**
-** places a & at the end to ensure any	**
-** garbage is removed from the string	**
-*****************************************/
-
-char *readPni(void){
-
-	char returnBuffer[1000];
-	int ok;
-
-	ok = read(serialPort,returnBuffer,1000);	//reads data into the buffer stores the number of characters read into ok
-
-	if(!ok){
-		return "";
+	fd = open("/dev/ttyS0", O_RDWR | O_NDELAY );//| O_NOCTTY);
+	if (fd == -1){
+		ROS_ERROR("Could not open port");
+		return 0;
 	}
 	else{
-		strcat(returnBuffer,"&");
-		return returnBuffer;
+		fcntl(fd, F_SETFL, 0);
+		ROS_INFO("Port opened with a descritor of %d",fd);
 	}
+	return (fd);
 }
+
+/*********************************
+** Configures the serial port	**
+*********************************/
+
+void config_port(void){
+	struct termios options;
+
+	tcgetattr(fd, &options);
+
+	cfsetispeed(&options, B38400);
+	cfsetospeed(&options, B38400);
+
+	options.c_cflag |= (CLOCAL | CREAD);
+
+	tcsetattr(fd, TCSANOW, &options);
+
+	return;
+}
+
+/*************************************************
+** Tries to transmit the message to the compass	**
+** which will get it to send some info back	**
+*************************************************/
+
+int write_port(void){
+	int n;
+	char buffer[]={0x00,0x05,0x04,0xbf,0x71};
+
+	n = write(fd,buffer,sizeof(buffer));
+
+	if (n < 0){
+		ROS_ERROR("Failed to write to port");
+		return 0;
+	}
+	return (n);
+}
+
+/*************************************************
+** Reads data off of the serial port and will	**
+** then return the data into returnBuffer	**
+*************************************************/
+
+int read_port(void){	
+	return read(fd,returnBuffer,sizeof(returnBuffer));
+}
+
+/*************************************************
+** When called will sift through the buffer in	**
+** an attempt to obtain a uint 32		**
+*************************************************/
+
+unsigned int getU32(void){
+
+	unsigned int tmp1, tmp2, tmp3, tmp4;
+
+	tmp1 = *rBptr++;	//get the first item
+	tmp2 = *rBptr++;	//get the second item
+	tmp3 = *rBptr++;	//get the third item
+	tmp4 = *rBptr++;	//get the fourth item
+
+	tmp1 <<= 24;
+	tmp2 <<= 16;
+	tmp3 <<= 8;
+
+	tmp1 = tmp1 | tmp2 | tmp3 | tmp4;
+
+	return tmp1;
+}
+
+/*************************************************
+** When called will sift through the buffer in	**
+** an attempt to obtain a uint 16		**
+*************************************************/
+
+unsigned int getU16(void){
+
+	unsigned int tmp1, tmp2;
+
+	tmp1 = *rBptr++;	//get the first item
+	tmp2 = *rBptr++;	//get the second item
+
+	tmp1 <<= 8;		//shift 8 bits left
+
+	tmp1 |= tmp2;		//or to combine data
+
+	return tmp1;		//return the U16
+}
+
+/*************************************************
+** When called will sift through the buffer in	**
+** an attempt to obtain a uint 8		**
+*************************************************/
+
+unsigned int getU8(void){
+	return *rBptr++;	//returns the current point on the array and shifts along (a U8)
+}
+
+/*************************************************
+** When called will sift through the buffer in	**
+** an attempt to obtain a float			**
+*************************************************/
+
+float getF32(void){
+	unsigned int tmp1;
+
+	tmp1 = getU32();
+	
+	return *((float*)&tmp1);
+}
+
+/*Parses buffer*/
+	
+
+void parseBuffer(void){
+	
+	unsigned int parsed = 0;
+	float parsedF = 0.0;
+
+	rBptr = &returnBuffer[0];	//assign the start of the char buffer
+
+	parsed = getU16();		//get number of bytes transmited
+
+	//printf("bytes recieved: %u\n",parsed);
+
+	parsed = getU8();		//get frame ID
+
+	//printf("frame ID: %u\n",parsed);
+
+	parsed = getU8();		//get ID count
+
+	//printf("ID count: %u\n",parsed);
+
+	parsed = getU8();		//get ID
+
+	//printf("first ID: %u\n",parsed);
+
+	parsedF = getF32();		//get compass
+
+	printf("Compass: %f ",parsedF);
+
+	parsed = getU8();		//get ID
+
+	//printf("second ID: %u\n",parsed);
+
+	parsedF = getF32();		//get pitch
+
+	printf("Pitch: %f ",parsedF);
+
+	parsed = getU8();		//get ID
+
+	//printf("third ID: %u\n",parsed);
+
+	parsedF = getF32();		//get pitch
+
+	printf("Roll: %f",parsedF);
+
+	printf("\n");
+
+	return;
+}
+
+

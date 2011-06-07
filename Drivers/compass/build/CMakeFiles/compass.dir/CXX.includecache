@@ -9,8 +9,6 @@
 /home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.cpp
 stdio.h
 -
-string.h
--
 unistd.h
 -
 fcntl.h
@@ -18,6 +16,12 @@ fcntl.h
 errno.h
 -
 termios.h
+-
+stdlib.h
+-
+math.h
+-
+string.h
 -
 ros/ros.h
 /home/jamest/ProjectRinzler/Drivers/compass/src/ros/ros.h
