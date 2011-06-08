@@ -41,6 +41,7 @@ CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/clients
 CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/message_operations.h
 CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/message_traits.h
 CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/service_traits.h
+CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32.h
 CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/String.h
 CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/include/ros/assert.h
 CMakeFiles/server.dir/src/server.o: /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/include/ros/console.h

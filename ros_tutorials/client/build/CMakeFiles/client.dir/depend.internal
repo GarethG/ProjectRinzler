@@ -42,6 +42,7 @@ CMakeFiles/client.dir/src/client.o
  /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/message_operations.h
  /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/message_traits.h
  /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp_traits/include/ros/service_traits.h
+ /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32.h
  /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/String.h
  /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/include/ros/assert.h
  /opt/ros/diamondback/stacks/ros_comm/tools/rosconsole/include/ros/console.h

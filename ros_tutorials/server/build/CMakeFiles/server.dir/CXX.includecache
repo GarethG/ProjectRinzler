@@ -11,6 +11,8 @@ ros/ros.h
 /home/james/ProjectRinzler/ros_tutorials/server/src/ros/ros.h
 std_msgs/String.h
 /home/james/ProjectRinzler/ros_tutorials/server/src/std_msgs/String.h
+std_msgs/Float32.h
+/home/james/ProjectRinzler/ros_tutorials/server/src/std_msgs/Float32.h
 sstream
 -
 
@@ -467,6 +469,24 @@ boost/type_traits/remove_reference.hpp
 -
 boost/type_traits/remove_const.hpp
 -
+
+/opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/Float32.h
+string
+-
+vector
+-
+ostream
+-
+ros/serialization.h
+/opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/serialization.h
+ros/builtin_message_traits.h
+/opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/builtin_message_traits.h
+ros/message_operations.h
+/opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/message_operations.h
+ros/message.h
+/opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/message.h
+ros/time.h
+/opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/ros/time.h
 
 /opt/ros/diamondback/stacks/ros_comm/messages/std_msgs/msg_gen/cpp/include/std_msgs/String.h
 string
