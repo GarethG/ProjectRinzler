@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.cpp" "/home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/compass.dir/src/compassDriver.o"
+  "/home/james/ProjectRinzler/Drivers/compass/src/compassDriver.cpp" "/home/james/ProjectRinzler/Drivers/compass/build/CMakeFiles/compass.dir/src/compassDriver.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

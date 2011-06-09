@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ProjectRinzler/Soft_Nodes/control
+CMAKE_SOURCE_DIR = /home/james/ProjectRinzler/Soft_Nodes/control
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ProjectRinzler/Soft_Nodes/control/build
+CMAKE_BINARY_DIR = /home/james/ProjectRinzler/Soft_Nodes/control/build
 
 # Utility rule file for ROSBUILD_genmsg_lisp.
 
@@ -57,6 +57,6 @@ CMakeFiles/ROSBUILD_genmsg_lisp.dir/clean:
 .PHONY : CMakeFiles/ROSBUILD_genmsg_lisp.dir/clean
 
 CMakeFiles/ROSBUILD_genmsg_lisp.dir/depend:
-	cd /home/jamest/ProjectRinzler/Soft_Nodes/control/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ProjectRinzler/Soft_Nodes/control /home/jamest/ProjectRinzler/Soft_Nodes/control /home/jamest/ProjectRinzler/Soft_Nodes/control/build /home/jamest/ProjectRinzler/Soft_Nodes/control/build /home/jamest/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/james/ProjectRinzler/Soft_Nodes/control/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/james/ProjectRinzler/Soft_Nodes/control /home/james/ProjectRinzler/Soft_Nodes/control /home/james/ProjectRinzler/Soft_Nodes/control/build /home/james/ProjectRinzler/Soft_Nodes/control/build /home/james/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ROSBUILD_genmsg_lisp.dir/depend
 

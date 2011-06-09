@@ -18,6 +18,9 @@ int main(int argc, char **argv){
 
 	/* Publish */
 
+	ros::Publisher pidRateMsg = pidN.advertise<std_msgs::Float32>("pidRate", 100);
+	std_msgs::Float32 pidRate;
+
 	/* Subscribe */
 
 	ros::Subscriber sub1 = pidN.subscribe("compassHeading", 100, headingCallback);
@@ -26,8 +29,6 @@ int main(int argc, char **argv){
 	ros::Rate loop_rate(10);
 
 	ROS_INFO("PID Online");
-
-	//ros::Rate loop_rate(1);
 
 	while(ros::ok()){
 
@@ -39,9 +40,13 @@ int main(int argc, char **argv){
 
 		ros::spinOnce();
 
-		printf("Actual: %.3f Target: %.3f\n",heading,targetHeading);
+		//printf("Actual: %.3f Target: %.3f\n",heading,targetHeading);
 
-		printf("Motor: %.5f\n",pid());
+		//printf("Motor: %.5f\n",pid());
+
+		pidRate.data = pid();
+
+		pidRateMsg.publish(pidRate);
 
 		loop_rate.sleep();
 

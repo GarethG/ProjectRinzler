@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/jamest/ProjectRinzler/Soft_Nodes/control/src/pid.cpp" "/home/jamest/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles/pid.dir/src/pid.o"
+  "/home/james/ProjectRinzler/Soft_Nodes/control/src/pid.cpp" "/home/james/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles/pid.dir/src/pid.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

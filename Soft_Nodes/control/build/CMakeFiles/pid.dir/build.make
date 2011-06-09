@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ProjectRinzler/Soft_Nodes/control
+CMAKE_SOURCE_DIR = /home/james/ProjectRinzler/Soft_Nodes/control
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ProjectRinzler/Soft_Nodes/control/build
+CMAKE_BINARY_DIR = /home/james/ProjectRinzler/Soft_Nodes/control/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/pid.dir/depend.make
@@ -69,17 +69,17 @@ CMakeFiles/pid.dir/src/pid.o: /opt/ros/diamondback/stacks/ros_comm/messages/std_
 CMakeFiles/pid.dir/src/pid.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 CMakeFiles/pid.dir/src/pid.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 CMakeFiles/pid.dir/src/pid.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/james/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/pid.dir/src/pid.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/pid.dir/src/pid.o -c /home/jamest/ProjectRinzler/Soft_Nodes/control/src/pid.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/pid.dir/src/pid.o -c /home/james/ProjectRinzler/Soft_Nodes/control/src/pid.cpp
 
 CMakeFiles/pid.dir/src/pid.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/pid.dir/src/pid.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/jamest/ProjectRinzler/Soft_Nodes/control/src/pid.cpp > CMakeFiles/pid.dir/src/pid.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/james/ProjectRinzler/Soft_Nodes/control/src/pid.cpp > CMakeFiles/pid.dir/src/pid.i
 
 CMakeFiles/pid.dir/src/pid.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pid.dir/src/pid.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/jamest/ProjectRinzler/Soft_Nodes/control/src/pid.cpp -o CMakeFiles/pid.dir/src/pid.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/james/ProjectRinzler/Soft_Nodes/control/src/pid.cpp -o CMakeFiles/pid.dir/src/pid.s
 
 CMakeFiles/pid.dir/src/pid.o.requires:
 .PHONY : CMakeFiles/pid.dir/src/pid.o.requires
@@ -116,6 +116,6 @@ CMakeFiles/pid.dir/clean:
 .PHONY : CMakeFiles/pid.dir/clean
 
 CMakeFiles/pid.dir/depend:
-	cd /home/jamest/ProjectRinzler/Soft_Nodes/control/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ProjectRinzler/Soft_Nodes/control /home/jamest/ProjectRinzler/Soft_Nodes/control /home/jamest/ProjectRinzler/Soft_Nodes/control/build /home/jamest/ProjectRinzler/Soft_Nodes/control/build /home/jamest/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles/pid.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/james/ProjectRinzler/Soft_Nodes/control/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/james/ProjectRinzler/Soft_Nodes/control /home/james/ProjectRinzler/Soft_Nodes/control /home/james/ProjectRinzler/Soft_Nodes/control/build /home/james/ProjectRinzler/Soft_Nodes/control/build /home/james/ProjectRinzler/Soft_Nodes/control/build/CMakeFiles/pid.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/pid.dir/depend
 

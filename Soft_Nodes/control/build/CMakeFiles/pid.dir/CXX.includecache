@@ -6,21 +6,21 @@
 
 #IncludeRegexTransform: 
 
-/home/jamest/ProjectRinzler/Soft_Nodes/control/src/pid.cpp
+/home/james/ProjectRinzler/Soft_Nodes/control/src/pid.cpp
 math.h
 -
 stdio.h
 -
 ros/ros.h
-/home/jamest/ProjectRinzler/Soft_Nodes/control/src/ros/ros.h
+/home/james/ProjectRinzler/Soft_Nodes/control/src/ros/ros.h
 std_msgs/String.h
-/home/jamest/ProjectRinzler/Soft_Nodes/control/src/std_msgs/String.h
+/home/james/ProjectRinzler/Soft_Nodes/control/src/std_msgs/String.h
 std_msgs/Float32.h
-/home/jamest/ProjectRinzler/Soft_Nodes/control/src/std_msgs/Float32.h
+/home/james/ProjectRinzler/Soft_Nodes/control/src/std_msgs/Float32.h
 pid.h
-/home/jamest/ProjectRinzler/Soft_Nodes/control/src/pid.h
+/home/james/ProjectRinzler/Soft_Nodes/control/src/pid.h
 
-/home/jamest/ProjectRinzler/Soft_Nodes/control/src/pid.h
+/home/james/ProjectRinzler/Soft_Nodes/control/src/pid.h
 
 /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/advertise_options.h
 ros/forwards.h
