@@ -22,6 +22,8 @@ float heading, pitch, roll;		/*Floats for the returned values*/
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
+	unsigned int count=0, failed=0, ok=0;
+
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
 
@@ -37,7 +39,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 pitchMsg;
 	std_msgs::Float32 rollMsg;
 
-	ros::Rate loop_rate(2); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
 	if(!open_port()){
 		return 0;	//we failed to open the port so end
@@ -48,24 +50,29 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	while (ros::ok()){
 
 		if(write_port()){	//if we send correctly
-			if(read_port()){	//if we read correctly
-				parseBuffer();	//parse the buffer
+			count++;
+			if(read_port() == 5){	//if we read correctly
+				ok++;
+				//parseBuffer();	//parse the buffer
 				//printf("H: %f P: %f R: %f\n",heading,pitch,roll);
 
 				/* Below here sets up the messages ready for transmission*/
 
-				headingMsg.data = heading;	
+				/*headingMsg.data = heading;	
 				pitchMsg.data = pitch;
-				rollMsg.data = roll;
+				rollMsg.data = roll;*/
 				
 			}
 			else{
-				ROS_ERROR("Read no data");
+				//ROS_ERROR("Read no data");
+				failed++;
 			}
 		}
 		else{
 			ROS_ERROR("Failed to write");
 		}
+
+		printf("Transmitted: %d Succeded: %d Failed: %d\n",count,ok,failed);
 
 		/*Below here we publish our readings*/
 
@@ -94,7 +101,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 int open_port(void){	
 
-	fd = open("/dev/ttyUSB0", O_RDWR | O_NDELAY );//| O_NOCTTY);
+	fd = open("/dev/ttyS0", O_RDWR | O_NDELAY | O_NOCTTY);
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
 		return 0;
@@ -132,14 +139,17 @@ void config_port(void){
 
 int write_port(void){
 	int n;
-	//char buffer[]={0x00,0x05,0x04,0xbf,0x71};
-	char buffer[]={0x00,0x05,0x01,0xef,0xd4};
+	char buffer[]={0x00,0x05,0x04,0xbf,0x71};
+	//char buffer[]={0x00,0x05,0x01,0xef,0xd4};
 
 	n = write(fd,buffer,sizeof(buffer));
 
 	if (n < 0){
 		ROS_ERROR("Failed to write to port");
 		return 0;
+	}
+	else{
+		printf("We Transmitted %d\n",n);
 	}
 	return (n);
 }
@@ -153,22 +163,22 @@ int read_port(void){
 
 	int n,i;
 
-	for(i=0;i<sizeof(returnBuffer);i++){
+	/*for(i=0;i<sizeof(returnBuffer);i++){
 		returnBuffer[i] = 'X';
-	}
+	}*/
 
 	n = read(fd,returnBuffer,sizeof(returnBuffer));
 
 	printf("We read %d bytes\n",n);
 
-	for(i=0;i<sizeof(returnBuffer);i++){
+	/*for(i=0;i<sizeof(returnBuffer);i++){
 		if(returnBuffer[i] != 'X'){
 			if(i!=0){
 				printf(":");
 			}
 		printf("%x",returnBuffer[i]);
 		}
-	}
+	}*/
 
 	printf("\n\n");
 
