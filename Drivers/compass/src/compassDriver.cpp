@@ -37,7 +37,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 compassPitch;
 	std_msgs::Float32 compassRoll;
 
-	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
 
 	if(!open_port()){
 		return 0;	//we failed to open the port so end
@@ -45,15 +45,23 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	config_port();
 
+	ROS_INFO("Compass Driver Online");
+
 	while (ros::ok()){
 
 		if(write_port()){	//if we send correctly
 			if(read_port()){	//if we read correctly
 				
 				parseBuffer();	//parse the buffer
-				printf("H: %f P: %f R: %f\n",heading,pitch,roll);
+				//printf("H: %f P: %f R: %f\n",heading,pitch,roll);
 
 				/* Below here sets up the messages ready for transmission*/
+
+				if(heading > 180.0f){
+					heading -= 180.0f;
+					heading = 180.0f - heading;
+					heading *= -1.0f;
+				}
 
 				compassHeading.data = heading;	
 				compassPitch.data = pitch;
@@ -148,9 +156,9 @@ int write_port(void){
 		ROS_ERROR("Failed to write to port");
 		return 0;
 	}
-	else{
+	/*else{
 		printf("We Transmitted %d\n",n);
-	}
+	}*/
 	return (n);
 }
 
@@ -161,11 +169,12 @@ int write_port(void){
 
 int read_port(void){	
 
-	int n,i;
+	int n;
+	//int i;
 
 	n = read(fd,returnBuffer,sizeof(returnBuffer));
 
-	printf("We read %d bytes\n",n);
+	/*printf("We read %d bytes\n",n);
 
 
 	for(i=0;i<=n;i++){
@@ -175,7 +184,7 @@ int read_port(void){
 		printf("%x",returnBuffer[i]);
 	}
 
-	printf("\n\n");	
+	printf("\n\n");	*/
 
 	return n;
 }

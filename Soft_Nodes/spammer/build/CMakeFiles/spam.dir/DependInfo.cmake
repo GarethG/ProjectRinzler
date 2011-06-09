@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/james/ProjectRinzler/Soft_Nodes/spammer/src/spammer.cpp" "/home/james/ProjectRinzler/Soft_Nodes/spammer/build/CMakeFiles/spam.dir/src/spammer.o"
+  "/home/jamest/ProjectRinzler/Soft_Nodes/spammer/src/spammer.cpp" "/home/jamest/ProjectRinzler/Soft_Nodes/spammer/build/CMakeFiles/spam.dir/src/spammer.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

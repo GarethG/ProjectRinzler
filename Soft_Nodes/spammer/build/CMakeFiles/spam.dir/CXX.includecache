@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/james/ProjectRinzler/Soft_Nodes/spammer/src/spammer.cpp
+/home/jamest/ProjectRinzler/Soft_Nodes/spammer/src/spammer.cpp
 stdio.h
 -
 unistd.h
@@ -24,11 +24,11 @@ math.h
 string.h
 -
 ros/ros.h
-/home/james/ProjectRinzler/Soft_Nodes/spammer/src/ros/ros.h
+/home/jamest/ProjectRinzler/Soft_Nodes/spammer/src/ros/ros.h
 std_msgs/String.h
-/home/james/ProjectRinzler/Soft_Nodes/spammer/src/std_msgs/String.h
+/home/jamest/ProjectRinzler/Soft_Nodes/spammer/src/std_msgs/String.h
 std_msgs/Float32.h
-/home/james/ProjectRinzler/Soft_Nodes/spammer/src/std_msgs/Float32.h
+/home/jamest/ProjectRinzler/Soft_Nodes/spammer/src/std_msgs/Float32.h
 sstream
 -
 

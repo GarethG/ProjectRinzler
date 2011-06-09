@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/james/ProjectRinzler/Soft_Nodes/spammer
+CMAKE_SOURCE_DIR = /home/jamest/ProjectRinzler/Soft_Nodes/spammer
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/james/ProjectRinzler/Soft_Nodes/spammer/build
+CMAKE_BINARY_DIR = /home/jamest/ProjectRinzler/Soft_Nodes/spammer/build
 
 # Utility rule file for rospack_gensrv.
 
@@ -57,6 +57,6 @@ CMakeFiles/rospack_gensrv.dir/clean:
 .PHONY : CMakeFiles/rospack_gensrv.dir/clean
 
 CMakeFiles/rospack_gensrv.dir/depend:
-	cd /home/james/ProjectRinzler/Soft_Nodes/spammer/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/james/ProjectRinzler/Soft_Nodes/spammer /home/james/ProjectRinzler/Soft_Nodes/spammer /home/james/ProjectRinzler/Soft_Nodes/spammer/build /home/james/ProjectRinzler/Soft_Nodes/spammer/build /home/james/ProjectRinzler/Soft_Nodes/spammer/build/CMakeFiles/rospack_gensrv.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jamest/ProjectRinzler/Soft_Nodes/spammer/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ProjectRinzler/Soft_Nodes/spammer /home/jamest/ProjectRinzler/Soft_Nodes/spammer /home/jamest/ProjectRinzler/Soft_Nodes/spammer/build /home/jamest/ProjectRinzler/Soft_Nodes/spammer/build /home/jamest/ProjectRinzler/Soft_Nodes/spammer/build/CMakeFiles/rospack_gensrv.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/rospack_gensrv.dir/depend
 
