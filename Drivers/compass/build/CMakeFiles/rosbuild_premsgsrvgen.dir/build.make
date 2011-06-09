@@ -31,14 +31,11 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
-# The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
-
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ProjectRinzler/Drivers/compass
+CMAKE_SOURCE_DIR = /home/uwesub/ProjectRinzler/Drivers/compass
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ProjectRinzler/Drivers/compass/build
+CMAKE_BINARY_DIR = /home/uwesub/ProjectRinzler/Drivers/compass/build
 
 # Utility rule file for rosbuild_premsgsrvgen.
 
@@ -57,6 +54,6 @@ CMakeFiles/rosbuild_premsgsrvgen.dir/clean:
 .PHONY : CMakeFiles/rosbuild_premsgsrvgen.dir/clean
 
 CMakeFiles/rosbuild_premsgsrvgen.dir/depend:
-	cd /home/jamest/ProjectRinzler/Drivers/compass/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ProjectRinzler/Drivers/compass /home/jamest/ProjectRinzler/Drivers/compass /home/jamest/ProjectRinzler/Drivers/compass/build /home/jamest/ProjectRinzler/Drivers/compass/build /home/jamest/ProjectRinzler/Drivers/compass/build/CMakeFiles/rosbuild_premsgsrvgen.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/uwesub/ProjectRinzler/Drivers/compass/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uwesub/ProjectRinzler/Drivers/compass /home/uwesub/ProjectRinzler/Drivers/compass /home/uwesub/ProjectRinzler/Drivers/compass/build /home/uwesub/ProjectRinzler/Drivers/compass/build /home/uwesub/ProjectRinzler/Drivers/compass/build/CMakeFiles/rosbuild_premsgsrvgen.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/rosbuild_premsgsrvgen.dir/depend
 

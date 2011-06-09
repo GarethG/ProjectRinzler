@@ -94,7 +94,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 int open_port(void){	
 
-	fd = open("/dev/ttyS0", O_RDWR | O_NDELAY );//| O_NOCTTY);
+	fd = open("/dev/ttyUSB0", O_RDWR | O_NDELAY );//| O_NOCTTY);
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
 		return 0;
@@ -115,8 +115,8 @@ void config_port(void){
 
 	tcgetattr(fd, &options);
 
-	cfsetispeed(&options, B38400);
-	cfsetospeed(&options, B38400);
+	cfsetispeed(&options, B19200);
+	cfsetospeed(&options, B19200);
 
 	options.c_cflag |= (CLOCAL | CREAD);
 
@@ -132,7 +132,8 @@ void config_port(void){
 
 int write_port(void){
 	int n;
-	char buffer[]={0x00,0x05,0x04,0xbf,0x71};
+	//char buffer[]={0x00,0x05,0x04,0xbf,0x71};
+	char buffer[]={0x00,0x05,0x01,0xef,0xd4};
 
 	n = write(fd,buffer,sizeof(buffer));
 
@@ -149,7 +150,31 @@ int write_port(void){
 *************************************************/
 
 int read_port(void){	
-	return read(fd,returnBuffer,sizeof(returnBuffer));
+
+	int n,i;
+
+	for(i=0;i<sizeof(returnBuffer);i++){
+		returnBuffer[i] = 'X';
+	}
+
+	n = read(fd,returnBuffer,sizeof(returnBuffer));
+
+	printf("We read %d bytes\n",n);
+
+	for(i=0;i<sizeof(returnBuffer);i++){
+		if(returnBuffer[i] != 'X'){
+			if(i!=0){
+				printf(":");
+			}
+		printf("%x",returnBuffer[i]);
+		}
+	}
+
+	printf("\n\n");
+
+	
+
+	return n;
 }
 
 /*************************************************
