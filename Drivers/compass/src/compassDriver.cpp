@@ -22,8 +22,6 @@ float heading, pitch, roll;		/*Floats for the returned values*/
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
-	unsigned int count=0, failed=0, ok=0;
-
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
 
@@ -35,9 +33,9 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	/*Sets up the message structures*/
 
-	std_msgs::Float32 headingMsg;
-	std_msgs::Float32 pitchMsg;
-	std_msgs::Float32 rollMsg;
+	std_msgs::Float32 compassHeading;
+	std_msgs::Float32 compassPitch;
+	std_msgs::Float32 compassRoll;
 
 	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
@@ -50,35 +48,31 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	while (ros::ok()){
 
 		if(write_port()){	//if we send correctly
-			count++;
-			if(read_port() == 5){	//if we read correctly
-				ok++;
-				//parseBuffer();	//parse the buffer
-				//printf("H: %f P: %f R: %f\n",heading,pitch,roll);
+			if(read_port()){	//if we read correctly
+				
+				parseBuffer();	//parse the buffer
+				printf("H: %f P: %f R: %f\n",heading,pitch,roll);
 
 				/* Below here sets up the messages ready for transmission*/
 
-				/*headingMsg.data = heading;	
-				pitchMsg.data = pitch;
-				rollMsg.data = roll;*/
+				compassHeading.data = heading;	
+				compassPitch.data = pitch;
+				compassRoll.data = roll;
 				
 			}
 			else{
-				//ROS_ERROR("Read no data");
-				failed++;
+				ROS_ERROR("Read no data");
 			}
 		}
 		else{
 			ROS_ERROR("Failed to write");
 		}
 
-		printf("Transmitted: %d Succeded: %d Failed: %d\n",count,ok,failed);
-
 		/*Below here we publish our readings*/
 
-		compassHeadingMsg.publish(headingMsg);
-		compassRollMsg.publish(rollMsg);
-		compassPitchMsg.publish(pitchMsg);
+		compassHeadingMsg.publish(compassHeading);
+		compassRollMsg.publish(compassRoll);
+		compassPitchMsg.publish(compassPitch);
 
 		/*Have a snooze*/
 
@@ -108,6 +102,7 @@ int open_port(void){
 	}
 	else{
 		fcntl(fd, F_SETFL, 0);
+
 		ROS_INFO("Port opened with a descriptor of %d",fd);
 	}
 	return (fd);
@@ -126,8 +121,13 @@ void config_port(void){
 	cfsetospeed(&options, B19200);
 
 	options.c_cflag |= (CLOCAL | CREAD);
+	options.c_cflag &= ~PARENB;
+	options.c_cflag &= ~CSTOPB;
+	options.c_cflag &= ~CSIZE;
+	options.c_cflag |= CS8;
 
-	tcsetattr(fd, TCSANOW, &options);
+	tcflush(fd, TCIFLUSH);
+        tcsetattr(fd, TCSANOW, &options);
 
 	return;
 }
@@ -163,26 +163,19 @@ int read_port(void){
 
 	int n,i;
 
-	/*for(i=0;i<sizeof(returnBuffer);i++){
-		returnBuffer[i] = 'X';
-	}*/
-
 	n = read(fd,returnBuffer,sizeof(returnBuffer));
 
 	printf("We read %d bytes\n",n);
 
-	/*for(i=0;i<sizeof(returnBuffer);i++){
-		if(returnBuffer[i] != 'X'){
-			if(i!=0){
-				printf(":");
-			}
-		printf("%x",returnBuffer[i]);
+
+	for(i=0;i<=n;i++){
+		if(i!=0){
+			printf(":");
 		}
-	}*/
+		printf("%x",returnBuffer[i]);
+	}
 
-	printf("\n\n");
-
-	
+	printf("\n\n");	
 
 	return n;
 }
