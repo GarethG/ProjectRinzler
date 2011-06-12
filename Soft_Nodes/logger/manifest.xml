@@ -1,0 +1,17 @@
+<package>
+  <description brief="logger">
+
+     logger
+
+  </description>
+  <author>Gareth</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/logger</url>
+  <depend package="roslib"/>
+  <depend package="rospy"/>
+  <depend package="std_msgs"/>
+
+</package>
+
+
