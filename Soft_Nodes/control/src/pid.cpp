@@ -18,8 +18,24 @@ int main(int argc, char **argv){
 
 	/* Publish */
 
-	ros::Publisher pidRateMsg = pidN.advertise<std_msgs::Float32>("pidRate", 100);
-	std_msgs::Float32 pidRate;
+	if(argv[1] == "heading"){
+		ros::Publisher leftRateMsg = pidN.advertise<std_msgs::Float32>("leftRate", 100);
+		ros::Publisher rightRateMsg = pidN.advertise<std_msgs::Float32>("rightRate", 100);
+
+		std_msgs::Float32 leftRate;
+		std_msgs::Float32 rightRate;
+	}
+	else if(argv[1] == "depth"){
+		ros::Publisher frontRateMsg = pidN.advertise<std_msgs::Float32>("frontRate", 100);
+		ros::Publisher backDRateMsg = pidN.advertise<std_msgs::Float32>("backDRate", 100);
+
+		std_msgs::Float32 frontRate;
+		std_msgs::Float32 backDRate;
+	}
+	else if(argv[2] == "pitch"){
+		ros::Publisher backPRateMsg = pidN.advertise<std_msgs::Float32>("backPRate", 100);
+		std_msgs::Float32 backPRate;
+	}
 
 	/* Subscribe */
 

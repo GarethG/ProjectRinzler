@@ -64,8 +64,8 @@ int main(int argc, char **argv){
 ** Get front pwm target value			**
 *************************************************/
 
-void frontRateCallback(const std_msgs::Float32::ConstPtr& pidRate){
-	targetRate[FRONT] = pidRate->data;
+void frontRateCallback(const std_msgs::Float32::ConstPtr& frontRate){
+	targetRate[FRONT] = frontRate->data;
 	return;
 }
 
@@ -73,8 +73,8 @@ void frontRateCallback(const std_msgs::Float32::ConstPtr& pidRate){
 ** Get left pwm target value			**
 *************************************************/
 
-void leftRateCallback(const std_msgs::Float32::ConstPtr& pidRate){
-	targetRate[LEFT] = pidRate->data;
+void leftRateCallback(const std_msgs::Float32::ConstPtr& leftRate){
+	targetRate[LEFT] = leftRate->data;
 	return;
 }
 
@@ -82,8 +82,8 @@ void leftRateCallback(const std_msgs::Float32::ConstPtr& pidRate){
 ** Get right pwm target value			**
 *************************************************/
 
-void rightRateCallback(const std_msgs::Float32::ConstPtr& pidRate){
-	targetRate[RIGHT] = pidRate->data;
+void rightRateCallback(const std_msgs::Float32::ConstPtr& rightRate){
+	targetRate[RIGHT] = rightRate->data;
 	return;
 }
 
@@ -91,8 +91,8 @@ void rightRateCallback(const std_msgs::Float32::ConstPtr& pidRate){
 ** Get back pwm target value			**
 *************************************************/
 
-void backRateCallback(const std_msgs::Float32::ConstPtr& pidRate){
-	targetRate[BACK] = pidRate->data;
+void backRateCallback(const std_msgs::Float32::ConstPtr& backRate){
+	targetRate[BACK] = backRate->data;
 	return;
 }
 
