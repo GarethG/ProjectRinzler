@@ -23,8 +23,13 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
+#target_link_libraries(${PROJECT_NAME} src/lib/libRBIO.a)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
+INCLUDE_DIRECTORIES(src/ ~/ProjectRinzler/Roboard/)
+#LINK_DIRECTORIES(~/ProjectRinzler/Roboard/Lib/)
+rosbuild_add_executable(motor src/motor.cpp ~/ProjectRinzler/Roboard/common.cpp ~/ProjectRinzler/Roboard/pwm.cpp ~/ProjectRinzler/Roboard/io.cpp ~/ProjectRinzler/Roboard/pwmdx.cpp)
+#target_link_libraries(motor common RBIO)#${PROJECT_NAME})
+
+
+
