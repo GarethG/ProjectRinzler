@@ -12,12 +12,16 @@
 
 float heading;
 float targetHeading;
+float pitch;
+float targetPitch;
 
 /* Function Declerations */
 
 void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading);
-void targetCallback(const std_msgs::Float32::ConstPtr& pilotHeading);
-float p(void);
-float pd(void);
-float pi(void);
-float pid(void);
+void targetHeadingCallback(const std_msgs::Float32::ConstPtr& pilotHeading);
+void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch);
+void targetPitchCallback(const std_msgs::Float32::ConstPtr& pilotPitch);
+float p(float value, float targetValue);
+float pd(float value, float targetValue);
+float pi(float value, float targetValue);
+float pid(float value, float targetValue);

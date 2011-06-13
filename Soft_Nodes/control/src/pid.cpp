@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
@@ -10,65 +11,96 @@
 
 int main(int argc, char **argv){
 
+	float tmp;
+
 	ros::init(argc, argv, "pid");
 
 	/* Messages and Services */
 
 	ros::NodeHandle pidN;
 
-	/* Publish */
+	if(!strcmp(argv[1],"heading")){
 
-	if(argv[1] == "heading"){
+		/* Publish */
+
 		ros::Publisher leftRateMsg = pidN.advertise<std_msgs::Float32>("leftRate", 100);
 		ros::Publisher rightRateMsg = pidN.advertise<std_msgs::Float32>("rightRate", 100);
 
 		std_msgs::Float32 leftRate;
 		std_msgs::Float32 rightRate;
+
+		/* Subscribe */
+
+		ros::Subscriber sub1 = pidN.subscribe("compassHeading", 100, headingCallback);
+		ros::Subscriber sub2 = pidN.subscribe("pilotHeading", 100, targetHeadingCallback);
+
+		ros::Rate loop_rate(10);
+
+		ROS_INFO("Heading PID Online");
+
+		while(ros::ok()){
+
+			ros::spinOnce();
+
+			tmp = pid(targetHeading,heading);
+
+			leftRate.data = tmp;
+			rightRate.data = (tmp * -1.0);
+			
+			leftRateMsg.publish(leftRate);
+			rightRateMsg.publish(rightRate);
+
+			loop_rate.sleep();
+
+		}
+
 	}
-	else if(argv[1] == "depth"){
+	else if(!strcmp(argv[1],"depth")){
+		
+		/* Publish */
+
 		ros::Publisher frontRateMsg = pidN.advertise<std_msgs::Float32>("frontRate", 100);
 		ros::Publisher backDRateMsg = pidN.advertise<std_msgs::Float32>("backDRate", 100);
 
 		std_msgs::Float32 frontRate;
 		std_msgs::Float32 backDRate;
 	}
-	else if(argv[2] == "pitch"){
+	else if(!strcmp(argv[1],"pitch")){
+
+		/* Publish */
+
 		ros::Publisher backPRateMsg = pidN.advertise<std_msgs::Float32>("backPRate", 100);
 		std_msgs::Float32 backPRate;
+
+		/* Subscribe */
+
+		ros::Subscriber sub1 = pidN.subscribe("compassPitch", 100, pitchCallback);
+		ros::Subscriber sub2 = pidN.subscribe("pilotPitch", 100, targetPitchCallback);
+
+		ros::Rate loop_rate(10);
+
+		ROS_INFO("Pitch PID Online");
+
+		while(ros::ok()){
+
+			ros::spinOnce();
+
+			backPRate.data = pid(targetPitch,pitch);
+
+			backPRateMsg.publish(backPRate);
+
+			loop_rate.sleep();
+
+		}
+	}
+	else{
+		ROS_ERROR("Please Enter 'heading', 'depth' or 'pitch'. Alternatively program some software for %s.",argv[1]);
 	}
 
-	/* Subscribe */
 
-	ros::Subscriber sub1 = pidN.subscribe("compassHeading", 100, headingCallback);
-	ros::Subscriber sub2 = pidN.subscribe("pilotHeading", 100, targetCallback);
 
-	ros::Rate loop_rate(10);
 
-	ROS_INFO("PID Online");
-
-	while(ros::ok()){
-
-		/*ros::spinOnce();
-
-		printf("Heading: %.3f\n",heading);
-
-		loop_rate.sleep();*/
-
-		ros::spinOnce();
-
-		//printf("Actual: %.3f Target: %.3f\n",heading,targetHeading);
-
-		//printf("Motor: %.5f\n",pid());
-
-		pidRate.data = pid();
-
-		pidRateMsg.publish(pidRate);
-
-		loop_rate.sleep();
-
-	}
-
-	printf("Shutting Down\n");
+	printf("Shutting Down %s\n",argv[1]);
 
 	return 0;
 }
@@ -79,25 +111,35 @@ void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading){
 	return;
 }
 
-void targetCallback(const std_msgs::Float32::ConstPtr& pilotHeading){
+void targetHeadingCallback(const std_msgs::Float32::ConstPtr& pilotHeading){
 	targetHeading = pilotHeading->data;
 	return;
 }
 
-float p(void){
+void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch){
+	pitch = compassPitch->data;
+	return;
+}
+
+void targetPitchCallback(const std_msgs::Float32::ConstPtr& pilotPitch){
+	targetPitch = pilotPitch->data;
+	return;
+}
+
+float p(float value, float targetValue){
 	float error;
 
-	error = targetHeading - heading;	//error is target - actual
+	error = targetValue - value;	//error is target - actual
 
 	error *= KP;				//multiply by constant
 
 	return error;
 }
 
-float pd(void){
+float pd(float value, float targetValue){
 	float error,derivative,lastError = 0.0f;
 
-	error = targetHeading - heading;
+	error = targetValue - value;
 	
 	derivative = lastError - error;
 
@@ -112,10 +154,10 @@ float pd(void){
 	return error;
 }
 
-float pi(void){
+float pi(float value, float targetValue){
 	float error, lastOut = 0.0f, lastError = 0.0f,output,tmp1,tmp2;
 
-	error = targetHeading - heading;
+	error = targetValue - value;
 
 	tmp1 = error - lastError;
 	tmp1 *= KP;
@@ -135,10 +177,10 @@ float pi(void){
 	return error;
 }
 
-float pid(void){
+float pid(float value, float targetValue){
 	float error, lastOut = 0.0f, lastError = 0.0f, lastError2 = 0.0f,output,tmp1,tmp2,tmp3;
 
-	error = targetHeading - heading;
+	error = targetValue - value;
 
 	tmp1 = error - lastError;
 	tmp1 *= KP;
