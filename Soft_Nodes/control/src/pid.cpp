@@ -44,6 +44,8 @@ int main(int argc, char **argv){
 
 			tmp = pid(targetHeading,heading);
 
+			tmp += FWDHACK;	//bit hacks but ensures we keep moving forwards even when balanced
+
 			leftRate.data = tmp;
 			rightRate.data = (tmp * -1.0);
 			
@@ -64,6 +66,33 @@ int main(int argc, char **argv){
 
 		std_msgs::Float32 frontRate;
 		std_msgs::Float32 backDRate;
+
+		/* Subscribe */
+
+		ros::Subscriber sub1 = pidN.subscribe("svpDepth", 100, depthCallback);
+		ros::Subscriber sub2 = pidN.subscribe("pilotDepth", 100, targetDepthCallback);
+
+		ros::Rate loop_rate(10);
+
+		ROS_INFO("Pitch PID Online");
+
+		while(ros::ok()){
+
+			ros::spinOnce();
+
+			frontRate.data = pid(depthPitch,depth);
+
+			if(frontRate.data > FRONTTHRESH){
+				backDRateMsg.data = frontRate.data;
+				backDRateMsg.publish(backDRate);
+			}
+							
+
+			frontRateMsg.publish(frontRate);
+
+			loop_rate.sleep();
+
+		}
 	}
 	else if(!strcmp(argv[1],"pitch")){
 
@@ -86,6 +115,10 @@ int main(int argc, char **argv){
 			ros::spinOnce();
 
 			backPRate.data = pid(targetPitch,pitch);
+
+			if(backPRate.data < 0.0){
+				backPRate.data = 0.0;
+			}
 
 			backPRateMsg.publish(backPRate);
 
@@ -123,6 +156,16 @@ void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch){
 
 void targetPitchCallback(const std_msgs::Float32::ConstPtr& pilotPitch){
 	targetPitch = pilotPitch->data;
+	return;
+}
+
+void depthCallback(const std_msgs::Float32::ConstPtr& svpDepth){
+	depth = svpDepth->data;
+	return;
+}
+
+void targetDepthCallback(const std_msgs::Float32::ConstPtr& pilotDepth){
+	targetDepth = pilotDepth->data;
 	return;
 }
 
