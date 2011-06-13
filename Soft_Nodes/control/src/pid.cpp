@@ -75,13 +75,17 @@ int main(int argc, char **argv){
 
 		ros::Rate loop_rate(10);
 
-		ROS_INFO("Pitch PID Online");
+		ROS_INFO("Depth PID Online");
 
 		while(ros::ok()){
 
 			ros::spinOnce();
 
 			tmp = pid(targetDepth,depth);
+
+			if(depth < targetDepth){
+				tmp = 0.0f;
+			}
 
 			frontRate.data = tmp;
 

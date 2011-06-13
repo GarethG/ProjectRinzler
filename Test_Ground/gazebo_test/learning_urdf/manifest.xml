@@ -1,0 +1,15 @@
+<package>
+  <description brief="learning_urdf">
+
+     learning_urdf
+
+  </description>
+  <author>James</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/learning_urdf</url>
+  <depend package="urdf"/>
+
+</package>
+
+

@@ -1,0 +1,16 @@
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/ROSBUILD_genmsg_cpp.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/ROSBUILD_gensrv_cpp.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/clean-test-results.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/parser.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/rosbuild_precompile.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/rosbuild_premsgsrvgen.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/rospack_genmsg.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/rospack_genmsg_libexe.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/rospack_gensrv.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/test.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/test-future.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/test-results.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/test-results-run.dir
+/home/james/ProjectRinzler/Test_Ground/gazebo_test/learning_urdf/build/CMakeFiles/tests.dir
