@@ -124,7 +124,9 @@ void updatePWM(unsigned int channel, unsigned int rate){
 		default: ROS_ERROR("Dude this is not a valid PWM channel");	break;
 	}
 
-	pwm_SetPulse(channel, PWM_FREQUENCY_US, (rate + tmpOffset));
+	if(!pwm_SetPulse(channel, PWM_FREQUENCY_US, (rate + tmpOffset))){
+		ROS_ERROR("Failed to update PWM");
+	}
 
 	return;
 }
