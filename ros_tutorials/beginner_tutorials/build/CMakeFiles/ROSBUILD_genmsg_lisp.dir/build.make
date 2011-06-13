@@ -31,14 +31,11 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
-# The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
-
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ros_tutorials/beginner_tutorials
+CMAKE_SOURCE_DIR = /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ros_tutorials/beginner_tutorials/build
+CMAKE_BINARY_DIR = /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build
 
 # Utility rule file for ROSBUILD_genmsg_lisp.
 
@@ -68,9 +65,9 @@ CMakeFiles/ROSBUILD_genmsg_lisp: ../msg_gen/lisp/_package_Num.lisp
 ../msg_gen/lisp/Num.lisp: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 ../msg_gen/lisp/Num.lisp: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 ../msg_gen/lisp/Num.lisp: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ../msg_gen/lisp/Num.lisp, ../msg_gen/lisp/_package.lisp, ../msg_gen/lisp/_package_Num.lisp"
-	/opt/ros/diamondback/stacks/ros_comm/clients/roslisp/scripts/genmsg_lisp.py /home/jamest/ros_tutorials/beginner_tutorials/msg/Num.msg
+	/opt/ros/diamondback/stacks/ros_comm/clients/roslisp/scripts/genmsg_lisp.py /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/msg/Num.msg
 
 ../msg_gen/lisp/_package.lisp: ../msg_gen/lisp/Num.lisp
 
@@ -92,6 +89,6 @@ CMakeFiles/ROSBUILD_genmsg_lisp.dir/clean:
 .PHONY : CMakeFiles/ROSBUILD_genmsg_lisp.dir/clean
 
 CMakeFiles/ROSBUILD_genmsg_lisp.dir/depend:
-	cd /home/jamest/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ROSBUILD_genmsg_lisp.dir/depend
 

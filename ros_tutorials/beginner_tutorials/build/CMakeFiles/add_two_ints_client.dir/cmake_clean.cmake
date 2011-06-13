@@ -1,8 +1,8 @@
 FILE(REMOVE_RECURSE
-  "../src/beginner_tutorials/msg"
-  "../src/beginner_tutorials/srv"
   "../msg_gen"
   "../srv_gen"
+  "../src/beginner_tutorials/msg"
+  "../src/beginner_tutorials/srv"
   "../msg_gen"
   "../srv_gen"
   "CMakeFiles/add_two_ints_client.dir/src/add_two_ints_client.o"

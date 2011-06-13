@@ -31,14 +31,11 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
-# The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
-
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ros_tutorials/beginner_tutorials
+CMAKE_SOURCE_DIR = /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ros_tutorials/beginner_tutorials/build
+CMAKE_BINARY_DIR = /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/add_two_ints_server.dir/depend.make
@@ -70,17 +67,17 @@ CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o: /opt/ros/diamondba
 CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o -c /home/jamest/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o -c /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp
 
 CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/jamest/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp > CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp > CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.i
 
 CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/jamest/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp -o CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp -o CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.s
 
 CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o.requires:
 .PHONY : CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o.requires
@@ -117,6 +114,6 @@ CMakeFiles/add_two_ints_server.dir/clean:
 .PHONY : CMakeFiles/add_two_ints_server.dir/clean
 
 CMakeFiles/add_two_ints_server.dir/depend:
-	cd /home/jamest/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/add_two_ints_server.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build/CMakeFiles/add_two_ints_server.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/add_two_ints_server.dir/depend
 

@@ -26,11 +26,11 @@ ros/time.h
 ros/service_traits.h
 ../srv_gen/cpp/include/beginner_tutorials/ros/service_traits.h
 
-/home/jamest/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp
+/home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp
 ros/ros.h
-/home/jamest/ros_tutorials/beginner_tutorials/src/ros/ros.h
+/home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/ros/ros.h
 beginner_tutorials/AddTwoInts.h
-/home/jamest/ros_tutorials/beginner_tutorials/src/beginner_tutorials/AddTwoInts.h
+/home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/beginner_tutorials/AddTwoInts.h
 
 /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/advertise_options.h
 ros/forwards.h

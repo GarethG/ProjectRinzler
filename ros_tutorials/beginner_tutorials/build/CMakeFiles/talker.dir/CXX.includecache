@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/jamest/ros_tutorials/beginner_tutorials/src/talker.cpp
+/home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/talker.cpp
 ros/ros.h
-/home/jamest/ros_tutorials/beginner_tutorials/src/ros/ros.h
+/home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/ros/ros.h
 std_msgs/String.h
-/home/jamest/ros_tutorials/beginner_tutorials/src/std_msgs/String.h
+/home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/std_msgs/String.h
 sstream
 -
 

@@ -3,7 +3,7 @@
 
 CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.o
  ../srv_gen/cpp/include/beginner_tutorials/AddTwoInts.h
- /home/jamest/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp
+ /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/add_two_ints_server.cpp
  /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/advertise_options.h
  /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/advertise_service_options.h
  /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/common.h

@@ -31,14 +31,11 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
-# The program to use to edit the cache.
-CMAKE_EDIT_COMMAND = /usr/bin/ccmake
-
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jamest/ros_tutorials/beginner_tutorials
+CMAKE_SOURCE_DIR = /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jamest/ros_tutorials/beginner_tutorials/build
+CMAKE_BINARY_DIR = /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/listener.dir/depend.make
@@ -70,17 +67,17 @@ CMakeFiles/listener.dir/src/listener.o: /opt/ros/diamondback/stacks/ros_comm/mes
 CMakeFiles/listener.dir/src/listener.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 CMakeFiles/listener.dir/src/listener.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 CMakeFiles/listener.dir/src/listener.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/listener.dir/src/listener.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/listener.dir/src/listener.o -c /home/jamest/ros_tutorials/beginner_tutorials/src/listener.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/listener.dir/src/listener.o -c /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/listener.cpp
 
 CMakeFiles/listener.dir/src/listener.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/listener.dir/src/listener.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/jamest/ros_tutorials/beginner_tutorials/src/listener.cpp > CMakeFiles/listener.dir/src/listener.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/listener.cpp > CMakeFiles/listener.dir/src/listener.i
 
 CMakeFiles/listener.dir/src/listener.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/listener.dir/src/listener.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/jamest/ros_tutorials/beginner_tutorials/src/listener.cpp -o CMakeFiles/listener.dir/src/listener.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/src/listener.cpp -o CMakeFiles/listener.dir/src/listener.s
 
 CMakeFiles/listener.dir/src/listener.o.requires:
 .PHONY : CMakeFiles/listener.dir/src/listener.o.requires
@@ -117,6 +114,6 @@ CMakeFiles/listener.dir/clean:
 .PHONY : CMakeFiles/listener.dir/clean
 
 CMakeFiles/listener.dir/depend:
-	cd /home/jamest/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build /home/jamest/ros_tutorials/beginner_tutorials/build/CMakeFiles/listener.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build /home/bootstrap/ProjectRinzler/ros_tutorials/beginner_tutorials/build/CMakeFiles/listener.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/listener.dir/depend
 
