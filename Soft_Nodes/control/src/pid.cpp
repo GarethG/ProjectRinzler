@@ -44,10 +44,11 @@ int main(int argc, char **argv){
 
 			tmp = pid(targetHeading,heading);
 
-			tmp += FWDHACK;	//bit hacks but ensures we keep moving forwards even when balanced
-
 			leftRate.data = tmp;
 			rightRate.data = (tmp * -1.0);
+
+			leftRate.data += FWDHACK;	//bit hacks but ensures we keep moving forwards even when balanced
+			rightRate.data += FWDHACK;
 			
 			leftRateMsg.publish(leftRate);
 			rightRateMsg.publish(rightRate);
@@ -80,10 +81,12 @@ int main(int argc, char **argv){
 
 			ros::spinOnce();
 
-			frontRate.data = pid(depthPitch,depth);
+			tmp = pid(targetDepth,depth);
+
+			frontRate.data = tmp;
 
 			if(frontRate.data > FRONTTHRESH){
-				backDRateMsg.data = frontRate.data;
+				backDRate.data = tmp;
 				backDRateMsg.publish(backDRate);
 			}
 							

@@ -20,25 +20,46 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::init(argc, argv, "spam");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
 
+	float out = 0.0f;
+	unsigned int direc = 0;
+
 	/*Advertises our various messages*/
 
 	ros::Publisher spamMsg = n.advertise<std_msgs::Float32>("pilotHeading", 100);
+	ros::Publisher spamMsg2 = n.advertise<std_msgs::Float32>("compassHeading", 100);
 
 	/*Sets up the message structures*/
 
-	std_msgs::Float32 sMsg;
+	std_msgs::Float32 pilotHeading;
+	std_msgs::Float32 compassHeading;
 
 	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
 
 	ROS_INFO("Spammer Online");
 
-	while (ros::ok()){		
+	while (ros::ok()){	
+
+		if(direc){
+			out += 0.2;
+			if(out > 10.0){
+				direc = 0;
+			}
+		}
+		else{
+			out -= 0.2;
+			if(out < -10.0){
+				direc = 1;
+			}
+		}
+
+		compassHeading.data = out;	
 		
-		sMsg.data = 0.0f;
+		pilotHeading.data = 0.0f;
 
 		/*Below here we publish our readings*/
 
-		spamMsg.publish(sMsg);
+		spamMsg.publish(pilotHeading);		
+		spamMsg2.publish(compassHeading);
 
 		/*Have a snooze*/
 
