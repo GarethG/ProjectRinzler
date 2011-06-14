@@ -8,45 +8,60 @@
 #include "ros/ros.h"
 #include "sonarDriver.h"
 
-#define BAUDRATE B115200
-
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
+char sendBuffer[13];
 
 
-	int buffLen, 	//length of the recieved buffer, output from read_port()
-		i,			//counter
-		temp[263],
-		length,
-		msgLen;
-		
-	unsigned int header,	//Message Header. 
-				hLength,	//Hex Length of whole binary packet
-				bLength,	//Binary Word of above Hex Length.
-				sID,		//Packet Source Identification
-				dID,		//Packet Destination Identification
-				byteCount,	//Byte Count of attached message that follows this byte.
-				msg[263],		//Command / Reply Message
-				term;		//Message Terminator
+int buffLen, 	//length of the recieved buffer, output from read_port()
+	i,			//counter
+	temp[263],
+	length,
+	msgLen;
+	
+unsigned int header,	//Message Header. 
+			hLength,	//Hex Length of whole binary packet
+			bLength,	//Binary Word of above Hex Length.
+			sID,		//Packet Source Identification
+			dID,		//Packet Destination Identification
+			byteCount,	//Byte Count of attached message that follows this byte.
+			msg[263],	//Command / Reply Message
+			term;		//Message Terminator
 
-	unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
-				bp1_buffLen,
-				bp1_bLength;
+unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
+			bp1_buffLen,
+			bp1_bLength;
+
+/******************************************************
+ * 
+ *  Main; the master of functions, the definer of variables.
+ * 
+ * ***************************************************/
+
 
 int main( int argc, char **argv )
 {
 
 	int cmd = 0;
-	int j = 0;	
-	unsigned int temp;
 
 	open_port();
 	config_port();
 	
-	while(1)
+	while(cmd != 1)
 	{
-		sortPacket();
+		if(sortPacket() == 1)
+		{
+			cmd = returnMsg();
+			printf("%d\n", cmd);
+		
+			if(cmd == 4)
+			{
+				makePacket(1);
+				write_port();
+			}
+		}
+		
 	}	
 	close(fd);
 	return 0;
@@ -96,10 +111,10 @@ void config_port(void){
 
 int write_port(void){
 	int n;
-	char buffer[]={0x00,0x05,0x04,0xbf,0x71};
+	//char buffer[]={0x00,0x05,0x04,0xbf,0x71};
 	//char buffer[]={0x00,0x05,0x01,0xef,0xd4};
 
-	n = write(fd,buffer,sizeof(buffer));
+	n = write(fd,sendBuffer,sizeof(sendBuffer));
 
 	if (n < 0){
 		ROS_ERROR("Failed to write to port");
@@ -189,10 +204,14 @@ TERM	:	Message Terminator = Line Feed (0Ah).
 * it deal with all others.
 * 
 * 
+* 	Returns -1 if failed, 1 if correct first time, 2 if it had to 
+* 	stich packets
+* 
 ****************************************************************/
 int sortPacket(void)
 {
 
+	int packetFlag = 0;
 	
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
@@ -233,11 +252,10 @@ int sortPacket(void)
 	
 	if(header == '@' && term == 10)
 	{
-		printf("%d : ", buffLen);
-		printf("%d ", header);
-		printf("| %d - %d |", hLength, bLength);
-		printf(" %d |", byteCount);
-		printf(" %d |\n", term);
+
+		//prinfPacket();
+		
+		packetFlag = 1;
 		
 		//printf("%d, %d\n", byteCount, msgLen+1);
 	}
@@ -254,7 +272,7 @@ int sortPacket(void)
 		{
 			//printf("01\n");
 			
-			if(bLength != NULL)
+			if(bLength != 0)
 			{
 				//printf("01.5 %d\n", buffLen);
 				for( i = 0; i < buffLen; i++ )
@@ -274,7 +292,7 @@ int sortPacket(void)
 				bp1_temp[i] = temp[i-bp1_buffLen];
 			
 			if(buffLen + bp1_buffLen == bp1_bLength + 6)
-				printf("Recovered the packet :\n");
+				//printf("Recovered the packet :\n");
 				
 				
 				buffLen = buffLen + bp1_buffLen;
@@ -306,11 +324,10 @@ int sortPacket(void)
 				
 				if(header == '@' && term == 10)
 				{
-					printf("%d : ", buffLen);
-					printf("%d ", header);
-					printf("| %d - %d |", hLength, bLength);
-					printf(" %d |", byteCount);
-					printf(" %d |\n\n", term);
+					
+					//prinfPacket();
+					
+					packetFlag = 2;
 					
 					//printf("%d, %d\n", byteCount, msgLen+1);
 				}	
@@ -318,7 +335,10 @@ int sortPacket(void)
 			
 		}
 		else
-			printf("Sorry, my bad. I really dropped the ball on this one (the ball is my packet)\n");
+		{
+			//printf("Sorry, my bad. I really dropped the ball on this one (the ball is my packet)\n");
+			packetFlag = -1;
+		}
 		
 		
 	}
@@ -330,9 +350,137 @@ int sortPacket(void)
 		temp[i] = 0;
 	}
 	
-	return 0; 
+	return packetFlag; 
 }
 
+/*************************************************
+ * just returns the first value of the msg 
+ * *********************************************/
+int returnMsg()
+{
+	return msg[0];
+}
 
+/************************************************
+ * 
+ *  Create a packet to send and stores it in sendBuffer
+ * takes the command and returns the command that has
+ * been sent.
+ * 
+ * 
+ * Sorry this might be discusting ;/
+ * *********************************************/
+int makePacket(int command)
+{
+	
+	//{0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, 0x17, 0x80, 0x02, 0x0A }
+	//Header
+	sendBuffer[0] = 0x40;			//Static
+	//hex length
+	sendBuffer[1] = 0x30;
+	sendBuffer[2] = 0x30;
+	sendBuffer[3] = 0x30;
+	sendBuffer[4] = 0x38;
+	//binary length
+	sendBuffer[5] = 0x08;
+	sendBuffer[6] = 0x00;
+	//Source/Dest ID
+	sendBuffer[7] = 0xFF;			//Static ??
+	sendBuffer[8] = 0x02;			//Static ??
+	//ByteCount
+	sendBuffer[9] = 0x03;
+	//MSG
+	
+	temp[0] = 0x17;
+	temp[1] = 0x80;
+	temp[2] = 0x02;
+	
+	for( i = 0; i < sendBuffer[9]; i ++ )
+		sendBuffer[i+10] = temp[i];
+	
+	//Terminator
+	sendBuffer[sendBuffer[9]+10] = 0x0A;			//Static
+	
+	
+}
 
+/************************************************
+ * 
+ *  Clear packet, clears the sendBuffer and 
+ * returns a 1 to show it's done. 
+ * 
+ * *********************************************/
+int clearPacket(void)
+{
+	
+	for( i = 0; i < sizeof(sendBuffer); i ++)
+		sendBuffer[i] = 0;
+		
+	return 1;
+}
 
+/**********************************************
+ * Prinf the packet
+ * *******************************************/
+void prinfPacket(void)
+{
+	
+	printf("%d : ", buffLen);
+	printf("%d ", header);
+	printf("| %d - %d |", hLength, bLength);
+	printf(" %d |", byteCount);
+	printf(" %d |\n\n", term);
+					
+}
+/**********************************************
+ * Find the length of the packet
+ * Flag = 0 - sendBuffer
+ * Flag = 1 - recvBuffer
+ * Returns packet length, -1 if error.
+ * *******************************************/
+int packetLength(int flag)
+{
+	
+	int len, temp;
+	//sendBuffer
+	if(flag == 0)
+	{
+	
+		//Check for a 0 and i the value before is 0x10 it's the end of the packet
+		while(1)
+		{
+			while( sendBuffer[len] != 0 )
+			{
+				len++;
+				
+				if( sendBuffer[len] == 0 && temp == 0x10 )
+					return len;
+				
+				temp = sendBuffer[len];
+			}
+		}
+
+	}
+	//rcvBuffer
+	else if(flag == 1)
+	{
+	
+		while(1)
+		{
+			while( returnBuffer[len] != 0 )
+			{
+				len++;
+				
+				if( returnBuffer[len] == 0 && temp == 0x10 )
+					return len;
+				
+				temp = returnBuffer[len];
+			}
+		}
+		
+	}
+	else
+		return -1;
+	
+	
+}
