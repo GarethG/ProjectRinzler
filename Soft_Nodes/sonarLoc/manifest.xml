@@ -1,0 +1,16 @@
+<package>
+  <description brief="sonarLoc">
+
+     sonarLoc
+
+  </description>
+  <author>UWEROS</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/sonarLoc</url>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+
+</package>
+
+

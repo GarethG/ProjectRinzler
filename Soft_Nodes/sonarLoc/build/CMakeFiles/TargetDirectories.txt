@@ -1,0 +1,16 @@
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/ROSBUILD_genmsg_cpp.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/ROSBUILD_gensrv_cpp.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/clean-test-results.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/rosbuild_precompile.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/rosbuild_premsgsrvgen.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/rospack_genmsg.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/rospack_genmsg_libexe.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/rospack_gensrv.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/sonarLoc.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/test.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/test-future.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/test-results.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/test-results-run.dir
+/home/uweros/ProjectRinzler/Soft_Nodes/sonarLoc/build/CMakeFiles/tests.dir
