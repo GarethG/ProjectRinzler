@@ -14,6 +14,26 @@ int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
 
+
+	int buffLen, 	//length of the recieved buffer, output from read_port()
+		i,			//counter
+		temp[263],
+		length,
+		msgLen;
+		
+	unsigned int header,	//Message Header. 
+				hLength,	//Hex Length of whole binary packet
+				bLength,	//Binary Word of above Hex Length.
+				sID,		//Packet Source Identification
+				dID,		//Packet Destination Identification
+				byteCount,	//Byte Count of attached message that follows this byte.
+				msg[263],		//Command / Reply Message
+				term;		//Message Terminator
+
+	unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
+				bp1_buffLen,
+				bp1_bLength;
+
 int main( int argc, char **argv )
 {
 
@@ -172,21 +192,7 @@ TERM	:	Message Terminator = Line Feed (0Ah).
 ****************************************************************/
 int sortPacket(void)
 {
-	int buffLen, 	//length of the recieved buffer, output from read_port()
-		i,			//counter
-		temp[263],
-		length;
-		
-	unsigned int header,	//Message Header. 
-				hLength,	//Hex Length of whole binary packet
-				bLength,	//Binary Word of above Hex Length.
-				sID,		//Packet Source Identification
-				dID,		//Packet Destination Identification
-				byteCount,	//Byte Count of attached message that follows this byte.
-				msg,		//Command / Reply Message
-				term;		//Message Terminator
 
-	unsigned int bp1_temp[263];	//Clone dataset, for bad packet recovery
 	
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
@@ -210,6 +216,19 @@ int sortPacket(void)
 	byteCount = temp[9];
 	term = temp[buffLen-1];
 	
+	for(i = 0; i < 263; i++)
+		msg[i] = NULL;
+		
+	msgLen = 0;
+	//Store the msg, works for varying lengths
+	for( i = 10; i < (buffLen-2); i ++)
+	{
+		
+		msg[(i-10)] = temp[i];
+		msgLen ++;
+		
+	}
+	
 	//What is prinf?
 	
 	if(header == '@' && term == 10)
@@ -219,37 +238,83 @@ int sortPacket(void)
 		printf("| %d - %d |", hLength, bLength);
 		printf(" %d |", byteCount);
 		printf(" %d |\n", term);
+		
+		//printf("%d, %d\n", byteCount, msgLen+1);
 	}
 	else
 	{
-		printf("Bad Packet, I'll try to recover it >.<\n");
+		//printf("Bad Packet, I'll try to recover it >.<\n");
 	
 	/*****************
-	 * This needs some work (attempt at recovery)
+	 * Should recover when split into two packets, not any more though
 	 * ****************/
 		
-		//should be recoverable as long as we have bLength and bp1_buffLen is 0
-		if( bLength != NULL && bp1_buffLen == NULL )
+		//should be recoverable as long as we have header and bp1_buffLen is 0
+		if( temp[0] == '@' )//&& bp1_buffLen == NULL)
 		{
-			if( buffLen != (bLength + 4) )
-			{
+			//printf("01\n");
 			
+			if(bLength != NULL)
+			{
+				//printf("01.5 %d\n", buffLen);
 				for( i = 0; i < buffLen; i++ )
 					bp1_temp[i] = temp[i];
-					
+				
 				bp1_buffLen = buffLen;
-			
+				bp1_bLength = bLength;
 			}
+
 		}
 		//if bp1_buffLen isn't null we are already trying to recover
-		else if( bp1_buffLen != NULL )
+		else if( temp[buffLen-1] == 10)
 		{
+			//printf("02 %d = %d\n",buffLen + bp1_buffLen, bp1_bLength + 6);
 			
 			for( i = bp1_buffLen; i < (bp1_buffLen + buffLen); i++ )
-				bp1_temp[i] = temp[i];
+				bp1_temp[i] = temp[i-bp1_buffLen];
 			
-			if(bLength + 4 == length->temp)
-				printf("Recovered the packet :)\n");
+			if(buffLen + bp1_buffLen == bp1_bLength + 6)
+				printf("Recovered the packet :\n");
+				
+				
+				buffLen = buffLen + bp1_buffLen;
+				
+				//Store temp stuff into right place
+	
+				header = bp1_temp[0];
+				hLength = getU32(bp1_temp[1], bp1_temp[2], bp1_temp[3], bp1_temp[4]);
+				bLength = getU16(bp1_temp[6], bp1_temp[5]);
+				sID = bp1_temp[7];
+				dID = bp1_temp[8];
+				byteCount = bp1_temp[9];
+				term = bp1_temp[buffLen-1];
+	
+				for(i = 0; i < 263; i++)
+					msg[i] = NULL;
+					
+				msgLen = 0;
+				//Store the msg, works for varying lengths
+				for( i = 10; i < (buffLen-2); i ++)
+				{
+					
+					msg[(i-10)] = bp1_temp[i];
+					msgLen ++;
+					
+				}
+				
+				//What is prinf?
+				
+				if(header == '@' && term == 10)
+				{
+					printf("%d : ", buffLen);
+					printf("%d ", header);
+					printf("| %d - %d |", hLength, bLength);
+					printf(" %d |", byteCount);
+					printf(" %d |\n\n", term);
+					
+					//printf("%d, %d\n", byteCount, msgLen+1);
+				}	
+				
 			
 		}
 		else
@@ -267,8 +332,6 @@ int sortPacket(void)
 	
 	return 0; 
 }
-
-
 
 
 
