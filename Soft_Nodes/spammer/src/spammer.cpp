@@ -58,16 +58,15 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 		compassHeading.data = out;
 
-		if(direc){
+		if(direc2){
 			out2 += 0.2;
-			if(out2 > 50.0){
+			if(out2 > 60.0){
 				direc2 = 0; 
-				printf("out2: %.3f is bigger than %.3f\n",out2,50.0);
 			}
 		}
 		else{
 			out2 -= 0.2;
-			if(out2 < 10.0){
+			if(out2 < 1.0){
 				direc2 = 1;
 			}
 		}	
@@ -75,7 +74,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		svpDepth.data = out2;
 		
 		pilotHeading.data = 0.0f;
-		pilotDepth.data = 20.0f;
+		pilotDepth.data = 30.0f;
 
 		/*Below here we publish our readings*/
 

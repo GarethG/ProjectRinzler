@@ -83,13 +83,16 @@ int main(int argc, char **argv){
 
 			tmp = pid(targetDepth,depth);
 
-			if(depth < targetDepth){
+			if(depth > targetDepth){
 				tmp = 0.0f;
+			}
+			else{
+				tmp *= -1.0;
 			}
 
 			frontRate.data = tmp;
 
-			if(frontRate.data > FRONTTHRESH){
+			if((targetDepth - depth) > FRONTTHRESH){
 				backDRate.data = tmp;
 				backDRateMsg.publish(backDRate);
 			}
