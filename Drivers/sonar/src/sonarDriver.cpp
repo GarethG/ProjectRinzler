@@ -57,8 +57,35 @@ int main( int argc, char **argv )
 		
 			if(cmd == 4)
 			{
-				makePacket(1);
+				
+				makePacket(mtSendVersion);
 				write_port();
+				
+				if(sortPacket() == 1)
+				{
+					
+					cmd = returnMsg();
+					printf("r %d\n", cmd);
+					
+					if(cmd == 1)
+					{
+						printf("oh hi2\n");
+						
+						while(cmd != mtBBUserData)
+						{
+							
+							makePacket(mtSendBBUser);
+							write_port();
+						
+
+							sortPacket();
+							cmd = returnMsg();
+							printf("t %d\n", cmd);
+							
+						}
+						printf("yo\n");
+					}	
+				}
 			}
 		}
 		
@@ -73,7 +100,8 @@ int main( int argc, char **argv )
 
 int open_port(void){	
 
-	fd = open("/dev/ttyUSB2", O_RDWR | O_NDELAY | O_NOCTTY);
+	fd = open("/dev/ttyUSB0", O_RDWR | O_NDELAY | O_NOCTTY);
+	printf("/dev/ttyUSB0\n");
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
 		return 0;
@@ -215,7 +243,7 @@ int sortPacket(void)
 	
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
-		
+	printf("buffLen = %d\n", buffLen);
 	rBptr = &returnBuffer[0];	//set pointer for recieved data
 			
 	//Store all packets into temp[]	
@@ -370,37 +398,159 @@ int returnMsg()
  * 
  * Sorry this might be discusting ;/
  * *********************************************/
-int makePacket(int command)
+void makePacket(int command)
 {
 	
+	if(command == 16 || command == 23 || command == 24)
+	{
+		//{0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, 0x17, 0x80, 0x02, 0x0A }
+		//Header
+		sendBuffer[0] = 0x40;			//Static
+		//hex length
+		sendBuffer[1] = 0x30;
+		sendBuffer[2] = 0x30;
+		sendBuffer[3] = 0x30;
+		sendBuffer[4] = 0x38;
+		//binary length
+		sendBuffer[5] = 0x08;
+		sendBuffer[6] = 0x00;
+		//Source/Dest ID
+		sendBuffer[7] = 0xFF;			//Static ??
+		sendBuffer[8] = 0x02;			//Static ??
+		//ByteCount
+		sendBuffer[9] = 0x03;
+		//MSG
+		
+		temp[0] = command;
+		temp[1] = 0x80;
+		temp[2] = 0x02;
+		
+		for( i = 0; i < sendBuffer[9]; i ++ )
+		{
+			sendBuffer[i+10] = temp[i];
+		}
+		
+		//Terminator
+		sendBuffer[sendBuffer[9]+10] = 0x0A;			//Static
+	}
+	
+}
+
+/************************************************
+ * 
+ *  make a packet for sending mtHeadCommand
+ * *********************************************/
+void makeHeadPacket()
+{
+	
+	
+
 	//{0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, 0x17, 0x80, 0x02, 0x0A }
 	//Header
 	sendBuffer[0] = 0x40;			//Static
 	//hex length
 	sendBuffer[1] = 0x30;
 	sendBuffer[2] = 0x30;
-	sendBuffer[3] = 0x30;
-	sendBuffer[4] = 0x38;
+	sendBuffer[3] = 0x34;
+	sendBuffer[4] = 0x43;
 	//binary length
-	sendBuffer[5] = 0x08;
+	sendBuffer[5] = 0x4C;
 	sendBuffer[6] = 0x00;
 	//Source/Dest ID
 	sendBuffer[7] = 0xFF;			//Static ??
 	sendBuffer[8] = 0x02;			//Static ??
 	//ByteCount
-	sendBuffer[9] = 0x03;
+	sendBuffer[9] = 0x47;
 	//MSG
-	
-	temp[0] = 0x17;
-	temp[1] = 0x80;
-	temp[2] = 0x02;
-	
-	for( i = 0; i < sendBuffer[9]; i ++ )
-		sendBuffer[i+10] = temp[i];
+		//Command
+		sendBuffer[10] = 0x13;
+		//
+		sendBuffer[11] = 0x80;
+		sendBuffer[12] = 0x02;
+		//mtHeadCommand Type; 1 = Normal, 29 = with appended V3B Gain Params for Dual Channel
+		sendBuffer[13] = commandType;
+	//Head Parameter Info.
+			//HdCtrl bytes
+			sendBuffer[14] = 0x83;
+			sendBuffer[15] = 0x23;
+	//HdType
+			//
+			sendBuffer[16] = 0x02;
+	//TxN/RxN Transmitter Constants
+			//TxN Channel 1
+			sendBuffer[17] = 0x99;
+			sendBuffer[18] = 0x99;		
+			sendBuffer[19] = 0x99;
+			sendBuffer[20] = 0x02;	
+			//TxN Channel 2
+			sendBuffer[21] = 0x66;
+			sendBuffer[22] = 0x66;		
+			sendBuffer[23] = 0x66;
+			sendBuffer[24] = 0x05;	
+			//RxN Channel 1
+			sendBuffer[25] = 0xA3;
+			sendBuffer[26] = 0x70;		
+			sendBuffer[27] = 0x3D;
+			sendBuffer[28] = 0x06;	
+			//RxN Channel 2
+			sendBuffer[29] = 0x70;
+			sendBuffer[30] = 0x3D;		
+			sendBuffer[31] = 0x0A;
+			sendBuffer[32] = 0x09;
+	//TxPulseLen
+			sendBuffer[33] = ;
+			sendBuffer[34] = ;
+	//RangeScale
+			sendBuffer[35] = ;
+			sendBuffer[36] = ;
+	//LeftAngleLimit
+			sendBuffer[37] = ;
+			sendBuffer[38] = ;
+	//RightAngleLiimit
+			sendBuffer[39] = ;
+			sendBuffer[40] = ; 
+	//ADSpan
+			sendBuffer[41] = ; 
+	//ADLow
+			sendBuffer[42] = ;
+	//IGain Setting
+			sendBuffer[43] = ;
+			sendBuffer[44] = ; 
+	//SlopeSetting
+			sendBuffer[45] = ;
+			sendBuffer[46] = ;
+			sendBuffer[47] = ;
+			sendBuffer[48] = ;
+	//MoTime
+			sendBuffer[49] = ;
+	//StepAngleSize
+			sendBuffer[50] = ;
+	//ADInterval
+			sendBuffer[51] = ;
+			sendBuffer[52] = ;
+	//Description of NBins
+			sendBuffer[53] = ;
+			sendBuffer[54] = ;
+	//MaxADbuf
+			sendBuffer[55] = ;
+			sendBuffer[56] = ;
+	//Lockout
+			sendBuffer[57] = ;
+			sendBuffer[58] = ;
+	//MinorAxisDirection
+			sendBuffer[59] = ;
+			sendBuffer[60] = ;
+	//MajorAxisDirection
+			sendBuffer[61] = ;
+			sendBuffer[62] = ;
+	//Ctl2
+			sendBuffer[63] = ;
+	//ScanZ
+			sendBuffer[64] = 0x00;
 	
 	//Terminator
-	sendBuffer[sendBuffer[9]+10] = 0x0A;			//Static
-	
+	sendBuffer[65] = 0x0A;			//Static
+
 	
 }
 
