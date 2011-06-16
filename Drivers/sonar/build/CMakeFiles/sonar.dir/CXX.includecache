@@ -19,6 +19,8 @@ unistd.h
 -
 fcntl.h
 -
+sys/time.h
+-
 ros/ros.h
 /home/bootstrap/ProjectRinzler/Drivers/sonar/src/ros/ros.h
 sonarDriver.h

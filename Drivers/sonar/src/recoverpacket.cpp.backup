@@ -1,0 +1,82 @@
+	{
+		//printf("Bad Packet, I'll try to recover it >.<\n");
+	
+	/*****************
+	 * Should recover when split into two packets, not any more though
+	 * ****************/
+		
+		//should be recoverable as long as we have header and bp1_buffLen is 0
+		if( temp[0] == '@' )//&& bp1_buffLen == NULL)
+		{
+			//printf("01\n");
+			
+			if(bLength != 0)
+			{
+				//printf("01.5 %d\n", buffLen);
+				for( i = 0; i < buffLen; i++ )
+					bp1_temp[i] = temp[i];
+				
+				bp1_buffLen = buffLen;
+				bp1_bLength = bLength;
+			}
+
+		}
+		//if bp1_buffLen isn't null we are already trying to recover
+		else if( temp[buffLen-1] == 10)
+		{
+			//printf("02 %d = %d\n",buffLen + bp1_buffLen, bp1_bLength + 6);
+			
+			for( i = bp1_buffLen; i < (bp1_buffLen + buffLen); i++ )
+				bp1_temp[i] = temp[i-bp1_buffLen];
+			
+			if(buffLen + bp1_buffLen == bp1_bLength + 6)
+				//printf("Recovered the packet :\n");
+				
+				
+				buffLen = buffLen + bp1_buffLen;
+				
+				//Store temp stuff into right place
+	
+				header = bp1_temp[0];
+				hLength = getU32(bp1_temp[1], bp1_temp[2], bp1_temp[3], bp1_temp[4]);
+				bLength = getU16(bp1_temp[6], bp1_temp[5]);
+				sID = bp1_temp[7];
+				dID = bp1_temp[8];
+				byteCount = bp1_temp[9];
+				term = bp1_temp[buffLen-1];
+	
+				for(i = 0; i < 263; i++)
+					msg[i] = NULL;
+					
+				msgLen = 0;
+				//Store the msg, works for varying lengths
+				for( i = 10; i < (buffLen-2); i ++)
+				{
+					
+					msg[(i-10)] = bp1_temp[i];
+					msgLen ++;
+					
+				}
+				
+				//What is prinf?
+				
+				if(header == '@' && term == 10)
+				{
+					
+					//prinfPacket();
+					
+					packetFlag = 2;
+					
+					//printf("%d, %d\n", byteCount, msgLen+1);
+				}	
+				
+			
+		}
+		else
+		{
+			//printf("Sorry, my bad. I really dropped the ball on this one (the ball is my packet)\n");
+			packetFlag = -1;
+		}
+		
+		
+	}

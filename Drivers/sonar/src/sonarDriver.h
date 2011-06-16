@@ -13,7 +13,11 @@ void makePacket(int command);
 int clearPacket(void);
 void prinfPacket(void);
 int packetLength(int flag);
-void makeHeadPacket();
+void makeHeadPacket(void);
+int initSonar(void);
+int makeSendData();
+void to_hex(char buf[], int i);
+
 
 /* Defines */
 

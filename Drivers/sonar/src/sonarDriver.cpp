@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <unistd.h> 
 #include <fcntl.h> 
+#include <sys/time.h>
 
 #include "ros/ros.h"
 #include "sonarDriver.h"
@@ -11,7 +12,7 @@
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
-char sendBuffer[13];
+char sendBuffer[18];
 
 
 int buffLen, 	//length of the recieved buffer, output from read_port()
@@ -50,44 +51,67 @@ int main( int argc, char **argv )
 	
 	while(cmd != 1)
 	{
-		if(sortPacket() == 1)
-		{
-			cmd = returnMsg();
-			printf("%d\n", cmd);
 		
-			if(cmd == 4)
+		//makeSendData();
+
+		if(initSonar() == 1)
+		{
+
+			//Make and send headcommand
+			makeHeadPacket();
+			write_port();
+			printf(">> mtHeadCommand\n");
+			
+			if(sortPacket() == 1)
 			{
 				
-				makePacket(mtSendVersion);
-				write_port();
-				
-				if(sortPacket() == 1)
+				cmd = returnMsg();
+				//printf("%d : ", cmd);
+				//Should return mtAlive 
+				//(need to check params too but not implemented yet)
+				if(cmd == mtAlive)
 				{
+					printf("\t<< mtAlive!\n");
 					
-					cmd = returnMsg();
-					printf("r %d\n", cmd);
-					
-					if(cmd == 1)
-					{
-						printf("oh hi2\n");
-						
-						while(cmd != mtBBUserData)
-						{
-							
-							makePacket(mtSendBBUser);
-							write_port();
-						
+					//Send mtSendData command
+					//log mtHeadData into a file
 
-							sortPacket();
-							cmd = returnMsg();
-							printf("t %d\n", cmd);
+						//makeSendData();
+						while(1)
+						{
+							makePacket(mtSendData);
+							write_port();
+							makePacket(mtSendData);
+							write_port();
+							printf(">> mtSendData\n");
 							
+							read_port();
+							
+							printf("\n-- %d --\n", returnBuffer[10]);
+							
+							if(sortPacket() == 1)
+							{
+								
+								cmd = returnMsg();
+								printf("-- %d --\n", cmd);
+								if(cmd == mtHeadData)
+								{
+									printf("\t<< mtHeadData!!\n");
+									while(1)
+									{
+										
+									}
+								}
+								
+							}
 						}
-						printf("yo\n");
-					}	
-				}
-			}
-		}
+					
+				}							
+				
+
+		}	
+
+}
 		
 	}	
 	close(fd);
@@ -149,7 +173,7 @@ int write_port(void){
 		return 0;
 	}
 	else{
-		printf("We Transmitted %d\n",n);
+		//printf("We Transmitted %d\n",n);
 	}
 	return (n);
 }
@@ -243,7 +267,7 @@ int sortPacket(void)
 	
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
-	printf("buffLen = %d\n", buffLen);
+	//printf("buffLen = %d\n", buffLen);
 	rBptr = &returnBuffer[0];	//set pointer for recieved data
 			
 	//Store all packets into temp[]	
@@ -263,10 +287,12 @@ int sortPacket(void)
 	byteCount = temp[9];
 	term = temp[buffLen-1];
 	
+	//Clear msg buffer first
 	for(i = 0; i < 263; i++)
 		msg[i] = NULL;
 		
 	msgLen = 0;
+	
 	//Store the msg, works for varying lengths
 	for( i = 10; i < (buffLen-2); i ++)
 	{
@@ -275,6 +301,7 @@ int sortPacket(void)
 		msgLen ++;
 		
 	}
+
 	
 	//What is prinf?
 	
@@ -285,92 +312,25 @@ int sortPacket(void)
 		
 		packetFlag = 1;
 		
+		
+		if(msg[0] == mtHeadData || msg[0] == mtAlive)
+		{
+			
+			for(i = 0; i < buffLen; i++ )
+				printf("%x : ", temp[i]);
+			printf("\n"
+			);
+			
+		}
+		
 		//printf("%d, %d\n", byteCount, msgLen+1);
 	}
 	else
 	{
-		//printf("Bad Packet, I'll try to recover it >.<\n");
-	
-	/*****************
-	 * Should recover when split into two packets, not any more though
-	 * ****************/
-		
-		//should be recoverable as long as we have header and bp1_buffLen is 0
-		if( temp[0] == '@' )//&& bp1_buffLen == NULL)
-		{
-			//printf("01\n");
-			
-			if(bLength != 0)
-			{
-				//printf("01.5 %d\n", buffLen);
-				for( i = 0; i < buffLen; i++ )
-					bp1_temp[i] = temp[i];
-				
-				bp1_buffLen = buffLen;
-				bp1_bLength = bLength;
-			}
-
-		}
-		//if bp1_buffLen isn't null we are already trying to recover
-		else if( temp[buffLen-1] == 10)
-		{
-			//printf("02 %d = %d\n",buffLen + bp1_buffLen, bp1_bLength + 6);
-			
-			for( i = bp1_buffLen; i < (bp1_buffLen + buffLen); i++ )
-				bp1_temp[i] = temp[i-bp1_buffLen];
-			
-			if(buffLen + bp1_buffLen == bp1_bLength + 6)
-				//printf("Recovered the packet :\n");
-				
-				
-				buffLen = buffLen + bp1_buffLen;
-				
-				//Store temp stuff into right place
-	
-				header = bp1_temp[0];
-				hLength = getU32(bp1_temp[1], bp1_temp[2], bp1_temp[3], bp1_temp[4]);
-				bLength = getU16(bp1_temp[6], bp1_temp[5]);
-				sID = bp1_temp[7];
-				dID = bp1_temp[8];
-				byteCount = bp1_temp[9];
-				term = bp1_temp[buffLen-1];
-	
-				for(i = 0; i < 263; i++)
-					msg[i] = NULL;
-					
-				msgLen = 0;
-				//Store the msg, works for varying lengths
-				for( i = 10; i < (buffLen-2); i ++)
-				{
-					
-					msg[(i-10)] = bp1_temp[i];
-					msgLen ++;
-					
-				}
-				
-				//What is prinf?
-				
-				if(header == '@' && term == 10)
-				{
-					
-					//prinfPacket();
-					
-					packetFlag = 2;
-					
-					//printf("%d, %d\n", byteCount, msgLen+1);
-				}	
-				
-			
-		}
-		else
-		{
-			//printf("Sorry, my bad. I really dropped the ball on this one (the ball is my packet)\n");
-			packetFlag = -1;
-		}
-		
-		
+		packetFlag = -1;
 	}
 	
+
 	//Flush out temp
 	
 	for( i = 0; i < buffLen; i++ )
@@ -401,10 +361,54 @@ int returnMsg()
 void makePacket(int command)
 {
 	
+	clearPacket();
+	
 	if(command == 16 || command == 23 || command == 24)
 	{
-		//{0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, 0x17, 0x80, 0x02, 0x0A }
-		//Header
+		sendBuffer = {0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, command, 0x80, 0x02, 0x0A };
+	}
+	else if(command == 25)
+	{
+		
+		int time0, time1, time2, time3;
+		
+		struct timeval tv;
+
+		gettimeofday(&tv, NULL); 
+		
+		int seconds = tv.tv_sec % 60;
+		int minutes = tv.tv_sec % 3600;
+		int hours = tv.tv_sec % 86400;
+		
+		//printf("%d:%d:%d.%d -- ", hours / 3600 , minutes / 60 , seconds, tv.tv_usec / 10000);
+		
+		int ms = ( (hours + minutes + seconds) * 1000 ) + (tv.tv_usec / 10000);
+		
+		char buff[30];
+		
+		//printf("%x -- ", ms);
+		sprintf(buff, "%x", ms);
+		
+		to_hex(buff, 0);
+
+		for (i = 1; buff[i] != '\0'; i += 2)
+			//printf("%#x ", (unsigned char)buff[i]);
+			
+		//printf("\n");
+		
+		time0 = buff[0];
+		time1 = buff[1];
+		time2 = buff[2];
+		time3 = buff[3];
+		
+		sendBuffer = {0x40, 0x30, 0x30, 0x30, 0x43, 0x0C, 0x00, 0xFF, 0x02, 0x07, command, 0x80, 0x02, time0, time1, time2, time3, 0x0A };
+		
+	}
+	else
+	{
+		printf("Parp.\n");
+	}
+/*		//Header
 		sendBuffer[0] = 0x40;			//Static
 		//hex length
 		sendBuffer[1] = 0x30;
@@ -432,7 +436,8 @@ void makePacket(int command)
 		
 		//Terminator
 		sendBuffer[sendBuffer[9]+10] = 0x0A;			//Static
-	}
+		
+*/
 	
 }
 
@@ -440,11 +445,9 @@ void makePacket(int command)
  * 
  *  make a packet for sending mtHeadCommand
  * *********************************************/
-void makeHeadPacket()
+void makeHeadPacket(void)
 {
 	
-	
-
 	//{0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, 0x17, 0x80, 0x02, 0x0A }
 	//Header
 	sendBuffer[0] = 0x40;			//Static
@@ -468,13 +471,12 @@ void makeHeadPacket()
 		sendBuffer[11] = 0x80;
 		sendBuffer[12] = 0x02;
 		//mtHeadCommand Type; 1 = Normal, 29 = with appended V3B Gain Params for Dual Channel
-		sendBuffer[13] = commandType;
+		sendBuffer[13] = 0x01;
 	//Head Parameter Info.
 			//HdCtrl bytes
 			sendBuffer[14] = 0x83;
 			sendBuffer[15] = 0x23;
 	//HdType
-			//
 			sendBuffer[16] = 0x02;
 	//TxN/RxN Transmitter Constants
 			//TxN Channel 1
@@ -498,59 +500,94 @@ void makeHeadPacket()
 			sendBuffer[31] = 0x0A;
 			sendBuffer[32] = 0x09;
 	//TxPulseLen
-			sendBuffer[33] = ;
-			sendBuffer[34] = ;
+			sendBuffer[33] = 0x28;
+			sendBuffer[34] = 0x00;
 	//RangeScale
-			sendBuffer[35] = ;
-			sendBuffer[36] = ;
+			sendBuffer[35] = 0x3C;
+			sendBuffer[36] = 0x00;
 	//LeftAngleLimit
-			sendBuffer[37] = ;
-			sendBuffer[38] = ;
+			sendBuffer[37] = 0x01;
+			sendBuffer[38] = 0x00;
 	//RightAngleLiimit
-			sendBuffer[39] = ;
-			sendBuffer[40] = ; 
+			sendBuffer[39] = 0xFF;
+			sendBuffer[40] = 0x18; 
 	//ADSpan
-			sendBuffer[41] = ; 
+			sendBuffer[41] = 0x51; 
 	//ADLow
-			sendBuffer[42] = ;
+			sendBuffer[42] = 0x08;
 	//IGain Setting
-			sendBuffer[43] = ;
-			sendBuffer[44] = ; 
+			sendBuffer[43] = 0x54;
+			sendBuffer[44] = 0x54; 
 	//SlopeSetting
-			sendBuffer[45] = ;
-			sendBuffer[46] = ;
-			sendBuffer[47] = ;
-			sendBuffer[48] = ;
+			sendBuffer[45] = 0x5A;
+			sendBuffer[46] = 0x00;
+			sendBuffer[47] = 0x7D;
+			sendBuffer[48] = 0x00;
 	//MoTime
-			sendBuffer[49] = ;
+			sendBuffer[49] = 0x19;
 	//StepAngleSize
-			sendBuffer[50] = ;
+			sendBuffer[50] = 0x10;
 	//ADInterval
-			sendBuffer[51] = ;
-			sendBuffer[52] = ;
+			sendBuffer[51] = 0x8D;
+			sendBuffer[52] = 0x00;
 	//Description of NBins
-			sendBuffer[53] = ;
-			sendBuffer[54] = ;
+			sendBuffer[53] = 0x5A;
+			sendBuffer[54] = 0x00;
 	//MaxADbuf
-			sendBuffer[55] = ;
-			sendBuffer[56] = ;
+			sendBuffer[55] = 0xE8;
+			sendBuffer[56] = 0x03;
 	//Lockout
-			sendBuffer[57] = ;
-			sendBuffer[58] = ;
+			sendBuffer[57] = 0x97;
+			sendBuffer[58] = 0x03;
 	//MinorAxisDirection
-			sendBuffer[59] = ;
-			sendBuffer[60] = ;
+			sendBuffer[59] = 0x40;
+			sendBuffer[60] = 0x06;
 	//MajorAxisDirection
-			sendBuffer[61] = ;
-			sendBuffer[62] = ;
+			sendBuffer[61] = 0x01;
 	//Ctl2
-			sendBuffer[63] = ;
+			sendBuffer[62] = 0x00;
 	//ScanZ
-			sendBuffer[64] = 0x00;
-	
+			sendBuffer[63] = 0x00;
+			sendBuffer[64] = 0x00;	
+			
+	//for( i = 65; i < 82; i++ )
+	//	sendBuffer[i] = 0x00;
+			
 	//Terminator
 	sendBuffer[65] = 0x0A;			//Static
 
+	
+}
+
+int makeSendData()
+{
+	
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL); 
+	
+	int seconds = tv.tv_sec % 60;
+	int minutes = tv.tv_sec % 3600;
+	int hours = tv.tv_sec % 86400;
+	
+	printf("%d:%d:%d.%d -- ", hours / 3600 , minutes / 60 , seconds, tv.tv_usec / 10000);
+	
+	int ms = ( (hours + minutes + seconds) * 1000 ) + (tv.tv_usec / 10000);
+	
+	char buff[30];
+	
+	printf("%x -- ", ms);
+	sprintf(buff, "%x", ms);
+	
+	to_hex(buff, 0);
+
+	for (i = 1; buff[i] != '\0'; i += 2)
+		printf("%#x ", (unsigned char)buff[i]);
+		
+	printf("\n");
+
+	
+	
 	
 }
 
@@ -574,11 +611,20 @@ int clearPacket(void)
  * *******************************************/
 void prinfPacket(void)
 {
+
+	int i;
 	
 	printf("%d : ", buffLen);
 	printf("%d ", header);
 	printf("| %d - %d |", hLength, bLength);
 	printf(" %d |", byteCount);
+	
+	while(msg[i])
+	{
+		printf("%x : ", msg[i]);
+		i++;
+	}
+	
 	printf(" %d |\n\n", term);
 					
 }
@@ -633,4 +679,59 @@ int packetLength(int flag)
 		return -1;
 	
 	
+}
+/**********************************************
+ * Initilise sonar,
+ * check alive, send version request, check for
+ * reply
+ * returns 1 if set up, -1 if failed.
+ * *******************************************/
+int initSonar(void)
+{
+	int cmd;
+	//Read Port
+	if(sortPacket() == 1)
+	{
+		cmd = returnMsg();
+		//printf("%d : ", cmd);
+	
+		//Check for mtAlive
+		if(cmd == mtAlive)
+		{
+			printf("\t<< mtAlive!\n");
+			//Make mtSendVersion packet and send
+			makePacket(mtSendVersion);
+			write_port();
+			printf(">> mtSendVersion\n");
+			
+			//Read Port
+			if(sortPacket() == 1)
+			{
+				
+				cmd = returnMsg();
+				//printf("%d : ", cmd);
+				
+				//Check for mtVersionData
+				if(cmd == mtVersionData)
+				{
+					printf("\t<< mtVersionData!\n");
+					
+					return 1;
+				}
+			}
+		}
+	}
+	
+	return -1;
+	
+}
+
+void to_hex(char buf[], int i)
+{
+  if (*buf == '\0')
+    return;
+
+  to_hex(buf + 2, i + 1);
+  buf[1] = strtol(buf, NULL, 16);
+  *buf = '\0';
 }
