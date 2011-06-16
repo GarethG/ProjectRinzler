@@ -57,12 +57,6 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 				/* Below here sets up the messages ready for transmission*/
 
-				if(heading > 180.0f){
-					heading -= 180.0f;
-					heading = 180.0f - heading;
-					heading *= -1.0f;
-				}
-
 				compassHeading.data = heading;	
 				compassPitch.data = pitch;
 				compassRoll.data = roll;

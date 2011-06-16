@@ -23,6 +23,7 @@ float targetDepth;
 
 /* Function Declerations */
 
+float correctError(float error);
 void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading);
 void targetHeadingCallback(const std_msgs::Float32::ConstPtr& pilotHeading);
 void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch);

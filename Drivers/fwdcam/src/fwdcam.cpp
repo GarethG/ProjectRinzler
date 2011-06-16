@@ -25,11 +25,27 @@ int main(int argc, char **argv){ 			//we need argc and argv for the rosInit func
 
 	ROS_INFO("Camera Online");			//solve the crimes with the cameras
 
-	capture = cvCaptureFromCAM(0);			//open camera
+	capture = cvCaptureFromCAM(-1);			//open camera
+
+	if(!capture){
+		ROS_ERROR("Lol camera failed to open");
+		return 0;
+	}
+	else{
+		ROS_INFO("Camera Opened");
+	}
 
 	while (ros::ok()){	
 
 		camStream = cvQueryFrame(capture);	//obtain webcam image
+
+		if(!camStream){
+			ROS_ERROR("Stream Failure");
+			return 0;
+		}
+		else{
+			ROS_INFO("Stream Opened");
+		}
 
 		obtainOrange();				//find orange
 
@@ -49,12 +65,6 @@ int main(int argc, char **argv){ 			//we need argc and argv for the rosInit func
 }
 
 void obtainOrange(void){
-
-	printf("Here\n");
-
-	cvGetSize(camStream);
-
-	printf("Here now\n");
 
 	if(hlsStream == NULL){
 		hlsStream = cvCreateImage(cvGetSize(camStream), 8, 3);		//create the HLS channel

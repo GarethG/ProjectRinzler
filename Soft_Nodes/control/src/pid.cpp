@@ -179,10 +179,23 @@ void targetDepthCallback(const std_msgs::Float32::ConstPtr& pilotDepth){
 	return;
 }
 
+float correctError(float error){
+	if(error > 180.0){
+		error -= 360.0;
+	}
+	else if(error < -180.0){
+		error += 360.0;
+	}
+	
+	return error;
+}
+
 float p(float value, float targetValue){
 	float error;
 
 	error = targetValue - value;	//error is target - actual
+
+	error = correctError(error);
 
 	error *= KP;				//multiply by constant
 
@@ -193,6 +206,8 @@ float pd(float value, float targetValue){
 	float error,derivative,lastError = 0.0f;
 
 	error = targetValue - value;
+
+	error = correctError(error);
 	
 	derivative = lastError - error;
 
@@ -211,6 +226,8 @@ float pi(float value, float targetValue){
 	float error, lastOut = 0.0f, lastError = 0.0f,output,tmp1,tmp2;
 
 	error = targetValue - value;
+
+	error = correctError(error);
 
 	tmp1 = error - lastError;
 	tmp1 *= KP;
@@ -234,6 +251,8 @@ float pid(float value, float targetValue){
 	float error, lastOut = 0.0f, lastError = 0.0f, lastError2 = 0.0f,output,tmp1,tmp2,tmp3;
 
 	error = targetValue - value;
+
+	error = correctError(error);
 
 	tmp1 = error - lastError;
 	tmp1 *= KP;
