@@ -13,6 +13,7 @@ IplImage*	g_gray = NULL;
 IplImage*	g_grey = NULL;
 int		g_thresh = 80;
 int		g_thresh_l = 70;
+int		new_thresh = 10;
 CvMemStorage* 	g_storage = NULL;
 CvMemStorage* 	g_storage2 = NULL;
 
@@ -24,30 +25,30 @@ int i,j,k;
 
 void on_trackbar(int a){
 	if( g_storage == NULL ){
-		g_gray = cvCreateImage( cvGetSize( g_image ), 8, 3 );
-		g_storage = cvCreateMemStorage(0);
-	} else {
-		cvClearMemStorage( g_storage );
+		g_gray = cvCreateImage( cvGetSize( g_image ), 8, 3 );		//create the HLS channel
+		g_storage = cvCreateMemStorage(0);				//make a space
+	} else {	
+		cvClearMemStorage( g_storage );					//wut?
 	}
 
-	CvSeq* contours = 0;
-	cvCvtColor( g_image, g_gray, CV_RGB2HLS);
-	cvThreshold( g_gray, g_gray, g_thresh, 255, CV_THRESH_BINARY_INV);
-	cvThreshold( g_gray, g_gray, g_thresh_l, 255, CV_THRESH_BINARY);
-
-	if( g_storage2 == NULL ){
+	CvSeq* contours = 0;							//wut?
+	cvCvtColor( g_image, g_gray, CV_RGB2HLS);				//creates HLS colour
+	cvThreshold( g_gray, g_gray, g_thresh, 255, CV_THRESH_BINARY_INV);	//threshold up
+	cvThreshold( g_gray, g_gray, g_thresh_l, 255, CV_THRESH_BINARY);	//threshold down
+	
+	if( g_storage2 == NULL ){						//create bw channel
 		g_grey = cvCreateImage( cvGetSize( g_gray ), 8, 1 );
 		g_storage2 = cvCreateMemStorage(0);
 	} else {
 		cvClearMemStorage( g_storage2 );
 	}
-	cvCvtColor( g_gray, g_grey, CV_RGB2GRAY);
-	//cvThreshold( g_gray, g_gray, g_thresh, 255, CV_THRESH_BINARY_INV);
+	cvCvtColor( g_gray, g_grey, CV_RGB2GRAY);				//convert colour to bw
+	cvThreshold( g_grey, g_grey, new_thresh, 255, CV_THRESH_BINARY);	//threshold
 
 	return;
 }
 
-void something(void){
+/*void something(void){
 
 	CvScalar s;
 
@@ -73,7 +74,7 @@ void something(void){
 
 
 	return;
-}
+}*/
 
 void somethingNew(void){
 
@@ -86,46 +87,47 @@ void somethingNew(void){
 	for(x=0;x<g_grey->height;x++){
 		for(y=0;y<g_grey->width;y++){
 			s = cvGet2D(g_grey,x,y);
-			if(s.val[0] == 0){
-				count++;
+			if(s.val[0] == 0){		//if we have found a black pixel
+				count++;		//increase counters
 				x_estimate += x;
 				y_estimate += y;
 			}
 		}
 	}
 
-	if(count == 0){
-		printf("No Object in sight\n");
+	if(count < 10000){				//arbritrary size threshold
+		printf("No Target in sight saw only %d\n",count);
 	}
 	else{
-		x_centre = y_estimate / count;
-		y_centre = x_estimate / count;
-	}
+		x_centre = y_estimate / count;		//estimate center of x
+		y_centre = x_estimate / count;		//and y
 
-	x_draw1 = x_centre + 100;
-	x_draw2 = x_centre - 100;
-	y_draw1 = y_centre + 100;
-	y_draw2 = y_centre - 100;
 
-	s.val[0] = 255;
+		x_draw1 = x_centre + 100;		//this is for drawing only
+		x_draw2 = x_centre - 100;
+		y_draw1 = y_centre + 100;
+		y_draw2 = y_centre - 100;
+
+		s.val[0] = 255;
 	
 
-	inline CvPoint pt1 = {x_draw1,y_centre};
-	inline CvPoint pt2 = {x_draw2,y_centre};
-	inline CvPoint pt3 = {x_centre,y_draw1};
-	inline CvPoint pt4 = {x_centre,y_draw2};
+		inline CvPoint pt1 = {x_draw1,y_centre};
+		inline CvPoint pt2 = {x_draw2,y_centre};
+		inline CvPoint pt3 = {x_centre,y_draw1};
+		inline CvPoint pt4 = {x_centre,y_draw2};
 
-	cvLine(g_grey, pt1 , pt2, s, 1, 8,0);
-	cvLine(g_grey, pt3 , pt4, s, 1, 8,0);
+		cvLine(g_grey, pt1 , pt2, s, 1, 8,0);
+		cvLine(g_grey, pt3 , pt4, s, 1, 8,0);
 
-	s.val[0] = 0;
-	s.val[1] = 255;
-	s.val[2] = 0;
+		s.val[0] = 0;
+		s.val[1] = 255;
+		s.val[2] = 0;
 
-	cvLine(g_gray, pt1 , pt2, s, 1, 8,0);
-	cvLine(g_gray, pt3 , pt4, s, 1, 8,0);
+		cvLine(g_gray, pt1 , pt2, s, 1, 8,0);
+		cvLine(g_gray, pt3 , pt4, s, 1, 8,0);
 
-	printf("X: %u Y: %u\n",x_centre,y_centre);
+		printf("X: %d Y: %d Count: %d Yeahhhhhhhhhhhhhhhhhhhhhh buoy!\n",x_centre,y_centre,count);
+	}
 
 	return;
 }
@@ -140,7 +142,7 @@ int main(int argc, char** argv){
 	capture = cvCaptureFromCAM(0);
 
 	// create a new window with auto sizing
-	//cvNamedWindow(window_name, 1);
+	cvNamedWindow(window_name, 1);
 
 	// create a window
 	//cvNamedWindow("HSV Window", CV_WINDOW_AUTOSIZE); 
@@ -158,7 +160,7 @@ int main(int argc, char** argv){
 		g_image = cvQueryFrame(capture);
 
 		// display frame
-		//cvShowImage(window_name,g_image);
+		cvShowImage(window_name,g_image);
 
 		on_trackbar(0);
 
@@ -175,10 +177,10 @@ int main(int argc, char** argv){
 
 		cvShowImage("blobOut", g_grey );*/
 
-		//printf("Thresh is %d\n",g_thresh++);
+		/*printf("Thresh is %d\n",new_thresh++);
 	
-		/*if(g_thresh == 255){
-			g_thresh = 0;
+		if(new_thresh == 255){
+			new_thresh = 0;
 		}*/
 
 		//check for q to quit
@@ -195,7 +197,3 @@ int main(int argc, char** argv){
 
 	return 0;
 }
-
-
-
-
