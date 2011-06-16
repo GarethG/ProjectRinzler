@@ -19,6 +19,8 @@ int main(int argc, char **argv){
 
 	ros::NodeHandle pidN;
 
+	/* Choose between heading, depth and pitch control */
+
 	if(!strcmp(argv[1],"heading")){
 
 		/* Publish */
@@ -42,9 +44,9 @@ int main(int argc, char **argv){
 
 			ros::spinOnce();
 
-			tmp = pid(targetHeading,heading);
+			tmp = pid(targetHeading,heading);	//get PID value
 
-			leftRate.data = tmp;
+			leftRate.data = tmp;			//left does opposite of right
 			rightRate.data = (tmp * -1.0);
 
 			leftRate.data += FWDHACK;	//bit hacks but ensures we keep moving forwards even when balanced
@@ -83,7 +85,7 @@ int main(int argc, char **argv){
 
 			tmp = pid(targetDepth,depth);
 
-			if(depth > targetDepth){
+			if(depth > targetDepth){	//if we are too deep don't turn on the motors, use bouyancy
 				tmp = 0.0f;
 			}
 			else{
@@ -92,8 +94,8 @@ int main(int argc, char **argv){
 
 			frontRate.data = tmp;
 
-			if((targetDepth - depth) > FRONTTHRESH){
-				backDRate.data = tmp;
+			if((targetDepth - depth) > FRONTTHRESH){	//if we are really far off target
+				backDRate.data = tmp;			//add rear motor power
 				backDRateMsg.publish(backDRate);
 			}
 							
@@ -126,8 +128,8 @@ int main(int argc, char **argv){
 
 			backPRate.data = pid(targetPitch,pitch);
 
-			if(backPRate.data < 0.0){
-				backPRate.data = 0.0;
+			if(backPRate.data < 0.0){	//if the nose is high
+				backPRate.data = 0.0;	//use bouyancy
 			}
 
 			backPRateMsg.publish(backPRate);
@@ -148,36 +150,65 @@ int main(int argc, char **argv){
 	return 0;
 }
 
+/*************************************************
+** Returns the compass heading			**
+*************************************************/
 
 void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading){
 	heading = compassHeading->data;
 	return;
 }
 
+/*************************************************
+** Returns the target heading			**
+*************************************************/
+
 void targetHeadingCallback(const std_msgs::Float32::ConstPtr& pilotHeading){
 	targetHeading = pilotHeading->data;
 	return;
 }
+
+/*************************************************
+** Returns the compass pitch			**
+*************************************************/
 
 void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch){
 	pitch = compassPitch->data;
 	return;
 }
 
+/*************************************************
+** Returns the target pitch			**
+*************************************************/
+
 void targetPitchCallback(const std_msgs::Float32::ConstPtr& pilotPitch){
 	targetPitch = pilotPitch->data;
 	return;
 }
+
+/*************************************************
+** Returns the svp depth			**
+*************************************************/
 
 void depthCallback(const std_msgs::Float32::ConstPtr& svpDepth){
 	depth = svpDepth->data;
 	return;
 }
 
+/*************************************************
+** Returns the target depth			**
+*************************************************/
+
 void targetDepthCallback(const std_msgs::Float32::ConstPtr& pilotDepth){
 	targetDepth = pilotDepth->data;
 	return;
 }
+
+/*************************************************
+** Performed to correct the error as without	**
+** this we will be often turning 270 degrees to	**
+** the right instead of 90 degrees to the left	**
+*************************************************/
 
 float correctError(float error){
 	if(error > 180.0){
@@ -190,6 +221,10 @@ float correctError(float error){
 	return error;
 }
 
+/*************************************************
+** P only control				**
+*************************************************/
+
 float p(float value, float targetValue){
 	float error;
 
@@ -201,6 +236,10 @@ float p(float value, float targetValue){
 
 	return error;
 }
+
+/*************************************************
+** P and D control				**
+*************************************************/
 
 float pd(float value, float targetValue){
 	float error,derivative,lastError = 0.0f;
@@ -221,6 +260,10 @@ float pd(float value, float targetValue){
 	
 	return error;
 }
+
+/*************************************************
+** P and I control				**
+*************************************************/
 
 float pi(float value, float targetValue){
 	float error, lastOut = 0.0f, lastError = 0.0f,output,tmp1,tmp2;
@@ -246,6 +289,10 @@ float pi(float value, float targetValue){
 
 	return error;
 }
+
+/*************************************************
+** PID control					**
+*************************************************/
 
 float pid(float value, float targetValue){
 	float error, lastOut = 0.0f, lastError = 0.0f, lastError2 = 0.0f,output,tmp1,tmp2,tmp3;

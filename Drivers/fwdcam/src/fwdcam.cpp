@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
+
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
@@ -11,6 +12,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+
+#include "cv.h"
 
 #include "fwdcam.h"
 
@@ -25,7 +28,7 @@ int main(int argc, char **argv){ 			//we need argc and argv for the rosInit func
 
 	ROS_INFO("Camera Online");			//solve the crimes with the cameras
 
-	capture = cvCaptureFromCAM(-1);			//open camera
+	capture = cvCaptureFromCAM(0);			//open camera
 
 	if(!capture){
 		ROS_ERROR("Lol camera failed to open");

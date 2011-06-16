@@ -9,9 +9,6 @@
 #define FWDHACK		10.0
 #define FRONTTHRESH	20.0
 
-
-
-
 /* Globals*/
 
 float heading;
