@@ -12,8 +12,7 @@
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
-char sendBuffer[18];
-
+unsigned char sendBuffer[82];
 
 int buffLen, 	//length of the recieved buffer, output from read_port()
 	i,			//counter
@@ -21,7 +20,7 @@ int buffLen, 	//length of the recieved buffer, output from read_port()
 	length,
 	msgLen;
 	
-unsigned int header,	//Message Header. 
+unsigned char header,	//Message Header. 
 			hLength,	//Hex Length of whole binary packet
 			bLength,	//Binary Word of above Hex Length.
 			sID,		//Packet Source Identification
@@ -45,9 +44,26 @@ int main( int argc, char **argv )
 {
 
 	int cmd = 0;
+	int o;
 
 	open_port();
 	config_port();
+	
+	
+	/* Le Testing */
+	
+	while( 1 )
+	{
+		
+		makeHeadPacket(5, 1, 500, 81, 8, 84, 141, 90);
+		usleep(500);
+		sortPacket();
+		//makePacket(mtSendData);
+		//usleep(500);
+		
+	}
+	
+	
 	
 	while(cmd != 1)
 	{
@@ -57,10 +73,37 @@ int main( int argc, char **argv )
 		//Initilaise the sonar
 		if(initSonar() == 1)
 		{
-				//Make and send headcommand
-				makeHeadPacket();
+			
+			while(cmd != mtAlive)
+			{
+				if(sortPacket() == 1)
+				{
+					cmd = returnMsg();
+					//printf("%d : ", cmd);
+	
+					//Check for mtAlive
+					if(cmd == mtAlive)
+					{
+						//printf("blablabla\n");
+					
+					}
+				}
+			}
+			
+			usleep(500);
+			
+			//Make and send headcommand
+			for(o = 0; o < 2; o ++);
+			{
+				makeHeadPacket(5, 1, 500, 81, 8, 84, 141, 90);
 				
+				//int range, int startAngle, int endAngle, int ADspam, 
+				//	int ADlow, int gain, int ADInterval, int numBins)
 				printf(">> mtHeadCommand\n");
+				//usleep(500);
+				
+			}	
+				
 				
 				if(sortPacket() == 1)
 				{
@@ -81,12 +124,13 @@ int main( int argc, char **argv )
 							makePacket(mtSendData);
 							printf(">> mtSendData\n");
 							
+							usleep(500);
 							//if you get some data back go forth
 							if(sortPacket() == 1)
 							{
 								
 								cmd = returnMsg();
-								printf("hi %d\n", cmd);
+								//printf("hi %d\n", cmd);
 								
 								//If it's mtHeadData we winning.
 								if(cmd == mtHeadData)
@@ -124,8 +168,8 @@ int main( int argc, char **argv )
 
 int open_port(void){	
 
-	fd = open("/dev/ttyUSB0", O_RDWR | O_NDELAY | O_NOCTTY);
-	printf("/dev/ttyUSB0\n");
+	fd = open("/dev/ttyUSB1", O_RDWR | O_NDELAY | O_NOCTTY);
+	printf("/dev/ttyUSB1\n");
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
 		return 0;
@@ -171,7 +215,7 @@ int write_port(void){
 		return 0;
 	}
 	else{
-		//printf("We Transmitted %d\n",n);
+		printf("We Transmitted %d\n",n);
 	}
 	return (n);
 }
@@ -187,9 +231,14 @@ int read_port(void){
 
 	n = read(fd, returnBuffer,sizeof(returnBuffer));
 
-	//printf("We read %d bytes\n",n);
+	printf("We read %d bytes\n", n);
 
 	//printf("\n\n");
+	
+		printf("<< ");
+		for(i = 0; i < n; i ++)
+			printf("%x : ", returnBuffer[i]);
+		printf("\n");	
 
 	rBptr = &returnBuffer[0];
 
@@ -308,15 +357,21 @@ int sortPacket(void)
 
 		//prinfPacket();
 		
+		printf("<< ");
+		for(i = 0; i < buffLen; i ++)
+			printf("%x : ", temp[i]);
+		printf("\n");
+		
 		packetFlag = 1;
 		
 		
 		if(msg[0] == mtHeadData)
 		{
 			
-			for(i = 0; i < buffLen; i++ )
-				printf("%x : ", temp[i]);
-			printf("\n");
+			printf("WINNING\n");
+			//for(i = 0; i < buffLen; i++ )
+			//	printf("%x : ", temp[i]);
+			//printf("\n");
 			
 		}
 		
@@ -358,6 +413,7 @@ int returnMsg()
 void makePacket(int command)
 {
 	
+	int j;
 	clearPacket();
 	
 	if(command == mtReBoot || command == mtSendVersion || command == mtSendBBUser)
@@ -379,7 +435,7 @@ void makePacket(int command)
 						
 		//Send		
 		write_port();
-		clearPacket();
+		
 	}
 	else if(command == mtSendData)
 	{
@@ -419,15 +475,15 @@ void makePacket(int command)
 						command, 
 						0x80, 
 						0x02, 
-						buff[0], 
-						buff[1], 
-						buff[2], 
-						buff[3], 
+						0x00, //buff[0], 
+						0x00, //buff[1], 
+						0x00, //buff[2], 
+						0x00, //buff[3], 
 						0x0A };		//Footer
 		
 		//Send
 		write_port();
-		clearPacket();
+		
 		
 	}
 	else
@@ -435,6 +491,16 @@ void makePacket(int command)
 		printf("Parp.\n");
 	}
 
+	printf(">> ");
+	j = 0;
+	while(sendBuffer[j] != 0x0a)		//for(j = 0; j < sendBuffer[4] + 6; j++)
+	{									
+		printf("%x : ", sendBuffer[j]);
+		j ++;
+	}
+	printf("\n");
+		
+	clearPacket();
 	
 }
 
@@ -442,25 +508,27 @@ void makePacket(int command)
  * 
  *  make a packet for sending mtHeadCommand
  * *********************************************/
-void makeHeadPacket(void)
+void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int endAngle, unsigned int ADspan, 
+					unsigned int ADlow, unsigned int gain, unsigned int ADInterval, unsigned int numBins)
 {
+	
 	
 	//{0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, 0x17, 0x80, 0x02, 0x0A }
 	//Header
 	sendBuffer[0] = 0x40;			//Static
 	//hex length
-	sendBuffer[1] = 0x30;
+	sendBuffer[1] = 0x30;		
 	sendBuffer[2] = 0x30;
-	sendBuffer[3] = 0x36;
-	sendBuffer[4] = 0x30;
+	sendBuffer[3] = 0x34;		//0x36;
+	sendBuffer[4] = 0x43;		//0x30;
 	//binary length
-	sendBuffer[5] = 0x3C;
+	sendBuffer[5] = 0x4C;		//0x3C;
 	sendBuffer[6] = 0x00;
 	//Source/Dest ID
 	sendBuffer[7] = 0xFF;			//Static ??
 	sendBuffer[8] = 0x02;			//Static ??
 	//ByteCount
-	sendBuffer[9] = 0x37;
+	sendBuffer[9] = 0x47;		//0x37;
 	//MSG
 		//Command
 		sendBuffer[10] = 0x13;
@@ -468,17 +536,17 @@ void makeHeadPacket(void)
 		sendBuffer[11] = 0x80;
 		sendBuffer[12] = 0x02;
 		//mtHeadCommand Type; 1 = Normal, 29 = with appended V3B Gain Params for Dual Channel
-		sendBuffer[13] = 0x01;
+		sendBuffer[13] = 0x1D;		//0x01;
 	//Head Parameter Info.
 			//HdCtrl bytes
-			sendBuffer[14] = 0x83;
+			sendBuffer[14] = 0x85;
 			sendBuffer[15] = 0x23;
 	//HdType
-			sendBuffer[16] = 0x02;
+			sendBuffer[16] = 0x03;
 	//TxN/RxN Transmitter Constants
 			//TxN Channel 1
-			sendBuffer[17] = 0x99;
-			sendBuffer[18] = 0x99;		
+			sendBuffer[17] = 0x99;		//Start
+			sendBuffer[18] = 0x99;		//Ignored by micron
 			sendBuffer[19] = 0x99;
 			sendBuffer[20] = 0x02;	
 			//TxN Channel 2
@@ -494,42 +562,49 @@ void makeHeadPacket(void)
 			//RxN Channel 2
 			sendBuffer[29] = 0x70;
 			sendBuffer[30] = 0x3D;		
-			sendBuffer[31] = 0x0A;
+			sendBuffer[31] = 0x00;
 			sendBuffer[32] = 0x09;
 	//TxPulseLen
 			sendBuffer[33] = 0x28;
-			sendBuffer[34] = 0x00;
+			sendBuffer[34] = 0x00;		//End
 	//RangeScale
-			sendBuffer[35] = 0x3C;
-			sendBuffer[36] = 0x00;
+	 
+	  int drange = range * 10;
+
+			sendBuffer[35] = (drange & 0xFF); 				//0x3C;
+			sendBuffer[36] = ((drange >> 8) & 0xFF); 		//0x00;
 	//LeftAngleLimit
-			sendBuffer[37] = 0x01;
-			sendBuffer[38] = 0x00;
+			sendBuffer[37] = (startAngle & 0xFF); 			//0x01;
+			sendBuffer[38] = ((startAngle >> 8) & 0xFF); 	//0x00;
 	//RightAngleLiimit
-			sendBuffer[39] = 0xFF;
-			sendBuffer[40] = 0x18; 
+			sendBuffer[39] = (endAngle & 0xFF); 			//0xFF;
+			sendBuffer[40] = ((endAngle >> 8) & 0xFF);		//0x18; 
 	//ADSpan
-			sendBuffer[41] = 0x51; 
+			sendBuffer[41] = (ADspan * 255 / 80); 			//0x51; 
 	//ADLow
-			sendBuffer[42] = 0x08;
+			sendBuffer[42] = (ADlow * 255 / 80); 			//0x08;
+			
+		const unsigned int MAX_GAIN = 210;
+			unsigned int gainByte = (gain * MAX_GAIN);
+			
 	//IGain Setting
-			sendBuffer[43] = 0x54;
-			sendBuffer[44] = 0x54; 
+			sendBuffer[43] = gainByte;							//0x54;
+			sendBuffer[44] = gainByte;							//0x54;
 	//SlopeSetting
-			sendBuffer[45] = 0x5A;
-			sendBuffer[46] = 0x00;
-			sendBuffer[47] = 0x7D;
-			sendBuffer[48] = 0x00;
+			sendBuffer[45] = 0x5A;		//Should be ignored
+			sendBuffer[46] = 0x00;		// ""
+			sendBuffer[47] = 0x7D;		// ""
+			sendBuffer[48] = 0x00;		// ""
 	//MoTime
-			sendBuffer[49] = 0x19;
+			sendBuffer[49] = 0x20;		//3.2 usec motor step time
 	//StepAngleSize
-			sendBuffer[50] = 0x10;
+			sendBuffer[50] = 16; 					//0x10;		
 	//ADInterval
-			sendBuffer[51] = 0x8D;
-			sendBuffer[52] = 0x00;
+			sendBuffer[51] = (ADInterval & 0xFF); //0x8D;
+			sendBuffer[52] = ((ADInterval >> 8) & 0xFF); //0x00;
 	//Description of NBins
-			sendBuffer[53] = 0x5A;
-			sendBuffer[54] = 0x00;
+			sendBuffer[53] = (numBins & 0xFF);		//0x5A;
+			sendBuffer[54] = ((numBins >> 8) & 0xFF);		//0x00;
 	//MaxADbuf
 			sendBuffer[55] = 0xE8;
 			sendBuffer[56] = 0x03;
@@ -549,10 +624,38 @@ void makeHeadPacket(void)
 			
 	//for( i = 65; i < 82; i++ )
 	//	sendBuffer[i] = 0x00;
+		
+			sendBuffer[65] = 0x50;
+			sendBuffer[66] = 0x51;
+			sendBuffer[67] = 0x09;
+			sendBuffer[68] = 0x08;
+			sendBuffer[69] = 0x54;
+			sendBuffer[70] = 0x54;
+			sendBuffer[71] = 0x00;
+			sendBuffer[72] = 0x00;
+			sendBuffer[73] = 0x5A;
+			sendBuffer[74] = 0x00;
+			sendBuffer[75] = 0x7D;
+			sendBuffer[76] = 0x00;
+			sendBuffer[77] = 0x00;
+			sendBuffer[78] = 0x00;
+			sendBuffer[79] = 0x00;
+			sendBuffer[80] = 0x00;
 			
 	//Terminator
-	sendBuffer[65] = 0x0A;			//Static
+	sendBuffer[81] = 0x0A;			//Static
 
+	printf("hi\n");
+	
+	int j;
+		printf(">> ");
+	j = 0;
+	while(sendBuffer[j] != 0x0a)		//for(j = 0; j < sendBuffer[4] + 6; j++)
+	{									
+		printf("%x : ", sendBuffer[j]);
+		j ++;
+	}
+	printf("\n");
 	
 	write_port();
 	clearPacket();
@@ -619,11 +722,8 @@ void prinfPacket(void)
 	printf("| %d - %d |", hLength, bLength);
 	printf(" %d |", byteCount);
 	
-	while(msg[i])
-	{
+	for(i = 0; i < msgLen; i ++)
 		printf("%x : ", msg[i]);
-		i++;
-	}
 	
 	printf(" %d |\n\n", term);
 					
