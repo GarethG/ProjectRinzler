@@ -54,64 +54,64 @@ int main( int argc, char **argv )
 		
 		//makeSendData();
 
+		//Initilaise the sonar
 		if(initSonar() == 1)
 		{
-
-			//Make and send headcommand
-			makeHeadPacket();
-			write_port();
-			printf(">> mtHeadCommand\n");
-			
-			if(sortPacket() == 1)
-			{
+				//Make and send headcommand
+				makeHeadPacket();
 				
-				cmd = returnMsg();
-				//printf("%d : ", cmd);
-				//Should return mtAlive 
-				//(need to check params too but not implemented yet)
-				if(cmd == mtAlive)
+				printf(">> mtHeadCommand\n");
+				
+				if(sortPacket() == 1)
 				{
-					printf("\t<< mtAlive!\n");
 					
-					//Send mtSendData command
-					//log mtHeadData into a file
-
-						//makeSendData();
+					cmd = returnMsg();
+					//printf("%d : ", cmd);
+					//Should return mtAlive 
+					//(need to check params too but not implemented yet)
+					if(cmd == mtAlive)
+					{
+						printf("\t<< mtAlive!\n");
+						
 						while(1)
 						{
+				
+						
+							//Make the sendData packet and send
 							makePacket(mtSendData);
-							write_port();
-							makePacket(mtSendData);
-							write_port();
 							printf(">> mtSendData\n");
 							
-							read_port();
-							
-							printf("\n-- %d --\n", returnBuffer[10]);
-							
+							//if you get some data back go forth
 							if(sortPacket() == 1)
 							{
 								
 								cmd = returnMsg();
-								printf("-- %d --\n", cmd);
+								printf("hi %d\n", cmd);
+								
+								//If it's mtHeadData we winning.
 								if(cmd == mtHeadData)
 								{
 									printf("\t<< mtHeadData!!\n");
 									while(1)
 									{
-										
+										//winning
 									}
 								}
+								//end mtHeadData
 								
 							}
+							//end sortPacet() == 1	
 						}
+						
+					}
+					//mtAlive check							
 					
-				}							
-				
 
-		}	
+				}
+				//end sortPacket() == 1				
 
-}
+		}
+		
 		
 	}	
 	close(fd);
@@ -163,8 +163,6 @@ void config_port(void){
 
 int write_port(void){
 	int n;
-	//char buffer[]={0x00,0x05,0x04,0xbf,0x71};
-	//char buffer[]={0x00,0x05,0x01,0xef,0xd4};
 
 	n = write(fd,sendBuffer,sizeof(sendBuffer));
 
@@ -305,7 +303,7 @@ int sortPacket(void)
 	
 	//What is prinf?
 	
-	if(header == '@' && term == 10)
+	if(header == '@' && term == 10 && buffLen == bLength + 6)
 	{
 
 		//prinfPacket();
@@ -313,13 +311,12 @@ int sortPacket(void)
 		packetFlag = 1;
 		
 		
-		if(msg[0] == mtHeadData || msg[0] == mtAlive)
+		if(msg[0] == mtHeadData)
 		{
 			
 			for(i = 0; i < buffLen; i++ )
 				printf("%x : ", temp[i]);
-			printf("\n"
-			);
+			printf("\n");
 			
 		}
 		
@@ -363,81 +360,81 @@ void makePacket(int command)
 	
 	clearPacket();
 	
-	if(command == 16 || command == 23 || command == 24)
+	if(command == mtReBoot || command == mtSendVersion || command == mtSendBBUser)
 	{
-		sendBuffer = {0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, command, 0x80, 0x02, 0x0A };
+		sendBuffer = {	0x40, 		//Header
+						0x30, 
+						0x30, 
+						0x30, 
+						0x38, 
+						0x08, 
+						0x00, 
+						0xFF, 
+						0x02, 
+						0x03, 
+						command, 
+						0x80, 
+						0x02, 
+						0x0A };		//Footer
+						
+		//Send		
+		write_port();
+		clearPacket();
 	}
-	else if(command == 25)
+	else if(command == mtSendData)
 	{
 		
-		int time0, time1, time2, time3;
 		
+		// Get the time of day in ms
 		struct timeval tv;
-
+		
 		gettimeofday(&tv, NULL); 
 		
 		int seconds = tv.tv_sec % 60;
 		int minutes = tv.tv_sec % 3600;
 		int hours = tv.tv_sec % 86400;
-		
 		//printf("%d:%d:%d.%d -- ", hours / 3600 , minutes / 60 , seconds, tv.tv_usec / 10000);
-		
 		int ms = ( (hours + minutes + seconds) * 1000 ) + (tv.tv_usec / 10000);
-		
 		char buff[30];
-		
 		//printf("%x -- ", ms);
-		sprintf(buff, "%x", ms);
 		
+		//convert from hex to array of bytes via a string
+		sprintf(buff, "%x", ms);
 		to_hex(buff, 0);
-
 		for (i = 1; buff[i] != '\0'; i += 2)
 			//printf("%#x ", (unsigned char)buff[i]);
 			
 		//printf("\n");
 		
-		time0 = buff[0];
-		time1 = buff[1];
-		time2 = buff[2];
-		time3 = buff[3];
+		sendBuffer = {	0x40, 		//Header
+						0x30, 
+						0x30, 
+						0x30, 
+						0x43, 
+						0x0C, 
+						0x00, 
+						0xFF, 
+						0x02, 
+						0x07, 
+						command, 
+						0x80, 
+						0x02, 
+						buff[0], 
+						buff[1], 
+						buff[2], 
+						buff[3], 
+						0x0A };		//Footer
 		
-		sendBuffer = {0x40, 0x30, 0x30, 0x30, 0x43, 0x0C, 0x00, 0xFF, 0x02, 0x07, command, 0x80, 0x02, time0, time1, time2, time3, 0x0A };
+		//Send
+		write_port();
+		clearPacket();
 		
 	}
 	else
 	{
 		printf("Parp.\n");
 	}
-/*		//Header
-		sendBuffer[0] = 0x40;			//Static
-		//hex length
-		sendBuffer[1] = 0x30;
-		sendBuffer[2] = 0x30;
-		sendBuffer[3] = 0x30;
-		sendBuffer[4] = 0x38;
-		//binary length
-		sendBuffer[5] = 0x08;
-		sendBuffer[6] = 0x00;
-		//Source/Dest ID
-		sendBuffer[7] = 0xFF;			//Static ??
-		sendBuffer[8] = 0x02;			//Static ??
-		//ByteCount
-		sendBuffer[9] = 0x03;
-		//MSG
-		
-		temp[0] = command;
-		temp[1] = 0x80;
-		temp[2] = 0x02;
-		
-		for( i = 0; i < sendBuffer[9]; i ++ )
-		{
-			sendBuffer[i+10] = temp[i];
-		}
-		
-		//Terminator
-		sendBuffer[sendBuffer[9]+10] = 0x0A;			//Static
-		
-*/
+
 	
 }
 
@@ -454,16 +451,16 @@ void makeHeadPacket(void)
 	//hex length
 	sendBuffer[1] = 0x30;
 	sendBuffer[2] = 0x30;
-	sendBuffer[3] = 0x34;
-	sendBuffer[4] = 0x43;
+	sendBuffer[3] = 0x36;
+	sendBuffer[4] = 0x30;
 	//binary length
-	sendBuffer[5] = 0x4C;
+	sendBuffer[5] = 0x3C;
 	sendBuffer[6] = 0x00;
 	//Source/Dest ID
 	sendBuffer[7] = 0xFF;			//Static ??
 	sendBuffer[8] = 0x02;			//Static ??
 	//ByteCount
-	sendBuffer[9] = 0x47;
+	sendBuffer[9] = 0x37;
 	//MSG
 		//Command
 		sendBuffer[10] = 0x13;
@@ -557,8 +554,14 @@ void makeHeadPacket(void)
 	sendBuffer[65] = 0x0A;			//Static
 
 	
+	write_port();
+	clearPacket();
+	
 }
-
+/************************************************
+ * 
+ *  not doing anything but printing the time at the moment.
+ * *********************************************/
 int makeSendData()
 {
 	
@@ -586,9 +589,6 @@ int makeSendData()
 		
 	printf("\n");
 
-	
-	
-	
 }
 
 /************************************************
@@ -701,7 +701,6 @@ int initSonar(void)
 			printf("\t<< mtAlive!\n");
 			//Make mtSendVersion packet and send
 			makePacket(mtSendVersion);
-			write_port();
 			printf(">> mtSendVersion\n");
 			
 			//Read Port
@@ -709,7 +708,6 @@ int initSonar(void)
 			{
 				
 				cmd = returnMsg();
-				//printf("%d : ", cmd);
 				
 				//Check for mtVersionData
 				if(cmd == mtVersionData)
