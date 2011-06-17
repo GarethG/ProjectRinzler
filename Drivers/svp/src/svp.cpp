@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include "svp.h"
 //#include <math.h>
 
 using namespace std;
@@ -110,6 +111,7 @@ void *rcvThread(void *arg){
 	char depth[10] = "0000000", *dEnd;
 	float depthFloat;
 	float oldDepth;
+	float pressure;
 
 	char velo[10] = "0000000", *vEnd;
 	float veloFloat;
@@ -143,8 +145,10 @@ void *rcvThread(void *arg){
 			//if (isnan(depthFloat) != NULL){
 			//	printf("ERROR wierdness happened\n");
 			//}
-			
 
+			depthFloat -= SURFACE;	//pressure - surface pressure = specific weight x depth
+			depthFloat /= DENSITY;
+			
 			//if depthfloat != to a float...
 			dMsg.data = depthFloat;	//dMsg = 1.01240;//
 			//printf("depth - %lf\n", depthFloat);
