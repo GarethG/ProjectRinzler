@@ -52,18 +52,18 @@ int main( int argc, char **argv )
 	
 	/* Le Testing */
 	
-	while( 1 )
+/*	while( 1 )
 	{
 		
 		makeHeadPacket(5, 1, 500, 81, 8, 84, 141, 90);
-		usleep(500);
+		//usleep(500);
 		sortPacket();
 		//makePacket(mtSendData);
 		//usleep(500);
 		
 	}
 	
-	
+*/	
 	
 	while(cmd != 1)
 	{
@@ -168,8 +168,8 @@ int main( int argc, char **argv )
 
 int open_port(void){	
 
-	fd = open("/dev/ttyUSB1", O_RDWR | O_NDELAY | O_NOCTTY);
-	printf("/dev/ttyUSB1\n");
+	fd = open("/dev/ttyS0", O_RDWR | O_NDELAY | O_NOCTTY);
+	printf("/dev/ttyS0\n");
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
 		return 0;

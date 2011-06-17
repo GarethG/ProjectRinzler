@@ -8,8 +8,9 @@
 
 import sys
 import time
-#import roslib; roslib.load_manifest('logger') #is this the right manifest file?
-#import rospy
+import roslib; roslib.load_manifest('logger') #is this the right manifest file?
+import rospy
+
 
 #from std_msgs.msg import String
 
@@ -41,3 +42,5 @@ aa  = str(action)   + '.aa'
 
 entry = sss + ',' + xxx + ',' + yyy + ',' + zzz + ',' + aa   
 writeEntry(entry)
+
+

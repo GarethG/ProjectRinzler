@@ -31,16 +31,19 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/bootstrap/ProjectRinzler/Drivers/sonar
+CMAKE_SOURCE_DIR = /home/uwesub/ProjectRinzler/Drivers/sonar
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/bootstrap/ProjectRinzler/Drivers/sonar/build
+CMAKE_BINARY_DIR = /home/uwesub/ProjectRinzler/Drivers/sonar/build
 
 # Utility rule file for clean-test-results.
 
 CMakeFiles/clean-test-results:
-	if ! rm -rf /home/bootstrap/.ros/test_results/sonar; then echo WARNING:\ failed\ to\ remove\ test-results\ directory ; fi
+	if ! rm -rf /home/uwesub/.ros/test_results/sonar; then echo WARNING:\ failed\ to\ remove\ test-results\ directory ; fi
 
 clean-test-results: CMakeFiles/clean-test-results
 clean-test-results: CMakeFiles/clean-test-results.dir/build.make
@@ -55,6 +58,6 @@ CMakeFiles/clean-test-results.dir/clean:
 .PHONY : CMakeFiles/clean-test-results.dir/clean
 
 CMakeFiles/clean-test-results.dir/depend:
-	cd /home/bootstrap/ProjectRinzler/Drivers/sonar/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/bootstrap/ProjectRinzler/Drivers/sonar /home/bootstrap/ProjectRinzler/Drivers/sonar /home/bootstrap/ProjectRinzler/Drivers/sonar/build /home/bootstrap/ProjectRinzler/Drivers/sonar/build /home/bootstrap/ProjectRinzler/Drivers/sonar/build/CMakeFiles/clean-test-results.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/uwesub/ProjectRinzler/Drivers/sonar/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uwesub/ProjectRinzler/Drivers/sonar /home/uwesub/ProjectRinzler/Drivers/sonar /home/uwesub/ProjectRinzler/Drivers/sonar/build /home/uwesub/ProjectRinzler/Drivers/sonar/build /home/uwesub/ProjectRinzler/Drivers/sonar/build/CMakeFiles/clean-test-results.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/clean-test-results.dir/depend
 

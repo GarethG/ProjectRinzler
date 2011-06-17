@@ -31,11 +31,14 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/bin/ccmake
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/bootstrap/ProjectRinzler/Drivers/sonar
+CMAKE_SOURCE_DIR = /home/uwesub/ProjectRinzler/Drivers/sonar
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/bootstrap/ProjectRinzler/Drivers/sonar/build
+CMAKE_BINARY_DIR = /home/uwesub/ProjectRinzler/Drivers/sonar/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/sonar.dir/depend.make
@@ -66,17 +69,17 @@ CMakeFiles/sonar.dir/src/sonarDriver.o: /opt/ros/diamondback/stacks/ros_comm/mes
 CMakeFiles/sonar.dir/src/sonarDriver.o: /opt/ros/diamondback/stacks/ros_comm/messages/rosgraph_msgs/msg_gen/generated
 CMakeFiles/sonar.dir/src/sonarDriver.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/msg_gen/generated
 CMakeFiles/sonar.dir/src/sonarDriver.o: /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/srv_gen/generated
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/bootstrap/ProjectRinzler/Drivers/sonar/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/uwesub/ProjectRinzler/Drivers/sonar/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/sonar.dir/src/sonarDriver.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/sonar.dir/src/sonarDriver.o -c /home/bootstrap/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/sonar.dir/src/sonarDriver.o -c /home/uwesub/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp
 
 CMakeFiles/sonar.dir/src/sonarDriver.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sonar.dir/src/sonarDriver.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/bootstrap/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp > CMakeFiles/sonar.dir/src/sonarDriver.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/uwesub/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp > CMakeFiles/sonar.dir/src/sonarDriver.i
 
 CMakeFiles/sonar.dir/src/sonarDriver.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sonar.dir/src/sonarDriver.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/bootstrap/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp -o CMakeFiles/sonar.dir/src/sonarDriver.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/uwesub/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp -o CMakeFiles/sonar.dir/src/sonarDriver.s
 
 CMakeFiles/sonar.dir/src/sonarDriver.o.requires:
 .PHONY : CMakeFiles/sonar.dir/src/sonarDriver.o.requires
@@ -113,6 +116,6 @@ CMakeFiles/sonar.dir/clean:
 .PHONY : CMakeFiles/sonar.dir/clean
 
 CMakeFiles/sonar.dir/depend:
-	cd /home/bootstrap/ProjectRinzler/Drivers/sonar/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/bootstrap/ProjectRinzler/Drivers/sonar /home/bootstrap/ProjectRinzler/Drivers/sonar /home/bootstrap/ProjectRinzler/Drivers/sonar/build /home/bootstrap/ProjectRinzler/Drivers/sonar/build /home/bootstrap/ProjectRinzler/Drivers/sonar/build/CMakeFiles/sonar.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/uwesub/ProjectRinzler/Drivers/sonar/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uwesub/ProjectRinzler/Drivers/sonar /home/uwesub/ProjectRinzler/Drivers/sonar /home/uwesub/ProjectRinzler/Drivers/sonar/build /home/uwesub/ProjectRinzler/Drivers/sonar/build /home/uwesub/ProjectRinzler/Drivers/sonar/build/CMakeFiles/sonar.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/sonar.dir/depend
 

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/bootstrap/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp
+/home/uwesub/ProjectRinzler/Drivers/sonar/src/sonarDriver.cpp
 stdio.h
 -
 stdlib.h
@@ -22,11 +22,11 @@ fcntl.h
 sys/time.h
 -
 ros/ros.h
-/home/bootstrap/ProjectRinzler/Drivers/sonar/src/ros/ros.h
+/home/uwesub/ProjectRinzler/Drivers/sonar/src/ros/ros.h
 sonarDriver.h
-/home/bootstrap/ProjectRinzler/Drivers/sonar/src/sonarDriver.h
+/home/uwesub/ProjectRinzler/Drivers/sonar/src/sonarDriver.h
 
-/home/bootstrap/ProjectRinzler/Drivers/sonar/src/sonarDriver.h
+/home/uwesub/ProjectRinzler/Drivers/sonar/src/sonarDriver.h
 
 /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/advertise_options.h
 ros/forwards.h
