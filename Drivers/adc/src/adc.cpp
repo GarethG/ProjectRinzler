@@ -23,11 +23,12 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	ROS_INFO("ADC Online");
 
-	//ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
 
 	while (ros::ok()){
 		//ros::spin();
 		readADC();
+		loop_rate.sleep();
 	}
 
 	printf("Shutting Down\n");
