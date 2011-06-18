@@ -1,0 +1,16 @@
+<package>
+  <description brief="missionPlanner">
+
+     missionPlanner
+
+  </description>
+  <author>James Taylor</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/missionPlanner</url>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+
+</package>
+
+
