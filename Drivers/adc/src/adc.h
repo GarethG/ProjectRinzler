@@ -8,16 +8,17 @@
 #define	Y	2
 #define	Z	3
 
-#define VREF	3300.0
+#define VREFH	5000.0
+#define VREFL	2500.0
 #define	ADCRES	1023.0
 
 /* Globals */
 
 struct acc_type{
 	char invert;
-	double zeroG;
-	unsigned int read;
-	double R;
+	float zeroG;
+	unsigned int rate;
+	float R;
 }acc[3];
 
 unsigned int accRaw[8];

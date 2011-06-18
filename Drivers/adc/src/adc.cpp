@@ -19,7 +19,13 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	/* Publish */
 
-	/* Subscribe */
+	ros::Publisher adcXMsg = adcN.advertise<std_msgs::Float32>("adcX", 100);
+	ros::Publisher adcYMsg = adcN.advertise<std_msgs::Float32>("adcY", 100);
+	ros::Publisher adcZMsg = adcN.advertise<std_msgs::Float32>("adcZ", 100);
+
+	std_msgs::Float32 adcX;
+	std_msgs::Float32 adcY;
+	std_msgs::Float32 adcZ;
 
 	initADC();
 
@@ -31,6 +37,15 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		//ros::spin();
 		readADC();
 		findForce();
+
+		adcX.data = acc[X].R;
+		adcY.data = acc[Y].R;
+		adcZ.data = acc[Z].R;
+
+		adcXMsg.publish(adcX);
+		adcYMsg.publish(adcY);
+		adcZMsg.publish(adcZ);
+
 		loop_rate.sleep();
 	}
 
@@ -42,13 +57,13 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 void initADC(void){
 	acc[X].zeroG = (float)ZEROX;
 	acc[X].zeroG /= ADCRES;
-	acc[X].zeroG *= VREF;
+	acc[X].zeroG *= VREFH;
 	acc[Y].zeroG = (float)ZEROY;
 	acc[Y].zeroG /= ADCRES;
-	acc[Y].zeroG *= VREF;
+	acc[Y].zeroG *= VREFH;
 	acc[Z].zeroG = (float)ZEROZ;
 	acc[Z].zeroG /= ADCRES;
-	acc[Z].zeroG *= VREF;
+	acc[Z].zeroG *= VREFH;
 }
 
 void readADC(void){
@@ -76,8 +91,8 @@ void findForce(void){
 	for(i=X;i<=Z;i++){
 		acc[i].R = (float)acc[i].rate;
 		acc[i].R /= ADCRES;
-		acc[i].R *= VREF;
-		acc[i].R -= acc[i].zeroG
+		acc[i].R *= VREFH;
+		acc[i].R -= acc[i].zeroG;
 		printf("I read %.3f of force at %d\n",acc[i].R,i);
 	}
 
