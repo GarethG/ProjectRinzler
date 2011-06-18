@@ -44,7 +44,11 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront){
 	frontPWM = pidRampFront->data;
-	updatePWM(FRONT_MOTOR_CHANNEL, (unsigned int)frontPWM);
+	frontPWM *= SCALAR;
+	frontUPWM = (unsigned int)frontPWM;
+	frontUPWM += ZERO_DUTY_CYCLE_US;
+	
+	updatePWM(FRONT_MOTOR_CHANNEL, frontUPWM);
 	return;
 }
 
@@ -54,7 +58,11 @@ void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront){
 
 void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft){
 	leftPWM = pidRampLeft->data;
-	updatePWM(LEFT_MOTOR_CHANNEL, (unsigned int)leftPWM);
+	leftPWM *= SCALAR;
+	leftUPWM = (unsigned int)leftPWM;
+	leftUPWM += ZERO_DUTY_CYCLE_US;
+	
+	updatePWM(LEFT_MOTOR_CHANNEL, leftUPWM);
 	return;
 }
 
@@ -64,7 +72,11 @@ void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft){
 
 void rightCallback(const std_msgs::Float32::ConstPtr& pidRampRight){
 	rightPWM = pidRampRight->data;
-	updatePWM(RIGHT_MOTOR_CHANNEL, (unsigned int)rightPWM);
+	rightPWM *= SCALAR;
+	rightUPWM = (unsigned int)rightPWM;
+	rightUPWM += ZERO_DUTY_CYCLE_US;
+	
+	updatePWM(RIGHT_MOTOR_CHANNEL, rightUPWM);
 	return;
 }
 
@@ -74,7 +86,11 @@ void rightCallback(const std_msgs::Float32::ConstPtr& pidRampRight){
 
 void backCallback(const std_msgs::Float32::ConstPtr& pidRampBack){
 	backPWM = pidRampBack->data;
-	updatePWM(BACK_MOTOR_CHANNEL, (unsigned int)backPWM);
+	backPWM *= SCALAR;
+	backUPWM = (unsigned int)backPWM;
+	backUPWM += ZERO_DUTY_CYCLE_US;
+	
+	updatePWM(BACK_MOTOR_CHANNEL, backUPWM);
 	return;
 }
 

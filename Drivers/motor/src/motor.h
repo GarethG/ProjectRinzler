@@ -15,12 +15,19 @@
 #define	FRONT_PWM_OFFSET	0
 #define	BACK_PWM_OFFSET		-20
 
+#define	SCALAR			12.5
+
 /* Globals */
 
 float 	frontPWM,
 	leftPWM,
 	rightPWM,
 	backPWM;
+
+unsigned int	frontUPWM,
+		leftUPWM,
+		rightUPWM,
+		backUPWM;
 
 /* Function Declarations */
 

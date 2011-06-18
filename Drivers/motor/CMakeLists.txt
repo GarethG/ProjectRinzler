@@ -26,9 +26,9 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(${PROJECT_NAME} src/lib/libRBIO.a)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-INCLUDE_DIRECTORIES(src/ ~/ProjectRinzler/Roboard/)
+INCLUDE_DIRECTORIES(src/ $ENV{HOME}/ProjectRinzler/Roboard/)
 #LINK_DIRECTORIES(~/ProjectRinzler/Roboard/Lib/)
-rosbuild_add_executable(motor src/motor.cpp ~/ProjectRinzler/Roboard/common.cpp ~/ProjectRinzler/Roboard/pwm.cpp ~/ProjectRinzler/Roboard/io.cpp ~/ProjectRinzler/Roboard/pwmdx.cpp)
+rosbuild_add_executable(motor src/motor.cpp $ENV{HOME}/ProjectRinzler/Roboard/common.cpp $ENV{HOME}/ProjectRinzler/Roboard/pwm.cpp $ENV{HOME}/ProjectRinzler/Roboard/io.cpp $ENV{HOME}/ProjectRinzler/Roboard/pwmdx.cpp)
 #target_link_libraries(motor common RBIO)#${PROJECT_NAME})
 
 
