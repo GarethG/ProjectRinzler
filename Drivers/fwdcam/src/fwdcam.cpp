@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include <image_transport/image_transport.h>
-#include <cv_bridge/cv_bridge.h>
+//#include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -77,9 +77,8 @@ void obtainOrange(void){
 		cvClearMemStorage(hlsStorage);					//clear previous frame
 	}
 
-	printf("Here2\n");
-
 	cvCvtColor(camStream, hlsStream, CV_RGB2HLS);				//creates HLS colour
+
 	cvThreshold(hlsStream, hlsStream, HLSHIGH, 255, CV_THRESH_BINARY_INV);	//threshold up
 	cvThreshold(hlsStream, hlsStream, HLSLOW, 255, CV_THRESH_BINARY);	//threshold down
 	
