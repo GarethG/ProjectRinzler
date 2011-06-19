@@ -16,7 +16,7 @@
 #include "compassDriver.h"
 
 int fd; 				/* File descriptor for the port */
-unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
+unsigned char returnBuffer[100]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;			/*Ptr*/
 float heading, pitch, roll;		/*Floats for the returned values*/
 
@@ -50,7 +50,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	while (ros::ok()){
 
 		if(write_port()){	//if we send correctly
-			if(read_port()){	//if we read correctly
+			if(read_port() != 0){	//if we read correctly
 				
 				parseBuffer();	//parse the buffer
 				printf("H: %f P: %f R: %f\n",heading,pitch,roll);
@@ -122,14 +122,16 @@ void config_port(void){
 	cfsetispeed(&options, B19200);
 	cfsetospeed(&options, B19200);
 
-	options.c_cflag |= (CLOCAL | CREAD);
-	options.c_cflag &= ~PARENB;
-	options.c_cflag &= ~CSTOPB;
-	options.c_cflag &= ~CSIZE;
-	options.c_cflag |= CS8;
+	options.c_cflag |= (CLOCAL | CREAD | CS8);
 
+	options.c_iflag = IGNPAR;
+	options.c_oflag = 0;
+	options.c_lflag = 0;
+	options.c_cc[VTIME] = 10;
+	options.c_cc[VMIN] = 0;
 	tcflush(fd, TCIFLUSH);
-        tcsetattr(fd, TCSANOW, &options);
+
+	tcsetattr(fd, TCSANOW, &options);
 
 	return;
 }
@@ -167,6 +169,11 @@ int read_port(void){
 	//int i;
 
 	n = read(fd,returnBuffer,sizeof(returnBuffer));
+
+	if(n < 21){
+		ROS_ERROR("Failed to read the buffer");
+		return 0;
+	}
 
 	/*printf("We read %d bytes\n",n);
 
