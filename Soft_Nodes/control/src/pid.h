@@ -6,21 +6,24 @@
 
 #define MAXVAL		30.0
 #define MINVAL		00.0
-#define FWDHACK		10.0
 #define FRONTTHRESH	20.0
 
 /* Globals*/
 
-float heading;
-float targetHeading;
-float pitch;
-float targetPitch;
-float depth;
-float targetDepth;
+float heading=0.0;
+float targetHeading=0.0;
+float pitch=0.0;
+float targetPitch=0.0;
+float depth=0.0;
+float targetDepth=0.0;
+float speed=0.0;
+float go = 0.0;
 
 /* Function Declerations */
 
 float correctError(float error);
+void goCallback(const std_msgs::Float32::ConstPtr& goNode);
+void speedCallback(const std_msgs::Float32::ConstPtr& pilotSpeed);
 void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading);
 void targetHeadingCallback(const std_msgs::Float32::ConstPtr& pilotHeading);
 void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch);

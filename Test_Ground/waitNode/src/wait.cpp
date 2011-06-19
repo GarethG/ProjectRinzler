@@ -55,7 +55,7 @@ int main(int argc, char **argv){
 }
 
 /*************************************************
-** Returns the compass heading			**
+** Returns the go signal			**
 *************************************************/
 
 void goCallback(const std_msgs::Float32::ConstPtr& goNode){

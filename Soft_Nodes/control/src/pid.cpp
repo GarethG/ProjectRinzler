@@ -35,12 +35,19 @@ int main(int argc, char **argv){
 
 		ros::Subscriber sub1 = pidN.subscribe("compassHeading", 100, headingCallback);
 		ros::Subscriber sub2 = pidN.subscribe("pilotHeading", 100, targetHeadingCallback);
+		ros::Subscriber sub3 = pidN.subscribe("pilotSpeed", 100, speedCallback);
+		ros::Subscriber sub4 = pidN.subscribe("goNode", 100, goCallback);
 
 		ros::Rate loop_rate(10);
 
 		ROS_INFO("Heading PID Online");
 
 		while(ros::ok()){
+
+			while(go != 1.0){
+
+				ros::spinOnce();
+			}
 
 			ros::spinOnce();
 
@@ -49,8 +56,8 @@ int main(int argc, char **argv){
 			leftRate.data = tmp;			//left does opposite of right
 			rightRate.data = (tmp * -1.0);
 
-			leftRate.data += FWDHACK;	//bit hacks but ensures we keep moving forwards even when balanced
-			rightRate.data += FWDHACK;
+			leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
+			rightRate.data += speed;
 			
 			leftRateMsg.publish(leftRate);
 			rightRateMsg.publish(rightRate);
@@ -74,12 +81,18 @@ int main(int argc, char **argv){
 
 		ros::Subscriber sub1 = pidN.subscribe("svpDepth", 100, depthCallback);
 		ros::Subscriber sub2 = pidN.subscribe("pilotDepth", 100, targetDepthCallback);
+		ros::Subscriber sub3 = pidN.subscribe("goNode", 100, goCallback);
 
 		ros::Rate loop_rate(10);
 
 		ROS_INFO("Depth PID Online");
 
 		while(ros::ok()){
+			
+			while(go != 1.0){
+
+				ros::spinOnce();
+			}
 
 			ros::spinOnce();
 
@@ -117,12 +130,18 @@ int main(int argc, char **argv){
 
 		ros::Subscriber sub1 = pidN.subscribe("compassPitch", 100, pitchCallback);
 		ros::Subscriber sub2 = pidN.subscribe("pilotPitch", 100, targetPitchCallback);
+		ros::Subscriber sub3 = pidN.subscribe("goNode", 100, goCallback);
 
 		ros::Rate loop_rate(10);
 
 		ROS_INFO("Pitch PID Online");
 
 		while(ros::ok()){
+
+			while(go != 1.0){
+
+				ros::spinOnce();
+			}
 
 			ros::spinOnce();
 
@@ -148,6 +167,24 @@ int main(int argc, char **argv){
 	printf("Shutting Down %s\n",argv[1]);
 
 	return 0;
+}
+
+/*************************************************
+** Returns the go signal			**
+*************************************************/
+
+void goCallback(const std_msgs::Float32::ConstPtr& goNode){
+	go = goNode->data;
+	return;
+}
+
+/*************************************************
+** Returns the pilots speed			**
+*************************************************/
+
+void speedCallback(const std_msgs::Float32::ConstPtr& pilotSpeed){
+	speed = pilotSpeed->data;
+	return;
 }
 
 /*************************************************
