@@ -15,7 +15,7 @@
 */
 
 int fd; /* File descriptor for the port */
-unsigned char returnBuffer[10000];
+unsigned char returnBuffer[100];
 unsigned char *rBptr;
 
 int open_port(void){	
@@ -41,6 +41,13 @@ void config_port(void){
 	cfsetospeed(&options, B19200);
 
 	options.c_cflag |= (CLOCAL | CREAD | CS8);
+
+	options.c_iflag = IGNPAR;
+	options.c_oflag = 0;
+	options.c_lflag = 0;
+	options.c_cc[VTIME] = 10;
+	options.c_cc[VMIN] = 0;
+	tcflush(fd, TCIFLUSH);
 
 	tcsetattr(fd, TCSANOW, &options);
 
