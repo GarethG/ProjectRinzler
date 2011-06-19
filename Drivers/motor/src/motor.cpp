@@ -29,8 +29,12 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	initMotors();
 
+	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
+
 	while (ros::ok()){
-		ros::spin();
+		//ros::spin();
+		updatePWM(TEST_CHANNEL, 1650);
+		loop_rate.sleep();
 	}
 
 	printf("Shutting Down\n");
@@ -104,17 +108,20 @@ void initMotors(void){
         pwm_SetPulse( RIGHT_MOTOR_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + RIGHT_PWM_OFFSET );
         pwm_SetPulse( FRONT_MOTOR_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + FRONT_PWM_OFFSET );
         pwm_SetPulse( BACK_MOTOR_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + BACK_PWM_OFFSET );
+        pwm_SetPulse( TEST_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + BACK_PWM_OFFSET );
 
         pwm_SetCountingMode( LEFT_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
         pwm_SetCountingMode( RIGHT_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
         pwm_SetCountingMode( FRONT_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
         pwm_SetCountingMode( BACK_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
+        pwm_SetCountingMode( TEST_CHANNEL, PWM_CONTINUE_MODE );
         
         // Enable the pins
         pwm_EnablePin( LEFT_MOTOR_CHANNEL );
         pwm_EnablePin( FRONT_MOTOR_CHANNEL );
         pwm_EnablePin( RIGHT_MOTOR_CHANNEL );
         pwm_EnablePin( BACK_MOTOR_CHANNEL );
+        pwm_EnablePin( TEST_CHANNEL );
 
 	ROS_INFO("Motors Initialised");
 
@@ -130,7 +137,7 @@ void initMotors(void){
 *************************************************/
 
 void updatePWM(unsigned int channel, unsigned int rate){
-	unsigned int tmpOffset;
+	unsigned int tmpOffset=0;
 
 	switch(channel){
 		case	FRONT_MOTOR_CHANNEL:	tmpOffset = FRONT_PWM_OFFSET;	break;
