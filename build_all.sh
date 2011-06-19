@@ -12,3 +12,5 @@ sudo rm -rf ~/ProjectRinzler/Soft_Nodes/sonarLoc/build
 sudo rm -rf ~/ProjectRinzler/Soft_Nodes/spammer/build
 sudo rm -rf ~/ProjectRinzler/High_Level_Nodes/missionPlanner/build
 sudo rm -rf ~/ProjectRinzler/High_Level_Nodes/pilot/build
+
+rosmake -a
