@@ -1,0 +1,15 @@
+<package>
+  <description brief="iopl">
+
+     iopl
+
+  </description>
+  <author>James Taylor</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/iopl</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

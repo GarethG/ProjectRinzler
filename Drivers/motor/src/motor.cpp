@@ -10,6 +10,8 @@
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
+	unsigned int speed,direc;
+
 	ros::init(argc, argv, "motor");	//inits the driver
 
 	/* Messages and services */
@@ -31,9 +33,25 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
 
+	speed = MIN_DUTY_CYCLE_US;
+	direc = 0;
+
 	while (ros::ok()){
 		//ros::spin();
-		updatePWM(TEST_CHANNEL, 1650);
+		if(direc == 0){		
+			speed++;
+			if(speed == MAX_DUTY_CYCLE_US){
+				direc = 1;
+			}
+		}
+		else{
+			speed--;
+			if(speed == MIN_DUTY_CYCLE_US){
+				direc = 0;
+			}
+		}
+			
+		updatePWM(TEST_CHANNEL, speed);
 		loop_rate.sleep();
 	}
 
@@ -103,6 +121,11 @@ void backCallback(const std_msgs::Float32::ConstPtr& pidRampBack){
 *************************************************/
 
 void initMotors(void){
+
+	if(!pwm_Initialize(0xffff, PWMCLOCK_50MHZ, PWMIRQ_DISABLE)){
+        	ROS_ERROR("Unable to initialise PWM library - %s", roboio_GetErrMsg());
+	}
+
         // Set the channels to produce a zero velocity PWM
         pwm_SetPulse( LEFT_MOTOR_CHANNEL, PWM_FREQUENCY_US, (ZERO_DUTY_CYCLE_US + LEFT_PWM_OFFSET));
         pwm_SetPulse( RIGHT_MOTOR_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + RIGHT_PWM_OFFSET );

@@ -119,7 +119,7 @@ RBAPI(int) io_Init(void) {
     #elif defined	RB_LINUX
         if (iopl(3) != 0)
 		{
-            err_SetMsg(ERROR_IOINITFAIL, "I/O library fails to initialize");
+            err_SetMsg(ERROR_IOINITFAIL, "I/O library fails to initialize 5");
             return -1;
         }
     #endif
