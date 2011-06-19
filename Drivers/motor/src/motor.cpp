@@ -144,6 +144,7 @@ void updatePWM(unsigned int channel, unsigned int rate){
 		case	LEFT_MOTOR_CHANNEL:	tmpOffset = LEFT_PWM_OFFSET;	break;
 		case	RIGHT_MOTOR_CHANNEL:	tmpOffset = RIGHT_PWM_OFFSET;	break;
 		case	BACK_MOTOR_CHANNEL:	tmpOffset = BACK_PWM_OFFSET;	break;
+		case	TEST_CHANNEL:		tmpOffset = 0;			break;
 		default: ROS_ERROR("Dude this is not a valid PWM channel");	break;
 	}
 
