@@ -53,7 +53,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			if(read_port() != 0){	//if we read correctly
 				
 				parseBuffer();	//parse the buffer
-				printf("H: %f P: %f R: %f\n",heading,pitch,roll);
+				//printf("H: %f P: %f R: %f\n",heading,pitch,roll);
 
 				/* Below here sets up the messages ready for transmission*/
 

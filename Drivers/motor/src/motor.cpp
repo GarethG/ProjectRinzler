@@ -10,8 +10,6 @@
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
-	unsigned int speed,direc;
-
 	ros::init(argc, argv, "motor");	//inits the driver
 
 	/* Messages and services */
@@ -31,29 +29,15 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	initMotors();
 
-	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
-
-	speed = MIN_DUTY_CYCLE_US;
-	direc = 0;
-
 	while (ros::ok()){
-		//ros::spin();
-		if(direc == 0){		
-			speed++;
-			if(speed == MAX_DUTY_CYCLE_US){
-				direc = 1;
-			}
-		}
-		else{
-			speed--;
-			if(speed == MIN_DUTY_CYCLE_US){
-				direc = 0;
-			}
-		}
-			
-		updatePWM(TEST_CHANNEL, speed);
-		loop_rate.sleep();
+		ros::spin();
 	}
+
+	updatePWM(RIGHT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	updatePWM(LEFT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	updatePWM(FRONT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	updatePWM(BACK_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	//updatePWM(TEST_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
 
 	printf("Shutting Down\n");
 
@@ -131,13 +115,13 @@ void initMotors(void){
         pwm_SetPulse( RIGHT_MOTOR_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + RIGHT_PWM_OFFSET );
         pwm_SetPulse( FRONT_MOTOR_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + FRONT_PWM_OFFSET );
         pwm_SetPulse( BACK_MOTOR_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + BACK_PWM_OFFSET );
-        pwm_SetPulse( TEST_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + BACK_PWM_OFFSET );
+        //pwm_SetPulse( TEST_CHANNEL, PWM_FREQUENCY_US, ZERO_DUTY_CYCLE_US + BACK_PWM_OFFSET );
 
         pwm_SetCountingMode( LEFT_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
         pwm_SetCountingMode( RIGHT_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
         pwm_SetCountingMode( FRONT_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
         pwm_SetCountingMode( BACK_MOTOR_CHANNEL, PWM_CONTINUE_MODE );
-        pwm_SetCountingMode( TEST_CHANNEL, PWM_CONTINUE_MODE );
+        //pwm_SetCountingMode( TEST_CHANNEL, PWM_CONTINUE_MODE );
         
         // Enable the pins
         pwm_EnablePin( LEFT_MOTOR_CHANNEL );
@@ -167,7 +151,7 @@ void updatePWM(unsigned int channel, unsigned int rate){
 		case	LEFT_MOTOR_CHANNEL:	tmpOffset = LEFT_PWM_OFFSET;	break;
 		case	RIGHT_MOTOR_CHANNEL:	tmpOffset = RIGHT_PWM_OFFSET;	break;
 		case	BACK_MOTOR_CHANNEL:	tmpOffset = BACK_PWM_OFFSET;	break;
-		case	TEST_CHANNEL:		tmpOffset = 0;			break;
+		//case	TEST_CHANNEL:		tmpOffset = 0;			break;
 		default: ROS_ERROR("Dude this is not a valid PWM channel");	break;
 	}
 
