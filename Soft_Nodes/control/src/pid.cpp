@@ -42,6 +42,10 @@ int main(int argc, char **argv){
 
 		ROS_INFO("Heading PID Online");
 
+		KP = KPH;
+		KD = KDH;
+		KI = KIH;
+
 		while(ros::ok()){
 
 			while(go != 1.0){
@@ -86,6 +90,10 @@ int main(int argc, char **argv){
 		ros::Rate loop_rate(10);
 
 		ROS_INFO("Depth PID Online");
+
+		KP = KPD;
+		KD = KDD;
+		KI = KID;
 
 		while(ros::ok()){
 			
@@ -135,6 +143,10 @@ int main(int argc, char **argv){
 		ros::Rate loop_rate(10);
 
 		ROS_INFO("Pitch PID Online");
+
+		KP = KPP;
+		KD = KDP;
+		KI = KIP;
 
 		while(ros::ok()){
 

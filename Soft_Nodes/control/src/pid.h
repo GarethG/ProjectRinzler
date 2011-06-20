@@ -1,9 +1,18 @@
 /* Defines */
 
-#define KP 0.01
-#define KD 0.1
-#define KI 0.1
-
+/* Heading */
+#define KPH 0.01
+#define KDH 0.1
+#define KIH 0.1
+/* Depth */
+#define KPD 0.01
+#define KDD 0.1
+#define KID 0.1
+/* Pitch */
+#define KPP 0.01
+#define KDP 0.1
+#define KIP 0.1
+/* Others */
 #define MAXVAL		30.0
 #define MINVAL		00.0
 #define FRONTTHRESH	20.0
@@ -18,6 +27,8 @@ float depth=0.0;
 float targetDepth=0.0;
 float speed=0.0;
 float go = 0.0;
+
+float KP,KD,KI;
 
 /* Function Declerations */
 

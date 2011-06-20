@@ -99,11 +99,11 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		/*Below here we publish our readings*/
 
 		spamMsg.publish(pilotHeading);		
-		spamMsg2.publish(compassHeading);
+		//spamMsg2.publish(compassHeading);
 		spamMsg3.publish(pilotDepth);		
 		spamMsg4.publish(svpDepth);
 		spamMsg5.publish(pilotPitch);		
-		spamMsg6.publish(compassPitch);
+		//spamMsg6.publish(compassPitch);
 
 		/*Have a snooze*/
 
