@@ -1,0 +1,6 @@
+build
+bin
+.git
+ros_tutorials
+fwdcam
+son*
