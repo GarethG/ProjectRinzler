@@ -9,10 +9,13 @@
 #include "ros/ros.h"
 #include "sonarDriver.h"
 
+void config_port_debug(void);
+
 int fd; 							/* File descriptor for the port */
-unsigned char returnBuffer[10000]; 	/*Buffer which stores read data*/
+unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
 unsigned char sendBuffer[82];
+unsigned int sendSize = 82;
 
 int buffLen, 	//length of the recieved buffer, output from read_port()
 	i,			//counter
@@ -45,10 +48,30 @@ int main( int argc, char **argv )
 
 	int cmd = 0;
 	int o;
+	int JeffBridges = 0;
+//
+/*
+	JeffBridges = 1;
 
 	open_port();
-	config_port();
-	
+
+	config_port_debug();
+	//config_port();
+	while(JeffBridges){
+		read_port();
+		printf("\t<< JeffBridges\n");
+		JeffBridges--;
+	}
+
+	close(fd);   
+*/ 
+//
+
+	//system("cutecom");
+	open_port();	
+	config_port_debug();
+
+	//makePacket(mtReBoot);
 	
 	/* Le Testing */
 	
@@ -168,14 +191,14 @@ int main( int argc, char **argv )
 
 int open_port(void){	
 
-	fd = open("/dev/ttyS0", O_RDWR | O_NDELAY | O_NOCTTY);
+	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY);// O_NDELAY |
 	printf("/dev/ttyS0\n");
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
 		return 0;
 	}
 	else{
-		fcntl(fd, F_SETFL, 0);
+		fcntl(fd, F_SETLK, 0);
 		ROS_INFO("Port opened with a descriptor of %d",fd);
 	}
 	return (fd);
@@ -185,20 +208,63 @@ int open_port(void){
 ** Configures the serial port	**
 *********************************/
 
+void config_port_debug(void){
+	struct termios options1;
+
+	tcgetattr(fd, &options1);
+
+	options1.c_cflag |= (CLOCAL | CREAD);// | CS8
+	options1.c_cflag &=~(CSIZE);
+	options1.c_cflag |= CS8;
+	options1.c_cflag &=~(PARENB);
+	options1.c_cflag &=~(CSTOPB);
+	
+	
+	cfsetispeed(&options1, BAUDRATE);
+	cfsetospeed(&options1, BAUDRATE);
+
+	
+	//options1.c_iflag = IGNPAR;//no parrot-tea
+	options1.c_lflag &=~(ICANON | ECHO | ECHOE | ISIG);
+	options1.c_oflag = ~OPOST;//1;
+	options1.c_iflag &= ~(IXON | IXOFF | IXANY);
+	options1.c_cc[VTIME] = 10;
+	options1.c_cc[VMIN] =0;
+	tcflush(fd, TCIFLUSH);
+
+	tcsetattr(fd, TCSANOW, &options1);
+
+	return;
+}
+
 void config_port(void){
 	struct termios options;
 
 	tcgetattr(fd, &options);
 
+	options.c_cflag |= (CLOCAL | CREAD);// | CS8
+	options.c_cflag &=~(CSIZE);
+	options.c_cflag |=CS8;
+	options.c_cflag &=~(PARENB);
+	options.c_cflag &=~(CSTOPB);
+	
+	
 	cfsetispeed(&options, BAUDRATE);
 	cfsetospeed(&options, BAUDRATE);
 
-	options.c_cflag |= (CLOCAL | CREAD);
+	
+	options.c_iflag = IGNPAR;//no parrot-tea
+	options.c_oflag = 0;
+	options.c_iflag =0;
+	options.c_cc[VTIME] = 10;
+	options.c_cc[VMIN] =0;
+	tcflush(fd, TCIFLUSH);
 
 	tcsetattr(fd, TCSANOW, &options);
 
 	return;
 }
+
 
 /*************************************************
 ** Tries to transmit the message to the compass	**
@@ -208,7 +274,7 @@ void config_port(void){
 int write_port(void){
 	int n;
 
-	n = write(fd,sendBuffer,sizeof(sendBuffer));
+	n = write(fd,sendBuffer, sendSize);
 
 	if (n < 0){
 		ROS_ERROR("Failed to write to port");
@@ -217,6 +283,7 @@ int write_port(void){
 	else{
 		printf("We Transmitted %d\n",n);
 	}
+	sleep(1);
 	return (n);
 }
 
@@ -227,7 +294,7 @@ int write_port(void){
 
 int read_port(void){	
 
-	int n;
+	int n, j;
 
 	n = read(fd, returnBuffer,sizeof(returnBuffer));
 
@@ -235,13 +302,13 @@ int read_port(void){
 
 	//printf("\n\n");
 	
-		printf("<< ");
-		for(i = 0; i < n; i ++)
-			printf("%x : ", returnBuffer[i]);
-		printf("\n");	
+	//	printf("<< ");
+	//	for(j = 0; j < n; j ++)
+	//		printf("%x : ", returnBuffer[j]);
+	//	printf("\n");	
 
 	rBptr = &returnBuffer[0];
-
+	//sleep(1);
 	return n;
 }
 
@@ -311,6 +378,7 @@ int sortPacket(void)
 {
 
 	int packetFlag = 0;
+	int leFlag = 0;
 	
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
@@ -321,7 +389,14 @@ int sortPacket(void)
 	
 	for( i = 0; i < buffLen; i++ )
 	{
+		leFlag = temp[i];
 		temp[i] = getU8();
+		if(i >= 1 && temp[i] == 0x40 && temp[i-1] == 0x0a)
+		{
+			buffLen = i;
+			printf("buffLen %d - %x\n", buffLen, temp[buffLen]);
+		}
+		
 	}
 
 	//Store temp stuff into right place
@@ -351,7 +426,7 @@ int sortPacket(void)
 
 	
 	//What is prinf?
-	
+	printf("%d - %d\n", buffLen, bLength + 6);
 	if(header == '@' && term == 10 && buffLen == bLength + 6)
 	{
 
@@ -434,6 +509,7 @@ void makePacket(int command)
 						0x0A };		//Footer
 						
 		//Send		
+		sendSize = 14;
 		write_port();
 		
 	}
@@ -457,7 +533,7 @@ void makePacket(int command)
 		//convert from hex to array of bytes via a string
 		sprintf(buff, "%x", ms);
 		to_hex(buff, 0);
-		for (i = 1; buff[i] != '\0'; i += 2)
+		//for (i = 1; buff[i] != '\0'; i += 2)
 			//printf("%#x ", (unsigned char)buff[i]);
 			
 		//printf("\n");
@@ -482,6 +558,7 @@ void makePacket(int command)
 						0x0A };		//Footer
 		
 		//Send
+		sendSize = 18;
 		write_port();
 		
 		
@@ -498,6 +575,7 @@ void makePacket(int command)
 		printf("%x : ", sendBuffer[j]);
 		j ++;
 	}
+	printf("%x", sendBuffer[j]);
 	printf("\n");
 		
 	clearPacket();
@@ -657,6 +735,7 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 	}
 	printf("\n");
 	
+	sendSize = 82;
 	write_port();
 	clearPacket();
 	
@@ -703,7 +782,7 @@ int makeSendData()
 int clearPacket(void)
 {
 	
-	for( i = 0; i < sizeof(sendBuffer); i ++)
+	for( i = 0; i < 82; i ++)
 		sendBuffer[i] = 0;
 		
 	return 1;

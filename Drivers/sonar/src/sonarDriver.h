@@ -18,6 +18,7 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 int initSonar(void);
 int makeSendData();
 void to_hex(char buf[], int i);
+void flush(void);
 
 
 /* Defines */
