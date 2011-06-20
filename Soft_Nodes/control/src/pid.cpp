@@ -36,7 +36,7 @@ int main(int argc, char **argv){
 		ros::Subscriber sub1 = pidN.subscribe("compassHeading", 100, headingCallback);
 		ros::Subscriber sub2 = pidN.subscribe("pilotHeading", 100, targetHeadingCallback);
 		ros::Subscriber sub3 = pidN.subscribe("pilotSpeed", 100, speedCallback);
-		ros::Subscriber sub4 = pidN.subscribe("goNode", 100, goCallback);
+		ros::Subscriber sub4 = pidN.subscribe("pilotGo", 100, goCallback);
 
 		ros::Rate loop_rate(10);
 
@@ -191,8 +191,8 @@ int main(int argc, char **argv){
 ** Returns the go signal			**
 *************************************************/
 
-void goCallback(const std_msgs::Float32::ConstPtr& goNode){
-	go = goNode->data;
+void goCallback(const std_msgs::Float32::ConstPtr& pilotGo){
+	go = pilotGo->data;
 	return;
 }
 

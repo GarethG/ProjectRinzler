@@ -33,7 +33,7 @@ float KP,KD,KI;
 /* Function Declerations */
 
 float correctError(float error);
-void goCallback(const std_msgs::Float32::ConstPtr& goNode);
+void goCallback(const std_msgs::Float32::ConstPtr& pilotGo);
 void speedCallback(const std_msgs::Float32::ConstPtr& pilotSpeed);
 void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading);
 void targetHeadingCallback(const std_msgs::Float32::ConstPtr& pilotHeading);
