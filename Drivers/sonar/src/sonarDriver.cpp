@@ -9,19 +9,13 @@
 #include "ros/ros.h"
 #include "sonarDriver.h"
 
-void config_port_debug(void);
+#define SENDBUFFSIZE 82
 
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
-unsigned char sendBuffer[82];
-unsigned int sendSize = 82;
 
-int buffLen, 	//length of the recieved buffer, output from read_port()
-	i,			//counter
-	temp[263],
-	length,
-	msgLen;
+unsigned char sendBuffer[82];
 	
 unsigned char header,	//Message Header. 
 			hLength,	//Hex Length of whole binary packet
@@ -48,52 +42,16 @@ int main( int argc, char **argv )
 
 	int cmd = 0;
 	int o;
-	int JeffBridges = 0;
-//
-/*
-	JeffBridges = 1;
 
-	open_port();
+/************ Open and Configure the Serial Port. ************/
 
-	config_port_debug();
-	//config_port();
-	while(JeffBridges){
-		read_port();
-		printf("\t<< JeffBridges\n");
-		JeffBridges--;
-	}
-
-	close(fd);   
-*/ 
-//
-
-	//system("cutecom");
 	open_port();	
-	config_port_debug();
-
-	//makePacket(mtReBoot);
-	
-	/* Le Testing */
-	
-/*	while( 1 )
-	{
-		
-		makeHeadPacket(5, 1, 500, 81, 8, 84, 141, 90);
-		//usleep(500);
-		sortPacket();
-		//makePacket(mtSendData);
-		//usleep(500);
-		
-	}
-	
-*/	
+	config_port();
 	
 	while(cmd != 1)
 	{
 		
-		//makeSendData();
-
-		//Initilaise the sonar
+/************ Initilaise the sonar **************/
 		if(initSonar() == 1)
 		{
 			
@@ -116,66 +74,61 @@ int main( int argc, char **argv )
 			usleep(500);
 			
 			//Make and send headcommand
-			for(o = 0; o < 2; o ++);
-			{
-				makeHeadPacket(5, 1, 500, 81, 8, 84, 141, 90);
-				
-				//int range, int startAngle, int endAngle, int ADspam, 
-				//	int ADlow, int gain, int ADInterval, int numBins)
-				printf(">> mtHeadCommand\n");
-				//usleep(500);
-				
-			}	
-				
-				
-				if(sortPacket() == 1)
-				{
 					
-					cmd = returnMsg();
-					//printf("%d : ", cmd);
-					//Should return mtAlive 
-					//(need to check params too but not implemented yet)
-					if(cmd == mtAlive)
-					{
-						printf("\t<< mtAlive!\n");
-						
-						while(1)
-						{
-				
-						
-							//Make the sendData packet and send
-							makePacket(mtSendData);
-							printf(">> mtSendData\n");
-							
-							usleep(500);
-							//if you get some data back go forth
-							if(sortPacket() == 1)
-							{
-								
-								cmd = returnMsg();
-								//printf("hi %d\n", cmd);
-								
-								//If it's mtHeadData we winning.
-								if(cmd == mtHeadData)
-								{
-									printf("\t<< mtHeadData!!\n");
-									while(1)
-									{
-										//winning
-									}
-								}
-								//end mtHeadData
-								
-							}
-							//end sortPacet() == 1	
-						}
-						
-					}
-					//mtAlive check							
-					
+			// Range, Left Angle, Right Angle, ADSpam, ADLow, Gain, ADInterval, Number of Bins.
+			makeHeadPacket(5, 0, 6399, 81, 8, 84, 141, 90);
+			printf(">> mtHeadCommand\n");
 
+				
+				
+			if(sortPacket() == 1)
+			{
+				
+				cmd = returnMsg();
+				//printf("%d : ", cmd);
+				//Should return mtAlive 
+				//(need to check params too but not implemented yet)
+				if(cmd == mtAlive)
+				{
+					printf("\t<< mtAlive!\n");
+					
+					while(1)
+					{
+			
+					
+						//Make the sendData packet and send
+						makePacket(mtSendData);
+						printf(">> mtSendData\n");
+						
+						usleep(500);
+						//if you get some data back go forth
+						if(sortPacket() == 1)
+						{
+							
+							cmd = returnMsg();
+							//printf("hi %d\n", cmd);
+							
+							//If it's mtHeadData we winning.
+							if(cmd == mtHeadData)
+							{
+								printf("\t<< mtHeadData!!\n");
+								while(1)
+								{
+									//winning
+								}
+							}
+							//end mtHeadData
+							
+						}
+						//end sortPacet() == 1	
+					}
+					
 				}
-				//end sortPacket() == 1				
+				//mtAlive check							
+				
+
+			}
+			//end sortPacket() == 1				
 
 		}
 		
@@ -192,7 +145,7 @@ int main( int argc, char **argv )
 int open_port(void){	
 
 	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY);// O_NDELAY |
-	printf("/dev/ttyS0\n");
+	//printf("/dev/ttyS0\n");
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
 		return 0;
@@ -208,7 +161,7 @@ int open_port(void){
 ** Configures the serial port	**
 *********************************/
 
-void config_port_debug(void){
+void config_port(void){
 	struct termios options1;
 
 	tcgetattr(fd, &options1);
@@ -219,11 +172,9 @@ void config_port_debug(void){
 	options1.c_cflag &=~(PARENB);
 	options1.c_cflag &=~(CSTOPB);
 	
-	
 	cfsetispeed(&options1, BAUDRATE);
 	cfsetospeed(&options1, BAUDRATE);
 
-	
 	//options1.c_iflag = IGNPAR;//no parrot-tea
 	options1.c_lflag &=~(ICANON | ECHO | ECHOE | ISIG);
 	options1.c_oflag = ~OPOST;//1;
@@ -237,41 +188,13 @@ void config_port_debug(void){
 	return;
 }
 
-void config_port(void){
-	struct termios options;
-
-	tcgetattr(fd, &options);
-
-	options.c_cflag |= (CLOCAL | CREAD);// | CS8
-	options.c_cflag &=~(CSIZE);
-	options.c_cflag |=CS8;
-	options.c_cflag &=~(PARENB);
-	options.c_cflag &=~(CSTOPB);
-	
-	
-	cfsetispeed(&options, BAUDRATE);
-	cfsetospeed(&options, BAUDRATE);
-
-	
-	options.c_iflag = IGNPAR;//no parrot-tea
-	options.c_oflag = 0;
-	options.c_iflag =0;
-	options.c_cc[VTIME] = 10;
-	options.c_cc[VMIN] =0;
-	tcflush(fd, TCIFLUSH);
-
-	tcsetattr(fd, TCSANOW, &options);
-
-	return;
-}
-
-
 /*************************************************
 ** Tries to transmit the message to the compass	**
 ** which will get it to send some info back	**
 *************************************************/
 
-int write_port(void){
+int write_port(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize){
+	
 	int n;
 
 	n = write(fd,sendBuffer, sendSize);
@@ -281,7 +204,7 @@ int write_port(void){
 		return 0;
 	}
 	else{
-		printf("We Transmitted %d\n",n);
+		//printf("We Transmitted %d\n",n);
 	}
 	sleep(1);
 	return (n);
@@ -294,11 +217,11 @@ int write_port(void){
 
 int read_port(void){	
 
-	int n, j;
+	int n;
 
 	n = read(fd, returnBuffer,sizeof(returnBuffer));
 
-	printf("We read %d bytes\n", n);
+	//printf("We read %d bytes\n", n);
 
 	//printf("\n\n");
 	
@@ -355,30 +278,28 @@ unsigned int getU8(void){
 
 /**************************************************************** 
 SeaNet General Packet Format is;
-'@'		:	Message Header.
-HHHH	:	Hex Length of whole binary packet (excluding LF Terminator).
-BB		:	Binary Word of above Hex Length.
-SID		:	Packet Source Identification (Tx Node number 0 - 255).
-DID		:	Packet Destination Identification (Rx Node number 0 -255).
-COUNT	:	Byte Count of attached message that follows this byte.
-MSG		:	Command / Reply Message (i.e. 'Alive' command, 'Data Reply' message).
-TERM	:	Message Terminator = Line Feed (0Ah).
+*	'@'		:	Message Header = '@' (0x40).
+*	HHHH	:	Hex Length of whole binary packet (excluding LF Terminator).
+*	BB		:	Binary Word of above Hex Length.
+*	SID		:	Packet Source Identification (Tx Node number 0 - 255).
+*	DID		:	Packet Destination Identification (Rx Node number 0 -255).
+*	COUNT	:	Byte Count of attached message that follows this byte.
+*	MSG		:	Command / Reply Message (i.e. 'Alive' command, 'Data Reply' message).
+*	TERM	:	Message Terminator = Line Feed (0Ah).
 * 
-* 
-* This needs something to take care of varying length msgs then should 
-* be working at least with the alive command, then see at how to make
-* it deal with all others.
-* 
-* 
-* 	Returns -1 if failed, 1 if correct first time, 2 if it had to 
+*	Returns -1 if failed, 1 if correct first time, 2 if it had to 
 * 	stich packets
 * 
 ****************************************************************/
 int sortPacket(void)
 {
 
-	int packetFlag = 0;
-	int leFlag = 0;
+	int packetFlag = 0,
+	leFlag = 0,
+	buffLen, 		//length of the recieved buffer, output from read_port()
+	i,				//counter
+	temp[263],
+	msgLen;
 	
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
@@ -418,20 +339,16 @@ int sortPacket(void)
 	//Store the msg, works for varying lengths
 	for( i = 10; i < (buffLen-2); i ++)
 	{
-		
 		msg[(i-10)] = temp[i];
 		msgLen ++;
-		
 	}
 
 	
 	//What is prinf?
-	printf("%d - %d\n", buffLen, bLength + 6);
+
 	if(header == '@' && term == 10 && buffLen == bLength + 6)
 	{
 
-		//prinfPacket();
-		
 		printf("<< ");
 		for(i = 0; i < buffLen; i ++)
 			printf("%x : ", temp[i]);
@@ -444,9 +361,9 @@ int sortPacket(void)
 		{
 			
 			printf("WINNING\n");
-			//for(i = 0; i < buffLen; i++ )
-			//	printf("%x : ", temp[i]);
-			//printf("\n");
+			for(i = 44; i < buffLen-1; i++ )
+				printf("%d, ", temp[i]);
+			printf("\n");
 			
 		}
 		
@@ -455,14 +372,6 @@ int sortPacket(void)
 	else
 	{
 		packetFlag = -1;
-	}
-	
-
-	//Flush out temp
-	
-	for( i = 0; i < buffLen; i++ )
-	{
-		temp[i] = 0;
 	}
 	
 	return packetFlag; 
@@ -482,14 +391,13 @@ int returnMsg()
  * takes the command and returns the command that has
  * been sent.
  * 
- * 
- * Sorry this might be discusting ;/
  * *********************************************/
 void makePacket(int command)
 {
 	
-	int j;
-	clearPacket();
+	unsigned int j = 0;
+	
+	/************ 14 byte commands ***********************/
 	
 	if(command == mtReBoot || command == mtSendVersion || command == mtSendBBUser)
 	{
@@ -509,35 +417,14 @@ void makePacket(int command)
 						0x0A };		//Footer
 						
 		//Send		
-		sendSize = 14;
-		write_port();
+		write_port(sendBuffer, 14);
 		
 	}
+	
+	/************ 18 byte commands ***********************/
+
 	else if(command == mtSendData)
-	{
-		
-		
-		// Get the time of day in ms
-		struct timeval tv;
-		
-		gettimeofday(&tv, NULL); 
-		
-		int seconds = tv.tv_sec % 60;
-		int minutes = tv.tv_sec % 3600;
-		int hours = tv.tv_sec % 86400;
-		//printf("%d:%d:%d.%d -- ", hours / 3600 , minutes / 60 , seconds, tv.tv_usec / 10000);
-		int ms = ( (hours + minutes + seconds) * 1000 ) + (tv.tv_usec / 10000);
-		char buff[30];
-		//printf("%x -- ", ms);
-		
-		//convert from hex to array of bytes via a string
-		sprintf(buff, "%x", ms);
-		to_hex(buff, 0);
-		//for (i = 1; buff[i] != '\0'; i += 2)
-			//printf("%#x ", (unsigned char)buff[i]);
-			
-		//printf("\n");
-		
+	{		
 		sendBuffer = {	0x40, 		//Header
 						0x30, 
 						0x30, 
@@ -558,255 +445,141 @@ void makePacket(int command)
 						0x0A };		//Footer
 		
 		//Send
-		sendSize = 18;
-		write_port();
+		write_port(sendBuffer, 18);
 		
 		
 	}
 	else
 	{
-		printf("Parp.\n");
+		printf("Error: Unknown Command.\n");
 	}
 
+	/********* Print the packet that's being sent **********/
 	printf(">> ");
-	j = 0;
-	while(sendBuffer[j] != 0x0a)		//for(j = 0; j < sendBuffer[4] + 6; j++)
+	while(sendBuffer[j] != 0x0a)
 	{									
 		printf("%x : ", sendBuffer[j]);
 		j ++;
 	}
 	printf("%x", sendBuffer[j]);
 	printf("\n");
-		
-	clearPacket();
 	
 }
 
 /************************************************
- * 
  *  make a packet for sending mtHeadCommand
  * *********************************************/
 void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int endAngle, unsigned int ADspan, 
 					unsigned int ADlow, unsigned int gain, unsigned int ADInterval, unsigned int numBins)
 {
 	
+	int j = 0;
+	int drange = range * 10;
+	const unsigned int MAX_GAIN = 210;
+	unsigned int gainByte = (gain * MAX_GAIN);
 	
-	//{0x40, 0x30, 0x30, 0x30, 0x38, 0x08, 0x00, 0xFF, 0x02, 0x03, 0x17, 0x80, 0x02, 0x0A }
-	//Header
-	sendBuffer[0] = 0x40;			//Static
-	//hex length
-	sendBuffer[1] = 0x30;		
-	sendBuffer[2] = 0x30;
-	sendBuffer[3] = 0x34;		//0x36;
-	sendBuffer[4] = 0x43;		//0x30;
-	//binary length
-	sendBuffer[5] = 0x4C;		//0x3C;
-	sendBuffer[6] = 0x00;
-	//Source/Dest ID
-	sendBuffer[7] = 0xFF;			//Static ??
-	sendBuffer[8] = 0x02;			//Static ??
-	//ByteCount
-	sendBuffer[9] = 0x47;		//0x37;
-	//MSG
-		//Command
-		sendBuffer[10] = 0x13;
-		//
-		sendBuffer[11] = 0x80;
-		sendBuffer[12] = 0x02;
-		//mtHeadCommand Type; 1 = Normal, 29 = with appended V3B Gain Params for Dual Channel
-		sendBuffer[13] = 0x1D;		//0x01;
-	//Head Parameter Info.
-			//HdCtrl bytes
-			sendBuffer[14] = 0x85;
-			sendBuffer[15] = 0x23;
-	//HdType
-			sendBuffer[16] = 0x03;
-	//TxN/RxN Transmitter Constants
-			//TxN Channel 1
-			sendBuffer[17] = 0x99;		//Start
-			sendBuffer[18] = 0x99;		//Ignored by micron
-			sendBuffer[19] = 0x99;
-			sendBuffer[20] = 0x02;	
-			//TxN Channel 2
-			sendBuffer[21] = 0x66;
-			sendBuffer[22] = 0x66;		
-			sendBuffer[23] = 0x66;
-			sendBuffer[24] = 0x05;	
-			//RxN Channel 1
-			sendBuffer[25] = 0xA3;
-			sendBuffer[26] = 0x70;		
-			sendBuffer[27] = 0x3D;
-			sendBuffer[28] = 0x06;	
-			//RxN Channel 2
-			sendBuffer[29] = 0x70;
-			sendBuffer[30] = 0x3D;		
-			sendBuffer[31] = 0x00;
-			sendBuffer[32] = 0x09;
-	//TxPulseLen
-			sendBuffer[33] = 0x28;
-			sendBuffer[34] = 0x00;		//End
-	//RangeScale
-	 
-	  int drange = range * 10;
+					//Step 1, setup
+	sendBuffer = { 	0x40,						//Header
+					0x30,						//Hex Length
+					0x30,
+					0x34,
+					0x43,
+					0x4C,						//Binary Length
+					0x00,
+					0xFF,						//Source ID
+					0x02,						//Destination ID
+					0x47,						//Byte Count
+					//Step 2, Message
+					0x13,						//Command
+					0x80,
+					0x02,
+					0x1D,						//Head Command Type - 1 = Normal, 29 Dual Channel
+					0x85,						//HdCtrl bytes
+					0x23,
+					0x03,						//Head Type
+					0x99,						//TxN Channel 1
+					0x99,
+					0x99,
+					0x02,
+					0x66,						//TxN Channel 2
+					0x66,
+					0x66,
+					0x05,
+					0xA3,						//RxN Channel 1
+					0x70,
+					0x3D,
+					0x06,
+					0x70,						//RxN Channel 2
+					0x3D,
+					0x00,
+					0x09,
+					0x28,						//TxPulse Length
+					0x00,
+					(drange & 0xFF),			//Range Scale
+					((drange >> 8) & 0xFF),
+					(startAngle & 0xFF),		//Left Angle Limit
+					((startAngle >> 8) & 0xFF),	
+					(endAngle & 0xFF),			//Right Angle Limit
+					((endAngle >> 8) & 0xFF),
+					(ADspan * 255 / 80),
+					(ADlow * 255 / 80),
+					gainByte,					//IGain Settings	
+					gainByte,
+					0x5A,						//Slope Setting
+					0x00,
+					0x7D,
+					0x00,
+					0x20,						//MoTime
+					16,							//Step Angle Size
+					(ADInterval & 0xFF),		//ADInterval
+					((ADInterval >> 8) & 0xFF),
+					(numBins & 0xFF),			//Number of Bins
+					((numBins >> 8) & 0xFF),
+					0xE8,						//MaxADbuf
+					0x03,
+					0x97,						//Lockout
+					0x03,
+					0x40,						//Minor Axis Direction
+					0x06,
+					0x01,						//Major Axis Direction
+					0x00,						//Ctrl2
+					0x00,						//ScanZ
+					0x00,
+					//Step 3, ???
+					0x50,
+					0x51,
+					0x09,
+					0x08,
+					0x54,
+					0x54,
+					0x00,
+					0x00,
+					0x5A,
+					0x00,
+					0x7D,
+					0x00,
+					0x00,
+					0x00,
+					0x00,
+					0x00,
+					//Step 4, Profit.
+					0x0A};						//Terminator (2, 1 is pretty terrible.)
 
-			sendBuffer[35] = (drange & 0xFF); 				//0x3C;
-			sendBuffer[36] = ((drange >> 8) & 0xFF); 		//0x00;
-	//LeftAngleLimit
-			sendBuffer[37] = (startAngle & 0xFF); 			//0x01;
-			sendBuffer[38] = ((startAngle >> 8) & 0xFF); 	//0x00;
-	//RightAngleLiimit
-			sendBuffer[39] = (endAngle & 0xFF); 			//0xFF;
-			sendBuffer[40] = ((endAngle >> 8) & 0xFF);		//0x18; 
-	//ADSpan
-			sendBuffer[41] = (ADspan * 255 / 80); 			//0x51; 
-	//ADLow
-			sendBuffer[42] = (ADlow * 255 / 80); 			//0x08;
-			
-		const unsigned int MAX_GAIN = 210;
-			unsigned int gainByte = (gain * MAX_GAIN);
-			
-	//IGain Setting
-			sendBuffer[43] = gainByte;							//0x54;
-			sendBuffer[44] = gainByte;							//0x54;
-	//SlopeSetting
-			sendBuffer[45] = 0x5A;		//Should be ignored
-			sendBuffer[46] = 0x00;		// ""
-			sendBuffer[47] = 0x7D;		// ""
-			sendBuffer[48] = 0x00;		// ""
-	//MoTime
-			sendBuffer[49] = 0x20;		//3.2 usec motor step time
-	//StepAngleSize
-			sendBuffer[50] = 16; 					//0x10;		
-	//ADInterval
-			sendBuffer[51] = (ADInterval & 0xFF); //0x8D;
-			sendBuffer[52] = ((ADInterval >> 8) & 0xFF); //0x00;
-	//Description of NBins
-			sendBuffer[53] = (numBins & 0xFF);		//0x5A;
-			sendBuffer[54] = ((numBins >> 8) & 0xFF);		//0x00;
-	//MaxADbuf
-			sendBuffer[55] = 0xE8;
-			sendBuffer[56] = 0x03;
-	//Lockout
-			sendBuffer[57] = 0x97;
-			sendBuffer[58] = 0x03;
-	//MinorAxisDirection
-			sendBuffer[59] = 0x40;
-			sendBuffer[60] = 0x06;
-	//MajorAxisDirection
-			sendBuffer[61] = 0x01;
-	//Ctl2
-			sendBuffer[62] = 0x00;
-	//ScanZ
-			sendBuffer[63] = 0x00;
-			sendBuffer[64] = 0x00;	
-			
-	//for( i = 65; i < 82; i++ )
-	//	sendBuffer[i] = 0x00;
-		
-			sendBuffer[65] = 0x50;
-			sendBuffer[66] = 0x51;
-			sendBuffer[67] = 0x09;
-			sendBuffer[68] = 0x08;
-			sendBuffer[69] = 0x54;
-			sendBuffer[70] = 0x54;
-			sendBuffer[71] = 0x00;
-			sendBuffer[72] = 0x00;
-			sendBuffer[73] = 0x5A;
-			sendBuffer[74] = 0x00;
-			sendBuffer[75] = 0x7D;
-			sendBuffer[76] = 0x00;
-			sendBuffer[77] = 0x00;
-			sendBuffer[78] = 0x00;
-			sendBuffer[79] = 0x00;
-			sendBuffer[80] = 0x00;
-			
-	//Terminator
-	sendBuffer[81] = 0x0A;			//Static
 
-	printf("hi\n");
-	
-	int j;
-		printf(">> ");
-	j = 0;
-	while(sendBuffer[j] != 0x0a)		//for(j = 0; j < sendBuffer[4] + 6; j++)
+	/********* Print the packet that's being sent **********/
+	printf(">> ");
+	while(sendBuffer[j] != 0x0a)
 	{									
 		printf("%x : ", sendBuffer[j]);
 		j ++;
 	}
+	printf("%x", sendBuffer[j]);
 	printf("\n");
 	
-	sendSize = 82;
-	write_port();
-	clearPacket();
+	write_port(sendBuffer, 82);
 	
 }
-/************************************************
- * 
- *  not doing anything but printing the time at the moment.
- * *********************************************/
-int makeSendData()
-{
-	
-	struct timeval tv;
 
-	gettimeofday(&tv, NULL); 
-	
-	int seconds = tv.tv_sec % 60;
-	int minutes = tv.tv_sec % 3600;
-	int hours = tv.tv_sec % 86400;
-	
-	printf("%d:%d:%d.%d -- ", hours / 3600 , minutes / 60 , seconds, tv.tv_usec / 10000);
-	
-	int ms = ( (hours + minutes + seconds) * 1000 ) + (tv.tv_usec / 10000);
-	
-	char buff[30];
-	
-	printf("%x -- ", ms);
-	sprintf(buff, "%x", ms);
-	
-	to_hex(buff, 0);
-
-	for (i = 1; buff[i] != '\0'; i += 2)
-		printf("%#x ", (unsigned char)buff[i]);
-		
-	printf("\n");
-
-}
-
-/************************************************
- * 
- *  Clear packet, clears the sendBuffer and 
- * returns a 1 to show it's done. 
- * 
- * *********************************************/
-int clearPacket(void)
-{
-	
-	for( i = 0; i < 82; i ++)
-		sendBuffer[i] = 0;
-		
-	return 1;
-}
-
-/**********************************************
- * Prinf the packet
- * *******************************************/
-void prinfPacket(void)
-{
-
-	int i;
-	
-	printf("%d : ", buffLen);
-	printf("%d ", header);
-	printf("| %d - %d |", hLength, bLength);
-	printf(" %d |", byteCount);
-	
-	for(i = 0; i < msgLen; i ++)
-		printf("%x : ", msg[i]);
-	
-	printf(" %d |\n\n", term);
-					
-}
 /**********************************************
  * Find the length of the packet
  * Flag = 0 - sendBuffer
@@ -816,28 +589,9 @@ void prinfPacket(void)
 int packetLength(int flag)
 {
 	
-	int len, temp;
-	//sendBuffer
-	if(flag == 0)
-	{
-	
-		//Check for a 0 and i the value before is 0x10 it's the end of the packet
-		while(1)
-		{
-			while( sendBuffer[len] != 0 )
-			{
-				len++;
-				
-				if( sendBuffer[len] == 0 && temp == 0x10 )
-					return len;
-				
-				temp = sendBuffer[len];
-			}
-		}
-
-	}
+	int len, temp = 0;
 	//rcvBuffer
-	else if(flag == 1)
+	if(flag == 1)
 	{
 	
 		while(1)
@@ -901,14 +655,4 @@ int initSonar(void)
 	
 	return -1;
 	
-}
-
-void to_hex(char buf[], int i)
-{
-  if (*buf == '\0')
-    return;
-
-  to_hex(buf + 2, i + 1);
-  buf[1] = strtol(buf, NULL, 16);
-  *buf = '\0';
 }

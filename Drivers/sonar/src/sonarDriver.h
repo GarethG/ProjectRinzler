@@ -10,15 +10,11 @@ unsigned int getU8(void);
 int sortPacket(void);
 int returnMsg();
 void makePacket(int command);
-int clearPacket(void);
 void prinfPacket(void);
 int packetLength(int flag);
 void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int endAngle, unsigned int ADspan, 
 					unsigned int ADlow, unsigned int gain, unsigned int ADInterval, unsigned int numBins);
 int initSonar(void);
-int makeSendData();
-void to_hex(char buf[], int i);
-void flush(void);
 
 
 /* Defines */
