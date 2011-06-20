@@ -51,6 +51,7 @@ int main(int argc, char **argv){
 			while(go != 1.0){
 
 				ros::spinOnce();
+				ROS_WARNING("%s waiting for go",argv[1]);
 			}
 
 			ros::spinOnce();
@@ -102,6 +103,7 @@ int main(int argc, char **argv){
 			while(go != 1.0){
 
 				ros::spinOnce();
+				ROS_WARNING("%s waiting for go",argv[1]);
 			}
 
 			ros::spinOnce();
@@ -157,6 +159,7 @@ int main(int argc, char **argv){
 			while(go != 1.0){
 
 				ros::spinOnce();
+				ROS_WARNING("%s waiting for go",argv[1]);
 			}
 
 			ros::spinOnce();
