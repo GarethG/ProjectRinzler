@@ -9,13 +9,9 @@
 #include "ros/ros.h"
 #include "sonarDriver.h"
 
-#define SENDBUFFSIZE 82
-
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
-
-unsigned char sendBuffer[82];
 	
 unsigned char header,	//Message Header. 
 			hLength,	//Hex Length of whole binary packet
@@ -114,7 +110,7 @@ int main( int argc, char **argv )
 								printf("\t<< mtHeadData!!\n");
 								while(1)
 								{
-									//winning
+									return 0;
 								}
 							}
 							//end mtHeadData
@@ -142,7 +138,8 @@ int main( int argc, char **argv )
 ** Opens serial port S0		**
 *********************************/
 
-int open_port(void){	
+int open_port(void)
+{	
 
 	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY);// O_NDELAY |
 	//printf("/dev/ttyS0\n");
@@ -161,7 +158,8 @@ int open_port(void){
 ** Configures the serial port	**
 *********************************/
 
-void config_port(void){
+void config_port(void)
+{
 	struct termios options1;
 
 	tcgetattr(fd, &options1);
@@ -193,7 +191,8 @@ void config_port(void){
 ** which will get it to send some info back	**
 *************************************************/
 
-int write_port(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize){
+int write_port(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize)
+{
 	
 	int n;
 
@@ -272,7 +271,8 @@ unsigned int getU16(unsigned int tmp1, unsigned int tmp2)
 ** an attempt to obtain a uint 8		**
 *************************************************/
 
-unsigned int getU8(void){
+unsigned int getU8(void)
+{
 	return *rBptr++;	//returns the current point on the array and shifts along (a U8)
 }
 
@@ -315,7 +315,6 @@ int sortPacket(void)
 		if(i >= 1 && temp[i] == 0x40 && temp[i-1] == 0x0a)
 		{
 			buffLen = i;
-			printf("buffLen %d - %x\n", buffLen, temp[buffLen]);
 		}
 		
 	}
@@ -380,7 +379,7 @@ int sortPacket(void)
 /*************************************************
  * just returns the first value of the msg 
  * *********************************************/
-int returnMsg()
+int returnMsg(void)
 {
 	return msg[0];
 }
@@ -401,6 +400,9 @@ void makePacket(int command)
 	
 	if(command == mtReBoot || command == mtSendVersion || command == mtSendBBUser)
 	{
+		
+		unsigned char sendBuffer[14];
+		
 		sendBuffer = {	0x40, 		//Header
 						0x30, 
 						0x30, 
@@ -425,6 +427,9 @@ void makePacket(int command)
 
 	else if(command == mtSendData)
 	{		
+		
+		unsigned char sendBuffer[18];
+		
 		sendBuffer = {	0x40, 		//Header
 						0x30, 
 						0x30, 
@@ -455,14 +460,14 @@ void makePacket(int command)
 	}
 
 	/********* Print the packet that's being sent **********/
-	printf(">> ");
-	while(sendBuffer[j] != 0x0a)
-	{									
-		printf("%x : ", sendBuffer[j]);
-		j ++;
-	}
-	printf("%x", sendBuffer[j]);
-	printf("\n");
+//	printf(">> ");
+//	while(sendBuffer[j] != 0x0a)
+//	{									
+//		printf("%x : ", sendBuffer[j]);
+//		j ++;
+//	}
+//	printf("%x", sendBuffer[j]);
+//	printf("\n");
 	
 }
 
@@ -477,6 +482,7 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 	int drange = range * 10;
 	const unsigned int MAX_GAIN = 210;
 	unsigned int gainByte = (gain * MAX_GAIN);
+	unsigned char sendBuffer[82];
 	
 					//Step 1, setup
 	sendBuffer = { 	0x40,						//Header
@@ -567,14 +573,14 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 
 
 	/********* Print the packet that's being sent **********/
-	printf(">> ");
-	while(sendBuffer[j] != 0x0a)
-	{									
-		printf("%x : ", sendBuffer[j]);
-		j ++;
-	}
-	printf("%x", sendBuffer[j]);
-	printf("\n");
+//	printf(">> ");
+//	while(sendBuffer[j] != 0x0a)
+//	{									
+//		printf("%x : ", sendBuffer[j]);
+//		j ++;
+//	}
+//	printf("%x", sendBuffer[j]);
+//	printf("\n");
 	
 	write_port(sendBuffer, 82);
 	
