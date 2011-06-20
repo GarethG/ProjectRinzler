@@ -1,1 +1,1 @@
-sudo rsync -azvv -e ssh ProjectRinzler/ uwesub@192.168.2.10:/home/uwesub/ --exclude-from 'exclude.txt'
+sudo rsync -azvv -e ssh ~/ProjectRinzler/ uwesub@192.168.2.10:/home/uwesub/ProjectRinzler/ --exclude-from 'exclude.txt'

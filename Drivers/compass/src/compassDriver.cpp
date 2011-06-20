@@ -60,6 +60,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 				compassHeading.data = heading;	
 				compassPitch.data = pitch;
 				compassRoll.data = roll;
+				ROS_DEBUG("H: %.3f P: %.3f R: %.3f",heading,pitch,roll);
 				
 			}
 			else{

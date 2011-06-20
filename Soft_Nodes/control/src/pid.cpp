@@ -66,6 +66,8 @@ int main(int argc, char **argv){
 			leftRateMsg.publish(leftRate);
 			rightRateMsg.publish(rightRate);
 
+			ROS_DEBUG("Heading PID Left %.3f PID Right %.3f",leftRate.data,rightRate.data);
+
 			loop_rate.sleep();
 
 		}
@@ -123,6 +125,8 @@ int main(int argc, char **argv){
 
 			frontRateMsg.publish(frontRate);
 
+			ROS_DEBUG("Depth PID Front %.3f",frontRate.data);
+
 			loop_rate.sleep();
 
 		}
@@ -164,6 +168,8 @@ int main(int argc, char **argv){
 			}
 
 			backPRateMsg.publish(backPRate);
+
+			ROS_DEBUG("Pitch PID Back %.3f",backPRate.data);
 
 			loop_rate.sleep();
 

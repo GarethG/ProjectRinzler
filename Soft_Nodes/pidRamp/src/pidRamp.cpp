@@ -50,6 +50,8 @@ int main(int argc, char **argv){
 		rightMsg.publish(pidRampRight);
 		backMsg.publish(pidRampBack);
 
+		ROS_DEBUG("F: %.3f L: %.3f R: %.3f B: %.3f",pidRampFront.data,pidRampLeft.data,pidRampRight.data,pidRampBack.data);
+
 		loop_rate.sleep();
 
 	}
