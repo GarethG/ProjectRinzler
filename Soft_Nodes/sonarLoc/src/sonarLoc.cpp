@@ -9,8 +9,18 @@
 //#include "sonarDriver.h"
 
 using namespace std;
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//Subcribe -Sonar_Driver: gradients, binIndex // also later scale in meters and number of samples
+//Publish -Sonar_Driver: X(leftlim+ engage stare),Y(leftlim+ engage stare), 360 scan when holding pos? >> gmapper?
 
-//INPUT - gradients, binIndex // also later scale in meters and number of samples
+//Subcribe - Waypoint_manager: current waypoint // does not exist - make simulated input
+//Publish - Waypoint_manager: X, Y
+
+//Subcribe - Compass: Current Heading
+
+//Publish - Control: output theta & thruster step, required full stop and end theta
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//current position >> difference >> Target waypoint >> size of/ number of actual thruster 'steps'
 
 //250 BINS
 //BINS 0 to 255
@@ -20,6 +30,7 @@ using namespace std;
 // 20Meters * bin55 / 200 samples
 
 //clockwise, zero degrees behind
+
 
 
 int main( int argc, char **argv )
