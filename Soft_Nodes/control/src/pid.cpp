@@ -39,7 +39,7 @@ int main(int argc, char **argv){
 		ros::Subscriber sub3 = pidN.subscribe("pilotSpeed", 100, speedCallback);
 		ros::Subscriber sub4 = pidN.subscribe("pilotGo", 100, goCallback);
 
-		ros::Rate loop_rate(1);
+		ros::Rate loop_rate(10);
 
 		ROS_INFO("Heading PID Online");
 
@@ -53,11 +53,10 @@ int main(int argc, char **argv){
 				while(go != 1.0){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
-					loop_rate.sleep();
+					ros::Duration(1.0).sleep();
 				}
 				ROS_INFO("%s given the go",argv[1]);
 				loop_rate.sleep();
-				ros::Rate loop_rate(10);
 				once = 0;
 			}
 
@@ -97,7 +96,7 @@ int main(int argc, char **argv){
 		ros::Subscriber sub2 = pidN.subscribe("pilotDepth", 100, targetDepthCallback);
 		ros::Subscriber sub3 = pidN.subscribe("pilotGo", 100, goCallback);
 
-		ros::Rate loop_rate(1);
+		ros::Rate loop_rate(10);
 
 		ROS_INFO("Depth PID Online");
 
@@ -111,11 +110,10 @@ int main(int argc, char **argv){
 				while(go != 1.0){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
-					loop_rate.sleep();
+					ros::Duration(1.0).sleep();
 				}
 				ROS_INFO("%s given the go",argv[1]);
 				loop_rate.sleep();
-				ros::Rate loop_rate(10);
 				once = 0;
 			}
 
@@ -159,7 +157,7 @@ int main(int argc, char **argv){
 		ros::Subscriber sub2 = pidN.subscribe("pilotPitch", 100, targetPitchCallback);
 		ros::Subscriber sub3 = pidN.subscribe("pilotGo", 100, goCallback);
 
-		ros::Rate loop_rate(1);
+		ros::Rate loop_rate(10);
 
 		ROS_INFO("Pitch PID Online");
 
@@ -173,11 +171,10 @@ int main(int argc, char **argv){
 				while(go != 1.0){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
-					loop_rate.sleep();
+					ros::Duration(1.0).sleep();
 				}
 				ROS_INFO("%s given the go",argv[1]);
 				loop_rate.sleep();
-				ros::Rate loop_rate(10);
 				once = 0;
 			}
 
