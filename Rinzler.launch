@@ -1,17 +1,17 @@
 <launch>
 	<!-- DISPLAY NAME	NODE NAME	RUN NAME	ARGUMENTS	-->
 	<!-- Soft Nodes -->
-	<!-- <node name="spam"	pkg="spammer"	type="spam"			/> -->
-	<node name="Heading"	pkg="control"	type="pid"	args="heading"	/>
-	<node name="Depth"	pkg="control"	type="pid"	args="depth"	/>
-	<node name="Pitch"	pkg="control"	type="pid"	args="pitch"	/>
-	<node name="RearMod"	pkg="depthMod"	type="depthMod"			/>
-	<node name="PIDRamp"	pkg="pidRamp"	type="slew"			/>
+	<!-- <node name="spam"		pkg="spammer"	type="spam"			/> -->
+	<!-- <node name="Heading"	pkg="control"	type="pid"	args="heading"	/> -->
+	<!-- <node name="Depth"		pkg="control"	type="pid"	args="depth"	/> -->
+	<!-- <node name="Pitch"		pkg="control"	type="pid"	args="pitch"	/> -->
+	<!-- <node name="RearMod"	pkg="depthMod"	type="depthMod"			/> -->
+	<!-- <node name="PIDRamp"	pkg="pidRamp"	type="slew"			/> -->
 
 	<!-- Drivers -->
-	<node name="Motors"	pkg="motor"	type="motor"			/>
-	<node name="Compass"	pkg="compass"	type="compass"			/>
+	<!-- <node name="Motors"	pkg="motor"	type="motor"			/> -->
+	<node name="Compass"		pkg="compass"	type="compass"			/>
 
 	<!-- High Level -->
-	<!-- <node name="Pilot"	pkg="pilot"	type="pilot"			/> -->
+	<!-- <node name="Pilot"		pkg="pilot"	type="pilot"			/> -->
 </launch>

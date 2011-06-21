@@ -12,6 +12,7 @@
 int main(int argc, char **argv){
 
 	float tmp;
+	unsigned char once = 1;
 
 	ros::init(argc, argv, "pid");
 
@@ -38,7 +39,7 @@ int main(int argc, char **argv){
 		ros::Subscriber sub3 = pidN.subscribe("pilotSpeed", 100, speedCallback);
 		ros::Subscriber sub4 = pidN.subscribe("pilotGo", 100, goCallback);
 
-		ros::Rate loop_rate(10);
+		ros::Rate loop_rate(1);
 
 		ROS_INFO("Heading PID Online");
 
@@ -50,7 +51,12 @@ int main(int argc, char **argv){
 
 			while(go != 1.0){
 				ros::spinOnce();
+				loop_rate.sleep();
 				ROS_WARN("%s waiting for go",argv[1]);
+			}
+			if(once){
+				ros::Rate loop_rate(10);
+				once = 0;
 			}
 
 			ros::spinOnce();
@@ -87,7 +93,7 @@ int main(int argc, char **argv){
 
 		ros::Subscriber sub1 = pidN.subscribe("svpDepth", 100, depthCallback);
 		ros::Subscriber sub2 = pidN.subscribe("pilotDepth", 100, targetDepthCallback);
-		ros::Subscriber sub3 = pidN.subscribe("goNode", 100, goCallback);
+		ros::Subscriber sub3 = pidN.subscribe("pilotGo", 100, goCallback);
 
 		ros::Rate loop_rate(10);
 
@@ -101,7 +107,12 @@ int main(int argc, char **argv){
 			
 			while(go != 1.0){
 				ros::spinOnce();
+				loop_rate.sleep();
 				ROS_WARN("%s waiting for go",argv[1]);
+			}
+			if(once){
+				ros::Rate loop_rate(10);
+				once = 0;
 			}
 
 			ros::spinOnce();
@@ -142,7 +153,7 @@ int main(int argc, char **argv){
 
 		ros::Subscriber sub1 = pidN.subscribe("compassPitch", 100, pitchCallback);
 		ros::Subscriber sub2 = pidN.subscribe("pilotPitch", 100, targetPitchCallback);
-		ros::Subscriber sub3 = pidN.subscribe("goNode", 100, goCallback);
+		ros::Subscriber sub3 = pidN.subscribe("pilotGo", 100, goCallback);
 
 		ros::Rate loop_rate(10);
 
@@ -156,7 +167,12 @@ int main(int argc, char **argv){
 
 			while(go != 1.0){
 				ros::spinOnce();
+				loop_rate.sleep();
 				ROS_WARN("%s waiting for go",argv[1]);
+			}
+			if(once){
+				ros::Rate loop_rate(10);
+				once = 0;
 			}
 
 			ros::spinOnce();
