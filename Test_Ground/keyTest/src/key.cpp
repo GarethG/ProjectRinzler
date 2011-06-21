@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 		if(c!='Y'){
 			ROS_INFO("Would you like to go yet? Y to go.");
 			scanf("%c",&c);
-			keyGo.data == 1.0;
+			keyGo.data = 1.0;
 		}
 		if(c=='Y'){		
 			ROS_INFO("Please Enter Your Heading (Float)");
@@ -95,6 +95,9 @@ int main(int argc, char **argv){
 			keyDepthMsg.publish(keyDepth);
 			keyPitchMsg.publish(keyPitch);
 			keySpeedMsg.publish(keySpeed);
+
+			ros::spinOnce();
+
 		}
 	}
 
