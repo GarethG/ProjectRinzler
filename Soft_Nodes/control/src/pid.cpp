@@ -56,6 +56,7 @@ int main(int argc, char **argv){
 					loop_rate.sleep();
 				}
 				ROS_INFO("%s given the go",argv[1]);
+				loop_rate.sleep();
 				ros::Rate loop_rate(10);
 				once = 0;
 			}
@@ -113,6 +114,7 @@ int main(int argc, char **argv){
 					loop_rate.sleep();
 				}
 				ROS_INFO("%s given the go",argv[1]);
+				loop_rate.sleep();
 				ros::Rate loop_rate(10);
 				once = 0;
 			}
@@ -174,6 +176,7 @@ int main(int argc, char **argv){
 					loop_rate.sleep();
 				}
 				ROS_INFO("%s given the go",argv[1]);
+				loop_rate.sleep();
 				ros::Rate loop_rate(10);
 				once = 0;
 			}

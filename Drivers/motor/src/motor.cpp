@@ -25,6 +25,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Subscriber sub2 = motorN.subscribe("pidRampLeft",	100, leftCallback);
 	ros::Subscriber sub3 = motorN.subscribe("pidRampRight",	100, rightCallback);
 	ros::Subscriber sub4 = motorN.subscribe("pidRampBack",	100, backCallback);
+	ros::Subscriber sub5 = motorN.subscribe("pilotGo",	100, goCallback);
 
 	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
@@ -38,6 +39,8 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 				loop_rate.sleep();
 			}
 			ROS_INFO("Motors given the go");
+			loop_rate.sleep();
+			ros::Rate loop_rate(10);
 			once = 0;
 		}
 		ros::spin();
