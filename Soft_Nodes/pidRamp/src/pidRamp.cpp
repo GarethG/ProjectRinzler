@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 	ros::Subscriber sub4 = pidRampN.subscribe("backRate", 100, backRateCallback);
 
 
-	ros::Rate loop_rate(50);
+	ros::Rate loop_rate(25);
 
 	ROS_INFO("PID Rate Online");
 

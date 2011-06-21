@@ -10,6 +10,7 @@
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
+	unsigned char once = 1;
 	ros::init(argc, argv, "motor");	//inits the driver
 
 	/* Messages and services */
@@ -25,11 +26,20 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Subscriber sub3 = motorN.subscribe("pidRampRight",	100, rightCallback);
 	ros::Subscriber sub4 = motorN.subscribe("pidRampBack",	100, backCallback);
 
-	//ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
 	initMotors();
 
 	while (ros::ok()){
+		if(once){
+			while(go != 1.0){
+				ros::spinOnce();
+				ROS_WARN("Motors waiting for go");
+				loop_rate.sleep();
+			}
+			ROS_INFO("Motors given the go");
+			once = 0;
+		}
 		ros::spin();
 	}
 
@@ -42,6 +52,15 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	printf("Shutting Down\n");
 
 	return 0;
+}
+
+/*************************************************
+** Returns the go signal			**
+*************************************************/
+
+void goCallback(const std_msgs::Float32::ConstPtr& pilotGo){
+	go = pilotGo->data;
+	return;
 }
 
 /*************************************************

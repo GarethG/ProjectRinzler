@@ -30,8 +30,11 @@ unsigned int	frontUPWM,
 		rightUPWM,
 		backUPWM;
 
+float go = 0.0;
+
 /* Function Declarations */
 
+void goCallback(const std_msgs::Float32::ConstPtr& pilotGo);
 void updatePWM(unsigned int channel, unsigned int rate);
 void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront);
 void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft);
