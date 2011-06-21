@@ -96,7 +96,7 @@ int main(int argc, char **argv){
 		ros::Subscriber sub2 = pidN.subscribe("pilotDepth", 100, targetDepthCallback);
 		ros::Subscriber sub3 = pidN.subscribe("pilotGo", 100, goCallback);
 
-		ros::Rate loop_rate(10);
+		ros::Rate loop_rate(1);
 
 		ROS_INFO("Depth PID Online");
 
@@ -157,7 +157,7 @@ int main(int argc, char **argv){
 		ros::Subscriber sub2 = pidN.subscribe("pilotPitch", 100, targetPitchCallback);
 		ros::Subscriber sub3 = pidN.subscribe("pilotGo", 100, goCallback);
 
-		ros::Rate loop_rate(10);
+		ros::Rate loop_rate(1);
 
 		ROS_INFO("Pitch PID Online");
 
