@@ -59,4 +59,7 @@ void makeHeadPacket(unsigned int range,
 
 int packetLength(int flag);
 
-int initSonar(void);
+int initSonar( void );
+int sendBB( void );
+int headSetup( void );
+int requestData( void );

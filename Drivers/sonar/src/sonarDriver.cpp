@@ -9,18 +9,27 @@
 #include "ros/ros.h"
 #include "sonarDriver.h"
 
+#define	RANGE			5
+#define	LEFTANGLE		0
+#define	RIGHTANGLE		6399
+#define	ADSPAN			81
+#define	ADLOW			8
+#define	GAIN			84
+#define	ADINTERVAL		141
+#define	NUMBEROFBINS	90
+
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
 	
-unsigned char header,	//Message Header. 
-			hLength,	//Hex Length of whole binary packet
-			bLength,	//Binary Word of above Hex Length.
-			sID,		//Packet Source Identification
-			dID,		//Packet Destination Identification
-			byteCount,	//Byte Count of attached message that follows this byte.
-			msg[263],	//Command / Reply Message
-			term;		//Message Terminator
+unsigned char 	header,		//Message Header. 
+				hLength,	//Hex Length of whole binary packet
+				bLength,	//Binary Word of above Hex Length.
+				sID,		//Packet Source Identification
+				dID,		//Packet Destination Identification
+				byteCount,	//Byte Count of attached message that follows this byte.
+				msg[263],	//Command / Reply Message
+				term;		//Message Terminator
 
 unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
 			bp1_buffLen,
@@ -31,105 +40,28 @@ unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
  *  Main; the master of functions, the definer of variables.
  * 
  * ***************************************************/
-
-
 int main( int argc, char **argv )
 {
-
-	int cmd = 0;
-	int o;
-
-/************ Open and Configure the Serial Port. ************/
-
+	
+	/* Open and Configure the Serial Port. */
 	open_port();	
 	config_port();
 	
-	while(cmd != 1)
-	{
-		
-/************ Initilaise the sonar **************/
-		if(initSonar() == 1)
-		{
-			
-			while(cmd != mtAlive)
-			{
-				if(sortPacket() == 1)
-				{
-					cmd = returnMsg();
-					//printf("%d : ", cmd);
+	printf("dihqwdi %x\n", getU16(0x85, 0x23));
 	
-					//Check for mtAlive
-					if(cmd == mtAlive)
-					{
-						//printf("blablabla\n");
-					
-					}
-				}
-			}
-			
-			usleep(500);
-			
-			//Make and send headcommand
-					
-			// Range, Left Angle, Right Angle, ADSpam, ADLow, Gain, ADInterval, Number of Bins.
-			makeHeadPacket(5, 0, 6399, 81, 8, 84, 141, 90);
-			printf(">> mtHeadCommand\n");
+	/* Initilise the sonar */
+	initSonar();
+	
+	/* optional, sendBBUser command, doesnt work :/ */
+	//sendBB();
+	
+	/* Make and send the head parameters, currently defined at the top of this file */
+	headSetup();
 
+	/* ask for some data, will get datas */
+	requestData();
 				
-				
-			if(sortPacket() == 1)
-			{
-				
-				cmd = returnMsg();
-				//printf("%d : ", cmd);
-				//Should return mtAlive 
-				//(need to check params too but not implemented yet)
-				if(cmd == mtAlive)
-				{
-					printf("\t<< mtAlive!\n");
-					
-					while(1)
-					{
-			
-					
-						//Make the sendData packet and send
-						makePacket(mtSendData);
-						printf(">> mtSendData\n");
-						
-						usleep(500);
-						//if you get some data back go forth
-						if(sortPacket() == 1)
-						{
-							
-							cmd = returnMsg();
-							//printf("hi %d\n", cmd);
-							
-							//If it's mtHeadData we winning.
-							if(cmd == mtHeadData)
-							{
-								printf("\t<< mtHeadData!!\n");
-								while(1)
-								{
-									return 0;
-								}
-							}
-							//end mtHeadData
-							
-						}
-						//end sortPacet() == 1	
-					}
-					
-				}
-				//mtAlive check							
-				
-
-			}
-			//end sortPacket() == 1				
-
-		}
-		
-		
-	}	
+	/* close file and exit program */			
 	close(fd);
 	return 0;
 }
@@ -137,7 +69,6 @@ int main( int argc, char **argv )
 /*********************************
 ** Opens serial port S0		**
 *********************************/
-
 int open_port(void)
 {	
 
@@ -157,7 +88,6 @@ int open_port(void)
 /*********************************
 ** Configures the serial port	**
 *********************************/
-
 void config_port(void)
 {
 	struct termios options1;
@@ -190,7 +120,6 @@ void config_port(void)
 ** Tries to transmit the message to the compass	**
 ** which will get it to send some info back	**
 *************************************************/
-
 int write_port(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize)
 {
 	
@@ -213,7 +142,6 @@ int write_port(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize)
 ** Reads data off of the serial port and will	**
 ** then return the data into returnBuffer	**
 *************************************************/
-
 int read_port(void){	
 
 	int n;
@@ -238,7 +166,6 @@ int read_port(void){
 ** When called will add together the inputs to make a U32
 * hacked from taylords code
 *************************************************/
-
 unsigned int getU32(unsigned int tmp1, unsigned int tmp2, unsigned int tmp3, unsigned int tmp4)
 {
 
@@ -255,7 +182,6 @@ unsigned int getU32(unsigned int tmp1, unsigned int tmp2, unsigned int tmp3, uns
 ** When called will add together the inputs to make a U16
 * hacked from taylords code
 *************************************************/
-
 unsigned int getU16(unsigned int tmp1, unsigned int tmp2)
 {
 
@@ -270,7 +196,6 @@ unsigned int getU16(unsigned int tmp1, unsigned int tmp2)
 ** When called will sift through the buffer in	**
 ** an attempt to obtain a uint 8		**
 *************************************************/
-
 unsigned int getU8(void)
 {
 	return *rBptr++;	//returns the current point on the array and shifts along (a U8)
@@ -342,7 +267,6 @@ int sortPacket(void)
 		msgLen ++;
 	}
 
-	
 	//What is prinf?
 
 	if(header == '@' && term == 10 && buffLen == bLength + 6)
@@ -486,12 +410,8 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 	
 					//Step 1, setup
 	sendBuffer = { 	0x40,						//Header
-					0x30,						//Hex Length
-					0x30,
-					0x34,
-					0x43,
-					0x4C,						//Binary Length
-					0x00,
+					0x30, 0x30, 0x34, 0x43, 	//Hex Length
+					0x4C, 0x00,					//Binary Length
 					0xFF,						//Source ID
 					0x02,						//Destination ID
 					0x47,						//Byte Count
@@ -500,27 +420,13 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 					0x80,
 					0x02,
 					0x1D,						//Head Command Type - 1 = Normal, 29 Dual Channel
-					0x85,						//HdCtrl bytes
-					0x23,
+					0x85, 0x2B,					//HdCtrl bytes  0x85, 0x23,
 					0x03,						//Head Type
-					0x99,						//TxN Channel 1
-					0x99,
-					0x99,
-					0x02,
-					0x66,						//TxN Channel 2
-					0x66,
-					0x66,
-					0x05,
-					0xA3,						//RxN Channel 1
-					0x70,
-					0x3D,
-					0x06,
-					0x70,						//RxN Channel 2
-					0x3D,
-					0x00,
-					0x09,
-					0x28,						//TxPulse Length
-					0x00,
+					0x99, 0x99, 0x99, 0x02,		//TxN Channel 1
+					0x66, 0x66, 0x66, 0x05,		//TxN Channel 2
+					0xA3, 0x70, 0x3D, 0x06,		//RxN Channel 1
+					0x70, 0x3D, 0x00, 0x09,		//RxN Channel 2
+					0x28, 0x00,					//TxPulse Length
 					(drange & 0xFF),			//Range Scale
 					((drange >> 8) & 0xFF),
 					(startAngle & 0xFF),		//Left Angle Limit
@@ -531,22 +437,16 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 					(ADlow * 255 / 80),
 					gainByte,					//IGain Settings	
 					gainByte,
-					0x5A,						//Slope Setting
-					0x00,
-					0x7D,
-					0x00,
+					0x5A, 0x00, 0x7D, 0x00,		//Slope Setting
 					0x20,						//MoTime
 					16,							//Step Angle Size
 					(ADInterval & 0xFF),		//ADInterval
 					((ADInterval >> 8) & 0xFF),
 					(numBins & 0xFF),			//Number of Bins
 					((numBins >> 8) & 0xFF),
-					0xE8,						//MaxADbuf
-					0x03,
-					0x97,						//Lockout
-					0x03,
-					0x40,						//Minor Axis Direction
-					0x06,
+					0xE8, 0x03,					//MaxADbuf
+					0x97, 0x03,					//Lockout
+					0x40, 0x06,					//Minor Axis Direction
 					0x01,						//Major Axis Direction
 					0x00,						//Ctrl2
 					0x00,						//ScanZ
@@ -615,50 +515,156 @@ int packetLength(int flag)
 		
 	}
 	else
+	{
 		return -1;
-	
-	
+	}
 }
+
 /**********************************************
  * Initilise sonar,
  * check alive, send version request, check for
  * reply
  * returns 1 if set up, -1 if failed.
  * *******************************************/
-int initSonar(void)
+int initSonar( void )
 {
-	int cmd;
-	//Read Port
-	if(sortPacket() == 1)
-	{
-		cmd = returnMsg();
-		//printf("%d : ", cmd);
 	
-		//Check for mtAlive
-		if(cmd == mtAlive)
+	int initFlag = 0, initAlive = 0;
+	
+	printf("-- Initilization\n");
+	
+	// Check port for mtAlive
+	while( initFlag != 1 )
+	{
+		
+		//Read Port
+		sortPacket();
+		
+		//Check for mtAlive command
+		if( returnMsg() == mtAlive )
 		{
 			printf("\t<< mtAlive!\n");
-			//Make mtSendVersion packet and send
+			initAlive = 1;
+			//Send over the mtSendVersion
 			makePacket(mtSendVersion);
 			printf(">> mtSendVersion\n");
 			
-			//Read Port
-			if(sortPacket() == 1)
-			{
-				
-				cmd = returnMsg();
-				
-				//Check for mtVersionData
-				if(cmd == mtVersionData)
-				{
-					printf("\t<< mtVersionData!\n");
-					
-					return 1;
-				}
-			}
 		}
+		// Did we get back mtVersionData and is the alive flag set?
+		else if( returnMsg() == mtVersionData && initAlive == 1)
+		{
+			printf("\t<< mtVersionData!\n");
+			initFlag = 1;
+		}
+		else if( initAlive == 1 )
+		{
+			makePacket(mtSendVersion);
+			printf(">> mtSendVersion\n");			
+		}
+		else
+		{
+			initFlag = 0;
+		}
+		
 	}
 	
-	return -1;
+	return 0;
+	
+}
+
+int sendBB( void )
+{
+	int bbFlag = 0;
+	
+	while( bbFlag != 1 )
+	{
+		
+		if( returnMsg() == mtBBUserData )
+		{
+			printf("\t<< mtBBUserData!\n");
+			bbFlag = 1;
+		}
+		else
+		{
+			makePacket(mtSendBBUser);
+			printf(">> mtSendBBUser\n");			
+		}
+		
+	}
+	
+	return 0;
+	
+}
+
+int headSetup( void )
+{
+	
+	int headFlag = 0;
+	
+	printf("-- Head Setup.\n");
+	
+	//Read Port
+	sortPacket();	
+
+	while( headFlag != 2)
+	{
+
+		if( returnMsg() == mtAlive && headFlag == 0)
+		{
+			printf("\t<< mtAlive!\n");
+			// Range, Left Angle, Right Angle, ADSpam, ADLow, Gain, ADInterval, Number of Bins.
+			makeHeadPacket(	RANGE, 
+							LEFTANGLE, 
+							RIGHTANGLE, 
+							ADSPAN, 
+							ADLOW, 
+							GAIN, 
+							ADINTERVAL, 
+							NUMBEROFBINS);
+			printf(">> mtHeadCommand\n");
+			headFlag = 1;
+		}
+		else if( returnMsg() == mtAlive && headFlag == 1)
+		{
+			printf("\t<< mtAlive!\n");
+			headFlag = 2;
+		}
+		else
+		{
+			headFlag = 0;
+		}
+		
+	}
+	return 0;
+	
+}
+
+int requestData( void )
+{
+	
+	int recieveFlag = 0;
+	
+	while(recieveFlag != 1)
+	{
+
+		//Make the sendData packet and send
+		makePacket(mtSendData);
+		printf(">> mtSendData\n");
+		
+		//usleep(500);
+		
+		sortPacket();
+		
+		//if you get some data back go forth
+		if(returnMsg() == mtHeadData)
+		{
+			printf("\t<< mtHeadData!!\n");
+			
+			recieveFlag = 1;
+		}
+			
+	}
+
+	return 0;
 	
 }
