@@ -125,7 +125,7 @@ void *rcvThread(void *arg){
 	std_msgs::Float64 dMsg;
 	std_msgs::Float64 vMsg;
 	std::stringstream ss;
-
+	ros::Rate loop_rate(3);
 	ROS_INFO("rcvThread: receive thread running on SVP node");
 
 	while (ros::ok()) {
@@ -169,6 +169,7 @@ void *rcvThread(void *arg){
 			svpResponseMsg.publish(msg); //the whole message
 			svpDepthMsg.publish(dMsg); //the whole message 
 			svpVeloMsg.publish(vMsg); //the whole message 
+			loop_rate.sleep();
 			//printf("%s \n",bufPos); //print the buffer to the screen - should remove this when everything is working
 			
 					
