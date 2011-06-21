@@ -3,4 +3,7 @@ bin
 .git
 ros_tutorials
 fwdcam
+spammer
+logger
+Test_Ground
 son*

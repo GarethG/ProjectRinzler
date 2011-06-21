@@ -1,4 +1,0 @@
-this is a list of data stuff in this folder
-
-bit pointless really I'm just messing around with git commits
-
