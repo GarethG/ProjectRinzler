@@ -64,8 +64,8 @@ int main(int argc, char **argv){
 
 			tmp = pid(targetHeading,heading);	//get PID value
 
-			leftRate.data = tmp;			//left does opposite of right
-			rightRate.data = (tmp * -1.0);
+			rightRate.data = tmp;			//left does opposite of right
+			leftRate.data = (tmp * -1.0);
 
 			leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
 			rightRate.data += speed;
