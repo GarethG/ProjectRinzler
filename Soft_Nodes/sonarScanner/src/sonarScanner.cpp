@@ -5,38 +5,39 @@
 #include "ros/ros.h"
 #include "sonarScanner.h"
 
-#define WIDTH	41
-#define HEIGHT 	41
+#define WIDTH	70
+#define HEIGHT 	70
 
 	int imageArray[HEIGHT][WIDTH];
+
+/************************************************
+ * 
+ * The maximum length of the sonar reading needs to be at most half
+ * the diameter of the displayed circle.
+ * 
+ * *********************************************/
 
 int main(int argc, char **argv)
 {
 	
 	ros::init(argc, argv, "sonarScanner");
 	
-	int i, j;
+	int i;
 	
-	for( i = 0; i < 360; i ++ )
+	while(1)
 	{
-		
-		pixelPlace( i, 20, 1 );
-		
-	}
-	
-	for( i = 0; i < HEIGHT; i ++ )
-	{
-		for( j = 0; j < WIDTH; j++ )
+		for( i = 0; i < 360; i ++ )
 		{
-			if(imageArray[i][j] == 1)
-				printf("X ");
-			else
-				printf("- ");
+		
+			pixelPlace( i, genRand(30), genRand(4) );
+		
 		}
-		printf("\n");
+		
+		printascii();
+		sleep(1);		
+		
 	}
-	
-	
+		
 	return 0;
 	
 }
@@ -83,6 +84,27 @@ void pixelPlace( unsigned int theta, unsigned int distance, unsigned opaqueVal )
 	
 	imageArray[x][y] = 1;
 	
+}
+
+void printascii( void )
+{
+	
+	int i, j;
+		
+	for( i = 0; i < HEIGHT; i ++ )
+	{
+		for( j = 0; j < WIDTH; j++ )
+		{
+			if(imageArray[i][j] == 1)
+			{
+				printf("X ");
+				imageArray[i][j] = 0;
+			}
+			else
+				printf("- ");
+		}
+		printf("\n");
+	}
 }
 
 int genRand( int n )

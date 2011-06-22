@@ -26,6 +26,8 @@
 #define STEPANGLE		1
 #define MOTIME			25
 
+#define THRESHOLD 		127
+
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
@@ -37,9 +39,10 @@ unsigned char 	header,		//Message Header.
 				dID,		//Packet Destination Identification
 				byteCount,	//Byte Count of attached message that follows this byte.
 				msg[263],	//Command / Reply Message
-				term,
-				bins[45],
-				bearing;		//Message Terminator
+				term;		//Message Terminator
+				
+unsigned int	bins,
+				bearing;		
 
 unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
 			bp1_buffLen,
@@ -56,20 +59,17 @@ int main( int argc, char **argv )
 {
 	
 	int i, j;
-	std::stringstream ssBins;
-	std::string sBins;
-	std::string sBearing;
-	
+
 	ros::init(argc, argv, "sonar");
 	
 	ros::NodeHandle n;
 	
 	//ros::Publisher nodenameVariablenameMsg = handle.outsidness<libraryname::type>("nodenameVariablename", bufflen?);					
-	ros::Publisher sonarBearingMsg = n.advertise<std_msgs::String>("sonarBearing", 100);
-	ros::Publisher sonarBinsMsg = n.advertise<std_msgs::ByteMultiArray>("sonarBins", 45);
+	ros::Publisher sonarBearingMsg = n.advertise<std_msgs::Float32>("sonarBearing", 100);
+	ros::Publisher sonarBinsMsg = n.advertise<std_msgs::Float32>("sonarBins", 100);
 	
-	std_msgs::String sonarBearing;
-	std_msgs::ByteMultiArray sonarBins;
+	std_msgs::Float32 sonarBearing;
+	std_msgs::Float32 sonarBins;
 	
 	/* Open and Configure the Serial Port. */
 	open_port();	
@@ -91,21 +91,14 @@ int main( int argc, char **argv )
 	{
 		requestData();
 
-		//for( j = 0; j < 45; j ++)
-		//{
-		//	sonarBins.data = bins[j];
-		//}
-			//sBins = bins[45];
-			ssBins << bearing;
-			ssBins >> sBearing;
-				
+
 		//pass datas	
-		sonarBearing.data = sBearing;
-		//sonarBins.data = bins[45];
+		sonarBearing.data = (float) bearing;
+		sonarBins.data = (float) bins;
 		
 		//publish
 		sonarBearingMsg.publish(sonarBearing);
-		//sonarBinsMsg.publish(sonarBins);
+		sonarBinsMsg.publish(sonarBins);
 		
 		ros::spinOnce();
 	}
@@ -273,7 +266,8 @@ int sortPacket(void)
 	buffLen, 		//length of the recieved buffer, output from read_port()
 	i,				//counter
 	temp[263],
-	msgLen;
+	msgLen,
+	binFlag;
 	
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
@@ -333,17 +327,20 @@ int sortPacket(void)
 		if(msg[0] == mtHeadData)
 		{
 			
+			binFlag = 0;
 			printf("\nBearing: %d\n Bins: ", getU16(temp[41], temp[40]) );
 			for(i = 44; i < buffLen-1; i++ )
 			{
 				printf("%d, ", temp[i]);
-				bins[i-44] = temp[i];
+				if(temp[i] >= THRESHOLD && binFlag == 0)
+				{
+					bins = i;
+					binFlag = 1;
+				}
 			}
 			printf("\n");
-
-			//pass datas	
+	
 			bearing = getU16(temp[41], temp[40]);
-		
 			
 		}
 		
