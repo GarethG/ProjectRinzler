@@ -6,12 +6,18 @@
 #include <GL/glfw.h> // Include OpenGL Framework library
 
 #include "ros/ros.h"
+
+#include "std_msgs/String.h"
+#include "std_msgs/Float32.h"
+#include "std_msgs/ByteMultiArray.h"
+
 #include "sonarScanner.h"
 
-#define WIDTH	800
+#define WIDTH	600
 #define HEIGHT 	600
 
-	int imageArray[HEIGHT][WIDTH];
+int imageArray[HEIGHT][WIDTH];
+unsigned int imgx = 0, imgy = 0;
 
 /************************************************
  * 
@@ -25,7 +31,14 @@ int main(int argc, char **argv)
 	
 	ros::init(argc, argv, "sonarScanner");
 	
+	/* Messages and services */
+
+	ros::NodeHandle scannerN;	
+	
 	int i;
+	
+	ros::Subscriber sub1 = scannerN.subscribe("sonarBearing", 100, bearingCallback);
+	ros::Subscriber sub2 = scannerN.subscribe("sonarBins", 100, binsCallback);
 	
 	// Frame counter and window settings variables
 	int frame      = 0, width  = WIDTH, height      = HEIGHT;
@@ -51,18 +64,19 @@ int main(int argc, char **argv)
 	
 	while (running == true)
 	{
-		for( i = 0; i < 360; i ++ )
-		{
-		
-			pixelPlace( i, genRand(200), genRand(255) );
-		
-		}
+
+		// Get ros subscriptions
+		ros::spinOnce();
+		//Do trig to get the xy position of the pixels for the image
+		pixelPlace( (int) (bearing  / 17.775), (int) bins * 6, genRand(255) );
 
 		// Increase our frame counter
 		frame++;
- 
-		// Draw our scene
-		drawScene();
+		//Debug
+		printf("Bearing : %f, Distance : %f, X : %d, Y : %d\n",  bearing / 17.775, bins * 6, imgx, imgy);
+		
+		// Draw the returned xy pixel on the image
+		drawScene(imgx, imgy);
  
 		// exit if ESC was pressed or window was closed
 		running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
@@ -76,51 +90,62 @@ int main(int argc, char **argv)
 	return 0;
 	
 }
-
+/****************************************************************
+ * Do trig to get the xy coordinates of the thing
+ * add on half width and half height so it's centred and some things need
+ * flipping to make them right 
+ * *********************************************************/
 void pixelPlace( unsigned int theta, unsigned int distance, unsigned opaqueVal )
 {
 	
 	int x, y;
-	
-	if( theta >= 0 && theta <= 90 )
+	if( theta > 0 && theta < 90 )
 	{
+		//printf("< 90\n");
 		x = distance * cos(theta);
 		y = distance * sin(theta);
-		
-		x = x + (WIDTH / 2);
-		y = y + (HEIGHT / 2);
+		printf("%d -- %d\n", x, y);
+		imgx = x + (WIDTH / 2);
+		imgy = y + (HEIGHT / 2);
+
 		
 	}
-	else if( theta >=91 && theta <= 180 )
+	else if( theta > 91 && theta < 180 )
 	{
+		//printf("> 90 && < 180\n");
 		y = distance * cos(theta);
 		x = distance * sin(theta);
 		
-		x = x + (WIDTH / 2);
-		y = (y * -1) + (HEIGHT / 2);		
+		imgx = x + (WIDTH / 2);
+		imgy = (y * -1) + (HEIGHT / 2);		
+
 	}
-	else if( theta >= 181 && theta <= 270 )
+	else if( theta > 181 && theta < 270 )
 	{
+		//printf("> 181 && < 270\n");
 		x = distance * cos(theta);
 		y = distance * sin(theta);		
 		
-		x = (x * -1) + (WIDTH / 2);
-		y = (y * -1) + (HEIGHT / 2);
+		imgx = (x * -1) + (WIDTH / 2);
+		imgy = (y * -1) + (HEIGHT / 2);
 		
 	}
 	else
 	{
+		//printf("> 271 && < 360\n");
 		y = distance * cos(theta);
 		x = distance * sin(theta);		
 		
-		x = (x * -1) + (WIDTH / 2);
-		y = y + (HEIGHT / 2);
+		imgx = (x * -1) + (WIDTH / 2);
+		imgy = y + (HEIGHT / 2);
 	}
 	
-	imageArray[x][y] = 1;
+	//imageArray[y][x] = 1;
 	
 }
-
+/****************************************************************
+ * print sonar readings in terminal, mega hacks. no longer used
+ * ***********************************************************/
 void printascii( void )
 {
 	
@@ -148,7 +173,9 @@ int genRand( int n )
     return rand() % n;
     
 }
-
+/***************************************************************
+ * set up an image using opengl
+ * *************************************************************/
 void initGL(int width, int height)
 {
 	// ----- Window and Projection Settings -----
@@ -183,14 +210,16 @@ void initGL(int width, int height)
  
 	glEnable(GL_POINT_SMOOTH);	// Enable anti-aliasing on points
 }
-
-void drawScene()
+/*************************************************************
+ * draw x, y position in red on the image
+ * ***********************************************************/
+void drawScene(unsigned int x, unsigned int y)
 {
 	
 	int i, j;
 	
 	// Clear the screen
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
  
 	// Reset the matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -201,22 +230,41 @@ void drawScene()
 	glBegin(GL_POINTS);
 	glColor3ub(255, 0, 0);
 	
-	for( i = 0; i < HEIGHT; i ++ )
-	{
-		for( j = 0; j < WIDTH; j++ )
-		{
-			if(imageArray[i][j] == 1)
-			{
-				glVertex2f(i, j);
-				imageArray[i][j] = 0;
-			}
+	//for( i = 0; i < HEIGHT; i ++ )
+	//{
+	//	for( j = 0; j < WIDTH; j++ )
+	//	{
+	//		if(imageArray[i][j] == 1)
+	//		{
+				glVertex2f(x, y);
+				glVertex2f(0, 0);
+	//			imageArray[i][j] = 0;
+	//		}
 
-		}
-	}
+	//	}
+	//}
 			
 	glEnd();
  
 	// ----- Stop Drawing Stuff! ------
  
 	glfwSwapBuffers(); // Swap the buffers to display the scene (so we don't have to watch it being drawn!)
+}
+
+/*************************************************
+** Returns the sonar bearing **
+*************************************************/
+
+void bearingCallback(const std_msgs::Float32::ConstPtr& sonarBearing){
+bearing = sonarBearing->data;
+return;
+}
+
+/*************************************************
+** Returns the sonar bearing **
+*************************************************/
+
+void binsCallback(const std_msgs::Float32::ConstPtr& sonarBins){
+bins = sonarBins->data;
+return;
 }

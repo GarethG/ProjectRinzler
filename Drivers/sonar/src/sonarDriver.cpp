@@ -17,16 +17,16 @@
 
 #define	RANGE			5
 #define	LEFTANGLE		0
-#define	RIGHTANGLE		256
+#define	RIGHTANGLE		1600
 #define	ADSPAN			81
 #define	ADLOW			8
 #define	GAIN			84
 #define	ADINTERVAL		141
 #define	NUMBEROFBINS	90
-#define STEPANGLE		1
+#define STEPANGLE		16
 #define MOTIME			25
 
-#define THRESHOLD 		127
+#define THRESHOLD 		207
 
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
@@ -87,7 +87,7 @@ int main( int argc, char **argv )
 	headSetup();
 
 	/* ask for some data, will get datas */
-	for( i = 0; i < 20; i ++)
+	for( i = 0; i < 200; i ++)
 	{
 		requestData();
 
@@ -328,17 +328,17 @@ int sortPacket(void)
 		{
 			
 			binFlag = 0;
-			printf("\nBearing: %d\n Bins: ", getU16(temp[41], temp[40]) );
+			printf("\nBearing: %f\n Bins: ", (float) getU16(temp[41], temp[40]) / 17.775 );
 			for(i = 44; i < buffLen-1; i++ )
 			{
-				printf("%d, ", temp[i]);
+				//printf("%d, ", temp[i]);
 				if(temp[i] >= THRESHOLD && binFlag == 0)
 				{
-					bins = i;
+					bins = i-44;
 					binFlag = 1;
 				}
 			}
-			printf("\n");
+			printf("%d\n", bins * 6);
 	
 			bearing = getU16(temp[41], temp[40]);
 			
