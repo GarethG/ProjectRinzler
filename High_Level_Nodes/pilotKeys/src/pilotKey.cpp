@@ -19,7 +19,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Publisher pilotHeadingMsg = pilotN.advertise<std_msgs::Float32>("pilotHeading", 100);
 	ros::Publisher pilotDepthMsg = pilotN.advertise<std_msgs::Float32>("pilotDepth", 100);
 	ros::Publisher pilotPitchMsg = pilotN.advertise<std_msgs::Float32>("pilotPitch", 100);
-	ros::Publisher pilotGoMsg = pilotN.advertise<std_msgs::Float32>("pilotGo", 100);
+	ros::Publisher pilotTGoMsg = pilotN.advertise<std_msgs::Float32>("pilotTGo", 100);
 	ros::Publisher pilotSpeedMsg = pilotN.advertise<std_msgs::Float32>("pilotSpeed", 100);
 
 	/*Sets up the message structures*/
@@ -27,7 +27,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 pilotHeading;
 	std_msgs::Float32 pilotDepth;
 	std_msgs::Float32 pilotPitch;
-	std_msgs::Float32 pilotGo;
+	std_msgs::Float32 pilotTGo;
 	std_msgs::Float32 pilotSpeed;
 
 
@@ -58,14 +58,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		}
 
 		pilotSpeed.data = speed;
-		pilotGo.data = go;
+		pilotTGo.data = go;
 		pilotHeading.data = heading;
 		pilotPitch.data = pitch;
 		pilotDepth.data = depth;
 
 		/*Below here we publish our readings*/
 		pilotSpeedMsg.publish(pilotSpeed);
-		pilotGoMsg.publish(pilotGo);
+		pilotTGoMsg.publish(pilotTGo);
 		pilotHeadingMsg.publish(pilotHeading);		
 		pilotDepthMsg.publish(pilotDepth);		
 		pilotPitchMsg.publish(pilotPitch);
