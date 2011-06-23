@@ -76,8 +76,12 @@ void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront){
 	frontUPWM += ZERO_DUTY_CYCLE_US;
 
 	ROS_DEBUG("Front: %u",frontUPWM);
-	
-	updatePWM(FRONT_MOTOR_CHANNEL, frontUPWM);
+	if(go == 1.0){
+		updatePWM(FRONT_MOTOR_CHANNEL, frontUPWM);
+	}
+	else{
+		updatePWM(FRONT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	}
 	return;
 }
 
@@ -93,7 +97,12 @@ void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft){
 
 	ROS_DEBUG("Left: %u",leftUPWM);
 	
-	updatePWM(LEFT_MOTOR_CHANNEL, leftUPWM);
+	if(go == 1.0){
+		updatePWM(LEFT_MOTOR_CHANNEL, leftUPWM);
+	}
+	else{
+		updatePWM(LEFT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	}
 	return;
 }
 
@@ -109,7 +118,12 @@ void rightCallback(const std_msgs::Float32::ConstPtr& pidRampRight){
 
 	ROS_DEBUG("Right: %u",rightUPWM);
 	
-	updatePWM(RIGHT_MOTOR_CHANNEL, rightUPWM);
+	if(go == 1.0){
+		updatePWM(RIGHT_MOTOR_CHANNEL, rightUPWM);
+	}
+	else{
+		updatePWM(RIGHT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	}
 	return;
 }
 
@@ -125,7 +139,12 @@ void backCallback(const std_msgs::Float32::ConstPtr& pidRampBack){
 
 	ROS_DEBUG("Back: %u",backUPWM);
 	
-	updatePWM(BACK_MOTOR_CHANNEL, backUPWM);
+	if(go == 1.0){
+		updatePWM(BACK_MOTOR_CHANNEL, backUPWM);
+	}
+	else{
+		updatePWM(BACK_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
+	}
 	return;
 }
 
