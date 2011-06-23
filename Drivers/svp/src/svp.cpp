@@ -23,7 +23,7 @@ using namespace std;
 
 
 #define DEFAULT_BAUDRATE 19200
-#define DEFAULT_SERIALPORT "/dev/ttyUSB0"
+#define DEFAULT_SERIALPORT "/dev/ttyS0"
 
 //Global data
 FILE *fpSerial = NULL;   //serial port file pointer
@@ -52,7 +52,7 @@ FILE *serialInit(char * port, int baud){
 	}
 
 	// set up new settings
-	memset(&newtio, 0,sizeof(newtio));
+	/*memset(&newtio, 0,sizeof(newtio));
 	newtio.c_cflag =  CS8 | CLOCAL | CREAD;  //no parity, 1 stop bit
 
 	newtio.c_iflag = IGNCR;    //ignore CR, other options off
@@ -82,7 +82,26 @@ FILE *serialInit(char * port, int baud){
 	}
 
 	tcsetattr(fd, TCSANOW, &newtio);
-	tcflush(fd, TCIOFLUSH);
+	tcflush(fd, TCIOFLUSH);*/
+
+	struct termios options;
+
+	tcgetattr(fd, &options);
+
+	cfsetispeed(&options, B19200);
+	cfsetospeed(&options, B19200);
+
+	options.c_cflag |= (CLOCAL | CREAD | CS8);
+
+	options.c_iflag = IGNPAR;
+	options.c_oflag = 0;
+	options.c_lflag = 0;
+	options.c_cc[VTIME] = 10;
+	options.c_cc[VMIN] = 0;
+	tcflush(fd, TCIFLUSH);
+
+	tcsetattr(fd, TCSANOW, &options);
+
 
 	//Open file as a standard I/O stream
 	fp = fdopen(fd, "r+");
