@@ -20,26 +20,12 @@ int fd; 				/* File descriptor for the port */
 char returnBuffer[100]; 	/*Buffer which stores read data*/
 float depth, velocity;		/*Floats for the returned values*/
 
+/*********************************
+** Reads the data		**
+*********************************/
+
 int read_port(void){	
-
-	int n;
-	//int i;
-
-	n = read(fd,returnBuffer,sizeof(returnBuffer));
-
-	/*printf("We read %d bytes\n",n);
-
-
-	for(i=0;i<=n;i++){
-		if(i!=0){
-			printf(":");
-		}
-		printf("%c",returnBuffer[i]);
-	}
-
-	printf("\n\n");*/
-
-	return n;
+	return read(fd,returnBuffer,sizeof(returnBuffer));
 }
 
 
@@ -91,8 +77,8 @@ void config_port(void){
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
-	char depthArr[10] = "00000000";
-	char velArr[10] = "00000000";
+	char depthArr[10] = "000000000";
+	char velArr[10] = "000000000";
 	char *dEnd;
 	char *vEnd;
 	int i;
@@ -111,7 +97,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 svpDepth;
 	std_msgs::Float32 svpVelo;
 
-	ros::Rate loop_rate(3); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(2); //how many times a second (i.e. Hz) the code should run
 
 	if(!open_port()){
 		return 0;	//we failed to open the port so end
@@ -123,8 +109,8 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	while (ros::ok()){
 
-		if(read_port() != 0){	//if we read correctly
-			bufPos = &returnBuffer;
+		if(read_port() > 16){	//if we read correctly
+			bufPos = &returnBuffer[0];
 			for (i = 0; i < 6; i++){
 				depthArr[i] = bufPos[i+1]; 
 			}
@@ -142,6 +128,8 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			velocity = strtod(velArr, &vEnd);
 			svpVelo.data = velocity;
 
+			ROS_DEBUG("Depth: %.3f Velocity: %.3f",depth,velocity);
+
 			svpDepthMsg.publish(svpDepth);
 			svpVeloMsg.publish(svpVelo);
 			
@@ -157,8 +145,6 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		loop_rate.sleep();
 
 	}
-
-	ros::spin();
 
 	close(fd);
 	ROS_INFO("Shutting Down");
