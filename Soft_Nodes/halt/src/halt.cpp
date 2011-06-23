@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 
 	/* Subscribe */
 
-	ros::Rate loop_rate(1);
+	ros::Rate loop_rate(30);
 
 	ROS_INFO("Halt Ready");
 

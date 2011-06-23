@@ -30,7 +30,7 @@ unsigned int	frontUPWM,
 		rightUPWM,
 		backUPWM;
 
-float go = 0.0;
+float go = 0.0, go2 = 0.0, go3 = 0.0, go4 = 0.0;
 
 /* Function Declarations */
 
