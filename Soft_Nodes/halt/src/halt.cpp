@@ -5,11 +5,11 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
-
-
+void goTCallback(const std_msgs::Float32::ConstPtr& pilotTGo);
+float go = 0.0;
 int main(int argc, char **argv){
 
-	float go = 0.0;
+
 
 	ros::init(argc, argv, "halt");
 
@@ -24,6 +24,8 @@ int main(int argc, char **argv){
 	std_msgs::Float32 pilotGo;
 
 	/* Subscribe */
+
+	ros::Subscriber sub1 = haltN.subscribe("pilotTGo", 	100, goTCallback);
 
 	ros::Rate loop_rate(30);
 

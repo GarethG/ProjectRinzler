@@ -8,15 +8,17 @@
 #define	RIGHT_MOTOR_CHANNEL	3
 #define	LEFT_MOTOR_CHANNEL	5
 #define	FRONT_MOTOR_CHANNEL	4
-#define	BACK_MOTOR_CHANNEL	2
+#define	BACK_MOTOR_CHANNEL	6
 #define TEST_CHANNEL		1
 
 #define	LEFT_PWM_OFFSET		0
-#define	RIGHT_PWM_OFFSET	-20
+#define	RIGHT_PWM_OFFSET	0
 #define	FRONT_PWM_OFFSET	0
-#define	BACK_PWM_OFFSET		-20
+#define	BACK_PWM_OFFSET		0
 
 #define	SCALAR			12.5
+
+#define	DEBUGSPEED		1800
 
 /* Globals */
 
