@@ -1,0 +1,16 @@
+build
+bin
+.git
+ros_tutorials
+spammer
+logger
+Test_Ground
+son*
+High_Lev*
+Doc*
+halt
+comp*
+moto*
+adc*
+Sof*
+Roboa*

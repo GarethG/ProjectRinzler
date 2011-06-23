@@ -5,6 +5,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <std_msgs/Float64.h>
+#include <std_msgs/Float32.h>
 #include <sstream>
 #include <pthread.h>
 #include <sys/types.h>
@@ -49,6 +50,9 @@ FILE *serialInit(char * port, int baud){
 	if ( fd<0 ){
 		ROS_ERROR("serialInit: Could not open serial device %s",port);
 		return fp;
+	}
+	else{
+		ROS_INFO("Port opened with a value of %d",fd);
 	}
 
 	// set up new settings
@@ -124,7 +128,6 @@ FILE *serialInit(char * port, int baud){
 void *rcvThread(void *arg){
 	int rcvBufSize = 200;
 	char svpResponse[rcvBufSize];   //response string from uController
-	double svpDepth;
 	char *bufPos;
 	
 	char depth[10] = "0000000", *dEnd;
@@ -141,7 +144,7 @@ void *rcvThread(void *arg){
 
 	//std_msgs::String depth;
 	std_msgs::String msg;
-	std_msgs::Float64 dMsg;
+	std_msgs::Float32 svpDepth;
 	std_msgs::Float64 vMsg;
 	std::stringstream ss;
 	ros::Rate loop_rate(3);
@@ -169,7 +172,7 @@ void *rcvThread(void *arg){
 			depthFloat /= DENSITY;
 			
 			//if depthfloat != to a float...
-			dMsg.data = depthFloat;	//dMsg = 1.01240;//
+			svpDepth.data = depthFloat;	//dMsg = 1.01240;//
 			//printf("depth - %lf\n", depthFloat);
 			
 
@@ -186,13 +189,16 @@ void *rcvThread(void *arg){
 
 			
 			svpResponseMsg.publish(msg); //the whole message
-			svpDepthMsg.publish(dMsg); //the whole message 
+			svpDepthMsg.publish(svpDepth); //the whole message 
 			svpVeloMsg.publish(vMsg); //the whole message 
-			loop_rate.sleep();
 			//printf("%s \n",bufPos); //print the buffer to the screen - should remove this when everything is working
 			
 					
 		}
+		else{
+			ROS_ERROR("Did not hear anything");
+		}
+		loop_rate.sleep();
 	}
 	return NULL;
 } //rcvThread
@@ -263,7 +269,7 @@ int main(int argc, char **argv){
 
 	//Setup to publish ROS messages
 	svpResponseMsg = rosNode.advertise<std_msgs::String>(topicPublish, 100); //This is the raw serial data, is this worth keeping?
-	svpDepthMsg = rosNode.advertise<std_msgs::Float64>(topicPubDepth, 100); 
+	svpDepthMsg = rosNode.advertise<std_msgs::Float32>(topicPubDepth, 100); 
 	svpVeloMsg = rosNode.advertise<std_msgs::Float64>(topicPubVelo, 100);
 	//Create receive thread
 	err = pthread_create(&rcvThrID, NULL, rcvThread, NULL);

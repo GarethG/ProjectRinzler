@@ -1,0 +1,4 @@
+<launch>
+	<!-- DISPLAY NAME	NODE NAME	RUN NAME	ARGUMENTS	-->
+	<node name="svpDepth"	pkg="svp"	type="svp"	/>
+</launch>
