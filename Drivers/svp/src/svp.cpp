@@ -17,18 +17,17 @@
 #include <sstream>
 
 int fd; 				/* File descriptor for the port */
-unsigned char returnBuffer[100]; 	/*Buffer which stores read data*/
-unsigned char *rBptr;			/*Ptr*/
+char returnBuffer[100]; 	/*Buffer which stores read data*/
 float depth, velocity;		/*Floats for the returned values*/
 
 int read_port(void){	
 
 	int n;
-	int i;
+	//int i;
 
 	n = read(fd,returnBuffer,sizeof(returnBuffer));
 
-	printf("We read %d bytes\n",n);
+	/*printf("We read %d bytes\n",n);
 
 
 	for(i=0;i<=n;i++){
@@ -38,7 +37,7 @@ int read_port(void){
 		printf("%c",returnBuffer[i]);
 	}
 
-	printf("\n\n");
+	printf("\n\n");*/
 
 	return n;
 }
@@ -125,7 +124,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	while (ros::ok()){
 
 		if(read_port() != 0){	//if we read correctly
-			
+			bufPos = &returnBuffer;
 			for (i = 0; i < 6; i++){
 				depthArr[i] = bufPos[i+1]; 
 			}
