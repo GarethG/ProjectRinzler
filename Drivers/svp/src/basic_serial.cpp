@@ -12,12 +12,14 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
 
+#include "svp.h"
+
 #include <sstream>
 
 int fd; 				/* File descriptor for the port */
 unsigned char returnBuffer[100]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;			/*Ptr*/
-float heading, pitch, roll;		/*Floats for the returned values*/
+float depth, velocity;		/*Floats for the returned values*/
 
 int read_port(void){	
 
@@ -26,8 +28,6 @@ int read_port(void){
 
 	n = read(fd,returnBuffer,sizeof(returnBuffer));
 
-	
-
 	printf("We read %d bytes\n",n);
 
 
@@ -35,7 +35,7 @@ int read_port(void){
 		if(i!=0){
 			printf(":");
 		}
-		printf("%x",returnBuffer[i]);
+		printf("%c",returnBuffer[i]);
 	}
 
 	printf("\n\n");
@@ -92,18 +92,24 @@ void config_port(void){
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
+	float depthArr[10] = "00000000";
+	float velArr[10] = "00000000";
+	int i;
+
 	ros::init(argc, argv, "svp");	//inits the driver
-	ros::NodeHandle n;			//this is what ROS uses to connect to a node
+	ros::NodeHandle svpN;		//this is what ROS uses to connect to a node
 
 	/*Advertises our various messages*/
 
-	ros::Publisher svpMsg = n.advertise<std_msgs::Float32>("svp", 100);
+	ros::Publisher svpDepthMsg = svpN.advertise<std_msgs::Float32>("svpDepth", 100); 
+	ros::Publisher svpVeloMsg = svpN.advertise<std_msgs::Float32>("svpVelocity", 100);
 
 	/*Sets up the message structures*/
 
-	std_msgs::Float32 svp;
+	std_msgs::Float32 svpDepth;
+	std_msgs::Float32 svpVelo;
 
-	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(3); //how many times a second (i.e. Hz) the code should run
 
 	if(!open_port()){
 		return 0;	//we failed to open the port so end
@@ -117,11 +123,25 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 		if(read_port() != 0){	//if we read correctly
 			
-			//parseBuffer();	//parse the buffer
-			//printf("H: %f P: %f R: %f\n",heading,pitch,roll);
+			for (i = 0; i < 6; i++){
+				depthArr[i] = bufPos[i+1]; 
+			}
+			depth = strtod(depth, &dEnd);
 
-			/* Below here sets up the messages ready for transmission*/
+			depth -= SURFACE;	//pressure - surface pressure = specific weight x depth
+			depth /= DENSITY;
+			
+			svpDepth.data = depth;	//dMsg = 1.01240;//
 
+			//The Velocity
+			for (i = 1; i < 10; i++){
+				velArr[i] = bufPos[i+7]; 
+			}
+			velocity = strtod(velo, &vEnd);
+			svpVelo.data = velocity;
+
+			svpDepthMsg.publish(svpDepth);
+			svpVeloMsg.publish(svpVelo);
 			
 		}
 		else{
