@@ -136,10 +136,34 @@ int main(int argc, char** argv) {
 	}
 
 	image_transport::ImageTransport it(nh);
-	image_transport::CameraPublisher pub = it.advertiseCamera("gscam/image_raw", 1);
+	
+	/************* alsleat edit for two or more cameras ****************/
+	//image_transport::CameraPublisher pub = it.advertiseCamera("gscam/image_raw", 1);
+	
+	char * rawFlag;
+	char * infoFlag;
+	
+	if( !strcmp(argv[1],"dwn") )
+	{
+		rawFlag = "gscam1/image_raw";
+		infoFlag = "gscam1/set_camera_info";
+	}
+	else if( !strcmp(argv[1], "fwd") )
+	{
+		rawFlag = "gscam2/image_raw";
+		infoFlag = "gscam2/set_camera_info";
+	}
+	else
+	{
+		rawFlag = "gscam/image_raw";
+		infoFlag = "gscam/set_camera_info";
+	}
+	
+	image_transport::CameraPublisher pub = it.advertiseCamera( rawFlag, 1 );
+	ros::ServiceServer set_camera_info = nh.advertiseService( infoFlag, setCameraInfo );
 
-	ros::ServiceServer set_camera_info = nh.advertiseService("gscam/set_camera_info", setCameraInfo);
-
+	/*********** end sleath edit ********************************/
+	
 	std::cout << "Processing..." << std::endl;
 
 	//processVideo
@@ -168,6 +192,7 @@ int main(int argc, char** argv) {
 		std::copy(buf->data, buf->data+(width*height*3), msg.data.begin());
 
 		pub.publish(msg, camera_info);
+
 
                 gst_buffer_unref(buf);
 

@@ -21,7 +21,7 @@ public:
     : it_(nh_)
   {
     image_pub_ = it_.advertise("out", 1);
-    image_sub_ = it_.subscribe("/gscam1/image_raw", 1, &ImageConverter::imageCb, this);
+    image_sub_ = it_.subscribe("/gscam/image_raw", 1, &ImageConverter::imageCb, this);
 
     cv::namedWindow(WINDOW);
   }
