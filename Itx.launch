@@ -1,0 +1,8 @@
+<launch>
+	<!-- DISPLAY NAME	NODE NAME	RUN NAME	ARGUMENTS	-->
+	<!-- Drivers -->
+	<node name="Sonar"	pkg="sonar"		type="sonar"		/>
+
+	<!-- Soft Nodes -->
+	<node name="Scanner"	pkg="sonarScanner"	type="sonarScanner"	/>
+</launch>

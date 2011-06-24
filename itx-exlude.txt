@@ -5,7 +5,6 @@ ros_tutorials
 spammer
 logger
 Test_Ground
-son*
 High_Lev*
 Doc*
 halt
@@ -14,4 +13,5 @@ moto*
 adc*
 Sof*
 Roboa*
-dwncam
+fwd*
+svp
