@@ -21,7 +21,7 @@ public:
     : it_(nh_)
   {
     image_pub_ = it_.advertise("out", 1);
-    image_sub_ = it_.subscribe("in", 1, &ImageConverter::imageCb, this);
+    image_sub_ = it_.subscribe("/gscam/image_raw", 1, &ImageConverter::imageCb, this);
 
     cv::namedWindow(WINDOW);
   }
@@ -56,7 +56,7 @@ public:
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "dwncam");
+  ros::init(argc, argv, "image_converter");
   ImageConverter ic;
   ros::spin();
   return 0;
