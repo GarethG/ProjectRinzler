@@ -16,8 +16,10 @@
 #define WIDTH	600
 #define HEIGHT 	600
 
+#define PI 3.14159265
+
 int imageArray[HEIGHT][WIDTH];
-unsigned int imgx = 0, imgy = 0;
+float imgx = 0, imgy = 0;
 
 /************************************************
  * 
@@ -68,12 +70,12 @@ int main(int argc, char **argv)
 		// Get ros subscriptions
 		ros::spinOnce();
 		//Do trig to get the xy position of the pixels for the image
-		pixelPlace( (int) (bearing  / 17.775), (int) bins * 6, genRand(255) );
+		pixelPlace( bearing  / 17.775, (int) bins * 6, genRand(255) );
 
 		// Increase our frame counter
 		frame++;
 		//Debug
-		printf("Bearing : %f, Distance : %f, X : %d, Y : %d\n",  bearing / 17.775, bins * 6, imgx, imgy);
+		//printf("Bearing : %f, Distance : %f, X : %d, Y : %d\n",  bearing / 17.775, bins * 6, imgx, imgy);
 		
 		// Draw the returned xy pixel on the image
 		drawScene(imgx, imgy);
@@ -82,10 +84,24 @@ int main(int argc, char **argv)
 		running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 	
 		//printascii();
-		//sleep(1);		
+		usleep(5000);		
 		
 	}
-	
+
+
+/*		for(i = 0; i < 720; i++)
+		{
+			if( imgx == ( 0 + (WIDTH / 2)) && imgy == (0 + (HEIGHT/2) ) )
+				glClear(GL_COLOR_BUFFER_BIT);
+			else
+			{
+				pixelPlace((float)i, 100, 255);
+				drawScene( (int)imgx, (int)imgy);
+				running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
+				usleep(1000);
+			}
+		}
+*/		
 	glfwTerminate();		
 	return 0;
 	
@@ -95,49 +111,53 @@ int main(int argc, char **argv)
  * add on half width and half height so it's centred and some things need
  * flipping to make them right 
  * *********************************************************/
-void pixelPlace( unsigned int theta, unsigned int distance, unsigned opaqueVal )
+void pixelPlace( float theta, unsigned int distance, unsigned opaqueVal )
 {
 	
-	int x, y;
+	float x, y;
 	if( theta > 0 && theta < 90 )
 	{
+		
+		theta = 90.0 - theta;
 		//printf("< 90\n");
-		x = distance * cos(theta);
-		y = distance * sin(theta);
-		printf("%d -- %d\n", x, y);
-		imgx = x + (WIDTH / 2);
-		imgy = y + (HEIGHT / 2);
+		x = (float)distance * cos( theta *PI/180);
+		y = (float)distance * sin( theta *PI/180);
+		//printf("%f = %f -- %f\n",theta, x, y);
+		imgx = x + ( (float) WIDTH / 2.0) ;
+		imgy = (y * -1)+ ( (float) HEIGHT / 2.0);
 
 		
 	}
 	else if( theta > 91 && theta < 180 )
 	{
 		//printf("> 90 && < 180\n");
-		y = distance * cos(theta);
-		x = distance * sin(theta);
-		
+		y = (float)distance * cos(theta *PI/180);
+		x = (float)distance * sin(theta *PI/180);
+		//printf("%f = %f -- %f\n",theta, x, y);
 		imgx = x + (WIDTH / 2);
 		imgy = (y * -1) + (HEIGHT / 2);		
 
 	}
 	else if( theta > 181 && theta < 270 )
 	{
-		//printf("> 181 && < 270\n");
-		x = distance * cos(theta);
-		y = distance * sin(theta);		
 		
-		imgx = (x * -1) + (WIDTH / 2);
-		imgy = (y * -1) + (HEIGHT / 2);
+		theta = 90.0 - theta;
+		//printf("> 181 && < 270\n");
+		x = (float)distance * cos(theta *PI/180);
+		y = (float)distance * sin(theta *PI/180);		
+		//printf("%f = %f -- %f\n",theta, x, y);
+		imgx = x + ((float)WIDTH / 2);
+		imgy = (y * -1) + ((float)HEIGHT / 2);
 		
 	}
 	else
 	{
 		//printf("> 271 && < 360\n");
-		y = distance * cos(theta);
-		x = distance * sin(theta);		
-		
-		imgx = (x * -1) + (WIDTH / 2);
-		imgy = y + (HEIGHT / 2);
+		y = (float)distance * cos(theta *PI/180);
+		x = (float)distance * sin(theta *PI/180);		
+		//printf("%f = %f -- %f\n",theta, x, y);
+		imgx = x + ((float)WIDTH / 2);
+		imgy = (y * -1) + ((float)HEIGHT / 2);
 	}
 	
 	//imageArray[y][x] = 1;
@@ -181,7 +201,7 @@ void initGL(int width, int height)
 	// ----- Window and Projection Settings -----
  
 	// Set the window title
-	glfwSetWindowTitle("GLFW Basecode");
+	glfwSetWindowTitle("UWESub Sonar");
  
 	// Setup our viewport to be the entire size of the window
 	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
