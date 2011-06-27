@@ -15,11 +15,12 @@
 
 #define WIDTH	600
 #define HEIGHT 	600
+#define DEPTH	255
 
 #define PI 3.14159265
 
 int imageArray[HEIGHT][WIDTH];
-float imgx = 0, imgy = 0;
+int imgx = 0, imgy = 0;
 
 /************************************************
  * 
@@ -32,6 +33,9 @@ int main(int argc, char **argv)
 {
 	
 	ros::init(argc, argv, "sonarScanner");
+	
+	//Seed with the time.
+	srand ( (unsigned)time ( NULL ) );
 	
 	/* Messages and services */
 
@@ -64,7 +68,7 @@ int main(int argc, char **argv)
 	// Call our initGL function to set up our OpenGL options
 	initGL(width, height);
 	
-	while (running == true)
+/*	while (running == true)
 	{
 
 		// Get ros subscriptions
@@ -88,20 +92,21 @@ int main(int argc, char **argv)
 		
 	}
 
-
-/*		for(i = 0; i < 720; i++)
+*/
+		int j = 0;
+		for(i = 0; i < 360; i++)
 		{
-			if( imgx == ( 0 + (WIDTH / 2)) && imgy == (0 + (HEIGHT/2) ) )
-				glClear(GL_COLOR_BUFFER_BIT);
-			else
-			{
-				pixelPlace((float)i, 100, 255);
-				drawScene( (int)imgx, (int)imgy);
+
+				for(j = 1; j < 90; j++)
+				{
+					pixelPlace((float)i, j, genRand(255));
+				}
+				
+				drawScene( (int)imgx, (int)imgy, 150);
 				running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 				usleep(1000);
-			}
 		}
-*/		
+		
 	glfwTerminate();		
 	return 0;
 	
@@ -111,7 +116,7 @@ int main(int argc, char **argv)
  * add on half width and half height so it's centred and some things need
  * flipping to make them right 
  * *********************************************************/
-void pixelPlace( float theta, unsigned int distance, unsigned opaqueVal )
+void pixelPlace( float theta, unsigned int distance, unsigned int depth )
 {
 	
 	float x, y;
@@ -126,7 +131,6 @@ void pixelPlace( float theta, unsigned int distance, unsigned opaqueVal )
 		imgx = x + ( (float) WIDTH / 2.0) ;
 		imgy = (y * -1)+ ( (float) HEIGHT / 2.0);
 
-		
 	}
 	else if( theta > 91 && theta < 180 )
 	{
@@ -161,7 +165,7 @@ void pixelPlace( float theta, unsigned int distance, unsigned opaqueVal )
 	}
 	
 	//imageArray[y][x] = 1;
-	
+	imageArray[imgx][imgy] = depth;	
 }
 /****************************************************************
  * print sonar readings in terminal, mega hacks. no longer used
@@ -175,7 +179,7 @@ void printascii( void )
 	{
 		for( j = 0; j < WIDTH; j++ )
 		{
-			if(imageArray[i][j] == 1)
+			if(imageArray[i][j] >= 1)
 			{
 				printf("X ");
 				imageArray[i][j] = 0;
@@ -233,7 +237,7 @@ void initGL(int width, int height)
 /*************************************************************
  * draw x, y position in red on the image
  * ***********************************************************/
-void drawScene(unsigned int x, unsigned int y)
+void drawScene(unsigned int x, unsigned int y, unsigned int depth)
 {
 	
 	int i, j;
@@ -248,21 +252,24 @@ void drawScene(unsigned int x, unsigned int y)
 	// ----- Draw stuff! -----
  
 	glBegin(GL_POINTS);
-	glColor3ub(255, 0, 0);
 	
-	//for( i = 0; i < HEIGHT; i ++ )
-	//{
-	//	for( j = 0; j < WIDTH; j++ )
-	//	{
-	//		if(imageArray[i][j] == 1)
-	//		{
-				glVertex2f(x, y);
+	
+	for( i = 0; i < HEIGHT; i ++ )
+	{
+		for( j = 0; j < WIDTH; j++ )
+		{
+			if(imageArray[i][j] >= 1)
+			{
+		
+				glColor3ub(imageArray[i][j], 0, 0);
+				glVertex2f(i, j);
 				glVertex2f(0, 0);
-	//			imageArray[i][j] = 0;
-	//		}
 
-	//	}
-	//}
+				imageArray[i][j] = 0;
+			}
+
+		}
+	}
 			
 	glEnd();
  
@@ -288,3 +295,6 @@ void binsCallback(const std_msgs::Float32::ConstPtr& sonarBins){
 bins = sonarBins->data;
 return;
 }
+
+
+
