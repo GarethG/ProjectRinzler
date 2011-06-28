@@ -54,6 +54,10 @@ int main(int argc, char **argv){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
 					ros::Duration(1.0).sleep();
+					rightRate.data = 0.0;
+					leftRate.data = 0.0;
+					leftRateMsg.publish(leftRate);
+					rightRateMsg.publish(rightRate);
 				}
 				ROS_INFO("%s given the go",argv[1]);
 				loop_rate.sleep();
@@ -111,6 +115,10 @@ int main(int argc, char **argv){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
 					ros::Duration(1.0).sleep();
+					frontRate.data = 0.0;
+					backDRate.data = 0.0;
+					frontRateMsg.publish(frontRate);
+					backDRateMsg.publish(backDRate);
 				}
 				ROS_INFO("%s given the go",argv[1]);
 				loop_rate.sleep();
@@ -172,6 +180,8 @@ int main(int argc, char **argv){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
 					ros::Duration(1.0).sleep();
+					backPRate.data = 0.0;
+					backPRateMsg.publish(backPRate);
 				}
 				ROS_INFO("%s given the go",argv[1]);
 				loop_rate.sleep();

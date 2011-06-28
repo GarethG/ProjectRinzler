@@ -108,7 +108,7 @@ void backRateCallback(const std_msgs::Float32::ConstPtr& backRate){
 float slewer(unsigned int pos){
 	
 	if(first){
-		currentRate[pos] = targetRate[pos];
+		currentRate[pos] = 0;//targetRate[pos]; //could be why the pwm wasn't starting (i.e. ramp too fast)
 		first = 0;
 	}
 

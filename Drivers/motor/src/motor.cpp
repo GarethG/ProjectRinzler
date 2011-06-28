@@ -183,6 +183,9 @@ int initMotors(void){
         	ROS_ERROR("Unable to initialise PWM library - %s", roboio_GetErrMsg());
 		return 0;
 	}
+	else{
+		ROS_INFO("Successfully logged in as root, pwm activated");
+	}
 
         // Set the channels to produce a zero velocity PWM
         pwm_SetPulse( LEFT_MOTOR_CHANNEL, PWM_FREQUENCY_US, (ZERO_DUTY_CYCLE_US + LEFT_PWM_OFFSET));
