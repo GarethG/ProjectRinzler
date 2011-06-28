@@ -7,11 +7,22 @@
 
 #include "motor.h"
 
+//#define DEBUG
+#define RELEASE
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
 
 	unsigned char once = 1;
 	ros::init(argc, argv, "motor");	//inits the driver
+
+	#ifdef DEBUG
+	ROS_WARN("Warning, motors are in debug mode");
+	#endif
+
+	if(!initMotors()){
+		ROS_ERROR("Root lock failure");
+		return 0;
+	}
 
 	/* Messages and services */
 
@@ -28,8 +39,6 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Subscriber sub5 = motorN.subscribe("pilotGo",	100, goCallback);
 
 	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
-
-	initMotors();
 
 	while (ros::ok()){
 		if(once){
@@ -103,7 +112,7 @@ void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft){
 	
 	if(go2 == 1.0){
 		#ifdef DEBUG
-		lefttUPWM = DEBUGSPEED;
+		leftUPWM = DEBUGSPEED;
 		#endif
 		updatePWM(LEFT_MOTOR_CHANNEL, leftUPWM);
 		go2 = 0.0;
@@ -168,10 +177,11 @@ void backCallback(const std_msgs::Float32::ConstPtr& pidRampBack){
 ** Initialises the motors			**
 *************************************************/
 
-void initMotors(void){
+int initMotors(void){
 
 	if(!pwm_Initialize(0xffff, PWMCLOCK_50MHZ, PWMIRQ_DISABLE)){
         	ROS_ERROR("Unable to initialise PWM library - %s", roboio_GetErrMsg());
+		return 0;
 	}
 
         // Set the channels to produce a zero velocity PWM
@@ -200,7 +210,7 @@ void initMotors(void){
 
 	ROS_INFO("Motors Online");
 
-	return;
+	return 1;
 }
 
 /*************************************************

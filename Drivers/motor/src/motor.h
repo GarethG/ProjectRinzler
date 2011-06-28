@@ -42,4 +42,4 @@ void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront);
 void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft);
 void rightCallback(const std_msgs::Float32::ConstPtr& pidRampRight);
 void backCallback(const std_msgs::Float32::ConstPtr& pidRampBack);
-void initMotors(void);
+int initMotors(void);
