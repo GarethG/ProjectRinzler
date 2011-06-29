@@ -1,0 +1,6 @@
+<launch>
+	<!-- DISPLAY NAME	NODE NAME	RUN NAME	ARGUMENTS	-->
+	<node name="Halt"	pkg="halt"	type="halt"			/>
+	<node name="Pilot"	pkg="pilotKeys"	type="pilotKey"			/>
+	<!--<node name="Keys"	pkg="keyTest"	type="key"			/> -->
+</launch>

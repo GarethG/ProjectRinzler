@@ -46,12 +46,12 @@ int main(int argc, char **argv){
 		pidRampRight.data = slewer(RIGHT);
 		pidRampBack.data = slewer(BACK);
 
+		//ROS_DEBUG("F: %u L: %u R: %u B: %u",pidRampFront.data,pidRampLeft.data,pidRampRight.data,pidRampBack.data);
+
 		frontMsg.publish(pidRampFront);
 		leftMsg.publish(pidRampLeft);
 		rightMsg.publish(pidRampRight);
 		backMsg.publish(pidRampBack);
-
-		ROS_DEBUG("F: %u L: %u R: %u B: %u",pidRampFront.data,pidRampLeft.data,pidRampRight.data,pidRampBack.data);
 
 		loop_rate.sleep();
 
@@ -127,6 +127,8 @@ unsigned int slewer(unsigned int pos){
 	if(currentRate[pos] < MINSPEED){
 		currentRate[pos] = MINSPEED;
 	}
+
+	ROS_DEBUG("Chan %u Speed %u Target %u",pos,currentRate[pos],targetRate[pos]);
 
 	return currentRate[pos];
 }

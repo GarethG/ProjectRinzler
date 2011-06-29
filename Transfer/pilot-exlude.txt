@@ -11,3 +11,6 @@ High_Lev*
 Doc*
 svp
 halt
+*cam*
+stac*
+adc

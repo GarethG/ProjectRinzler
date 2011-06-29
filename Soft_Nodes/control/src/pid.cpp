@@ -66,13 +66,19 @@ int main(int argc, char **argv){
 
 			ros::spinOnce();
 
-			tmp = pid(targetHeading,heading);	//get PID value
+			tmp = p(targetHeading,heading);	//get PID value
 
-			rightRate.data = tmp;			//left does opposite of right
-			leftRate.data = (tmp * -1.0);
+			if(targetHeading < heading){
+				rightRate.data = tmp;			//left does opposite of right
+				leftRate.data = 0.0;
+			}
+			else{
+				leftRate.data = (tmp * -1.0);
+				rightRate.data = 0.0;
+			}
 
-			leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
-			rightRate.data += speed;
+			//leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
+			//rightRate.data += speed;
 			
 			leftRateMsg.publish(leftRate);
 			rightRateMsg.publish(rightRate);
