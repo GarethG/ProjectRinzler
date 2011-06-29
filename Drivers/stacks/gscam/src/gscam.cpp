@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
 	// We could probably do something with the camera name, check
 	// errors or something, but at the moment, we don't care.
 	std::string camera_name;
-	if (camera_calibration_parsers::readCalibrationIni("../camera_parameters.txt", camera_name, camera_info)) {
+	if (camera_calibration_parsers::readCalibrationIni("/home/james/ProjectRinzler/Drivers/stacks/gscam/camera_parameters.txt", camera_name, camera_info)) {
 	  ROS_INFO("Successfully read camera calibration.  Rerun camera calibrator if it is incorrect.");
 	}
 	else {
@@ -136,34 +136,10 @@ int main(int argc, char** argv) {
 	}
 
 	image_transport::ImageTransport it(nh);
-	
-	/************* alsleat edit for two or more cameras ****************/
-	//image_transport::CameraPublisher pub = it.advertiseCamera("gscam/image_raw", 1);
-	
-	char * rawFlag;
-	char * infoFlag;
-	
-	if( !strcmp(argv[1],"dwn") )
-	{
-		rawFlag = "gscam1/image_raw";
-		infoFlag = "gscam1/set_camera_info";
-	}
-	else if( !strcmp(argv[1], "fwd") )
-	{
-		rawFlag = "gscam2/image_raw";
-		infoFlag = "gscam2/set_camera_info";
-	}
-	else
-	{
-		rawFlag = "gscam/image_raw";
-		infoFlag = "gscam/set_camera_info";
-	}
-	
-	image_transport::CameraPublisher pub = it.advertiseCamera( rawFlag, 1 );
-	ros::ServiceServer set_camera_info = nh.advertiseService( infoFlag, setCameraInfo );
+	image_transport::CameraPublisher pub = it.advertiseCamera("gscam/image_raw", 1);
 
-	/*********** end sleath edit ********************************/
-	
+	ros::ServiceServer set_camera_info = nh.advertiseService("gscam/set_camera_info", setCameraInfo);
+
 	std::cout << "Processing..." << std::endl;
 
 	//processVideo
@@ -192,7 +168,6 @@ int main(int argc, char** argv) {
 		std::copy(buf->data, buf->data+(width*height*3), msg.data.begin());
 
 		pub.publish(msg, camera_info);
-
 
                 gst_buffer_unref(buf);
 

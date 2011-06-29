@@ -232,6 +232,15 @@ void updatePWM(unsigned int channel, unsigned int rate){
 		default: ROS_ERROR("Dude this is not a valid PWM channel");	break;
 	}
 
+	if(rate > MAX_DUTY_CYCLE_US){
+		rate = MAX_DUTY_CYCLE_US;
+		ROS_WARN("Attempting to over speed motor %u",channel);
+	}
+	if(rate < MIN_DUTY_CYCLE_US){
+		rate = MIN_DUTY_CYCLE_US;
+		ROS_WARN("Attempting to over reverse motor %u",channel);
+	}
+
 	if(!pwm_SetPulse(channel, PWM_FREQUENCY_US, (rate + tmpOffset))){
 		ROS_ERROR("Failed to update PWM");
 	}
