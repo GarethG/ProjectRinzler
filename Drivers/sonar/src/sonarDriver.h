@@ -27,6 +27,7 @@
 #define mtSendBBUser			24
 #define mtSendData				25
 #define mtSendPerformanceData	26
+#define mtStopAlive				66
 
 /* Function Declerations */
 

@@ -15,24 +15,18 @@
 #include "std_msgs/Float32.h"
 #include "std_msgs/ByteMultiArray.h"
 
-#define	RANGE			75 //200
+#define	RANGE			5
 #define	LEFTANGLE		0
 #define	RIGHTANGLE		6399
 #define	ADSPAN			81
 #define	ADLOW			8
 #define	GAIN			84
-#define	ADINTERVAL		104
-#define MIN_AD_INTERVAL 5
-
-#define	NUMBEROFBINS	20//200
-#define STEPANGLE		8
-#define MOTIME			20
-
-#define WRITEDEL		250000//
+#define	ADINTERVAL		141
+#define	NUMBEROFBINS	90
+#define STEPANGLE		16
+#define MOTIME			25
 
 #define THRESHOLD 		207
-
-struct termios orig_terimos;
 
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
@@ -79,16 +73,7 @@ int main( int argc, char **argv )
 	
 	/* Open and Configure the Serial Port. */
 	open_port();	
-	
-	if( tcgetattr(fd, &orig_terimos) < 0)
-	{
-		printf("no settings, bro.\n");
-		return 0;
-	}
-
 	config_port();
-	
-	//makePacket(mtReBoot);
 	
 	//printf("dihqwdi %d\n", getU16(0x0A, 0x80));
 	
@@ -101,16 +86,12 @@ int main( int argc, char **argv )
 	/* Make and send the head parameters, currently defined at the top of this file */
 	headSetup();
 
-	i = 0;
-	
-	//makePacket(mtStopAlive);	
 	/* ask for some data, will get datas */
-	while(i < 30)
+	for( i = 0; i < 200; i ++)
 	{
-		
 		requestData();
-		//
-		//tcflush(fd, TCIFLUSH);//remove
+
+
 		//pass datas	
 		sonarBearing.data = (float) bearing;
 		sonarBins.data = (float) bins;
@@ -119,19 +100,10 @@ int main( int argc, char **argv )
 		sonarBearingMsg.publish(sonarBearing);
 		sonarBinsMsg.publish(sonarBins);
 		
-		//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
-		//printf("%d - %d\n", bearing, bins);
 		ros::spinOnce();
-		i++;
-	
 	}
 				
-	/* close file and exit program */	
-	
-	tcflush(fd, TCIFLUSH);
-	
-	tcsetattr(fd, TCSANOW, &(orig_terimos));
-			
+	/* close file and exit program */			
 	close(fd);
 	return 0;
 }
@@ -160,29 +132,6 @@ int open_port(void)
 *********************************/
 void config_port(void)
 {
-
-//orig_terimos = sTermios_structure_settings;
-/*
-struct termios options;
-
-tcgetattr(fd, &options);
-
-cfsetispeed(&options, BAUDRATE);
-cfsetospeed(&options, BAUDRATE);
-
-options.c_cflag |= (CLOCAL | CREAD | CS8);
-
-options.c_iflag = IGNPAR;
-options.c_oflag = 0;
-options.c_lflag = 0;
-options.c_cc[VTIME] = 10;
-options.c_cc[VMIN] = 0;
-tcflush(fd, TCIFLUSH);
-
-tcsetattr(fd, TCSANOW, &options);
-
-*/
-
 	struct termios options1;
 
 	tcgetattr(fd, &options1);
@@ -201,10 +150,7 @@ tcsetattr(fd, TCSANOW, &options);
 	options1.c_oflag = ~OPOST;//1;
 	options1.c_iflag &= ~(IXON | IXOFF | IXANY);
 	options1.c_cc[VTIME] = 10;
-	options1.c_cc[VMIN] = 0;
-	
-	
-	
+	options1.c_cc[VMIN] =0;
 	tcflush(fd, TCIFLUSH);
 
 	tcsetattr(fd, TCSANOW, &options1);
@@ -230,30 +176,10 @@ int write_port(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize)
 	else{
 		//printf("We Transmitted %d\n",n);
 	}
-	usleep(WRITEDEL);
-	//sleep(1);
-	return (n);
-}
-/*
-int write_port_fast(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize)
-{
-	
-	int n;
-
-	n = write(fd,sendBuffer, sendSize);
-
-	if (n < 0){
-		ROS_ERROR("Failed to write to port");
-		return 0;
-	}
-	else{
-		//printf("We Transmitted %d\n",n);
-	}
 	usleep(10000);
-	//sleep(1);
 	return (n);
 }
-*/
+
 /*************************************************
 ** Reads data off of the serial port and will	**
 ** then return the data into returnBuffer	**
@@ -401,12 +327,8 @@ int sortPacket(void)
 		if(msg[0] == mtHeadData)
 		{
 			
-			if(byteCount == 0)
-				printf("Single Packet\n");
-			else
-				printf("Multi Packet\n");
 			binFlag = 0;
-			//printf("\nBearing: %f\n Bins: ", (float) getU16(temp[41], temp[40]) / 17.775 );
+			printf("\nBearing: %f\n Bins: ", (float) getU16(temp[41], temp[40]) / 17.775 );
 			for(i = 44; i < buffLen-1; i++ )
 			{
 				//printf("%d, ", temp[i]);
@@ -416,7 +338,7 @@ int sortPacket(void)
 					binFlag = 1;
 				}
 			}
-			//printf("%d\n", bins * 6);
+			printf("%d\n", bins * 6);
 	
 			bearing = getU16(temp[41], temp[40]);
 			
@@ -441,7 +363,7 @@ int returnMsg(void)
 }
 
 /************************************************
- * 
+33 * 
  *  Create a packet to send and stores it in sendBuffer
  * takes the command and returns the command that has
  * been sent.
@@ -452,7 +374,7 @@ void makePacket(int command)
 
 	/************ 14 byte commands ***********************/
 	
-	if(command == mtReBoot || command == mtSendVersion || command == mtSendBBUser || command == mtStopAlive)
+	if(command == mtReBoot || command == mtSendVersion || command == mtSendBBUser)
 	{
 		
 		unsigned char sendBuffer[14];
@@ -537,17 +459,6 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 	unsigned int gainByte = (gain * MAX_GAIN);
 	unsigned char sendBuffer[82];
 	
-	double pingtime = 2.0 * range * 1000.0 / 1.5; // in usec
-    double bintime = pingtime / numBins;
-    ADInterval = round( (bintime/64.0)*100.0 );
-	
-	if ( ADInterval < MIN_AD_INTERVAL )
-	{
-		//fprintf( stderr, "Error: Unable to make AD interval small enough\n" );
-		printf("AD interval too small\n");
-		//ADInterval = MIN_AD_INTERVAL;
-	}
-	
 					//Step 1, setup
 	sendBuffer = { 	0x40,						//Header
 					0x30, 0x30, 0x34, 0x43, 	//Hex Length
@@ -560,12 +471,12 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 					0x80,
 					0x02,
 					0x1D,						//Head Command Type - 1 = Normal, 29 Dual Channel
-					0x85, 0x2B,					//HdCtrl bytes  0x85, 0x23, | 0x83, 0x2B
+					0x85, 0x23,					//HdCtrl bytes  0x85, 0x23, | 0x83, 0x2B
 					0x03,						//Head Type
 					0x99, 0x99, 0x99, 0x02,		//TxN Channel 1
 					0x66, 0x66, 0x66, 0x05,		//TxN Channel 2
 					0xA3, 0x70, 0x3D, 0x06,		//RxN Channel 1
-					0x70, 0x3D, 0x0A, 0x09,		//RxN Channel 2
+					0x70, 0x3D, 0x00, 0x09,		//RxN Channel 2
 					0x28, 0x00,					//TxPulse Length
 					(drange & 0xFF),			//Range Scale
 					((drange >> 8) & 0xFF),
@@ -592,17 +503,17 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 					0x00,						//ScanZ
 					0x00,
 					//Step 3, ???
+					0x50,
+					0x51,
+					0x09,
+					0x08,
+					0x54,
+					0x54,
 					0x00,
 					0x00,
+					0x5A,
 					0x00,
-					0x00,
-					0x00,
-					0x00,
-					0x00,
-					0x00,
-					0x00,
-					0x00,
-					0x00,
+					0x7D,
 					0x00,
 					0x00,
 					0x00,
@@ -785,7 +696,6 @@ int requestData( void )
 {
 	
 	int recieveFlag = 0, sendFlag = 0, headPack = 0;
-	int count;
 	
 	while(recieveFlag != 1)
 	{
@@ -793,18 +703,12 @@ int requestData( void )
 		if(sendFlag == 0)
 		{
 			//Make the sendData packet and send
-		//	tcflush(fd, TCIFLUSH);//remove
-		//	usleep(50);//remove
-		//	tcflush(fd, TCIFLUSH);//remove
-		//	usleep(50);//remove
 			makePacket(mtSendData);
 			ROS_INFO("requestData \t>> mtSendData\n");
-			//tcflush(fd, TCIFLUSH);//remove
-			//usleep(50);//remove
 			sendFlag = 1;
 		}	
 		//usleep(500);
-		count = 0;
+		
 		while( recieveFlag != 1)
 		{
 			sortPacket();
@@ -813,29 +717,17 @@ int requestData( void )
 			{
 				ROS_INFO("requestData \t<< mtHeadData!!\n");
 				headPack = 1;
-				return 0;
-				
 			}
 			else if(returnMsg() == mtAlive && headPack == 1)
 			{
 				recieveFlag = 1;
-				//tcflush(fd, TCIFLUSH);//remove
 			}
 			else
 			{
-				if(count > 10)
-				{
 				//Make the sendData packet and send
-				//	tcflush(fd, TCIFLUSH);//remove
-				//	usleep(500);//remove
-					makePacket(mtSendData);
-					ROS_INFO("requestData \t>> mtSendData\n");
-					sendFlag = 1;	
-					count = 0;
-				}	
-				
-				count ++;	
-				//printf("%d\n", count);	
+				makePacket(mtSendData);
+				ROS_INFO("requestData \t>> mtSendData\n");
+				sendFlag = 1;				
 			}
 		}
 			

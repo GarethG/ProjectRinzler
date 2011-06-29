@@ -24,7 +24,7 @@
 #define	ADINTERVAL		104
 #define MIN_AD_INTERVAL 5
 
-#define	NUMBEROFBINS	20//200
+#define	NUMBEROFBINS	90//200
 #define STEPANGLE		8
 #define MOTIME			20
 

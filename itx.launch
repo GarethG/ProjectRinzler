@@ -1,0 +1,7 @@
+<launch>
+	<!-- DISPLAY NAME	NODE NAME	RUN NAME	ARGUMENTS	-->
+
+	<!-- Drivers -->
+	<node name="sonar"		pkg="sonar"	type="sonar"			/>
+			
+</launch>
