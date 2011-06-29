@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/UInt32.h"
 
 #include "pilotKey.h"
 
@@ -19,7 +20,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Publisher pilotHeadingMsg = pilotN.advertise<std_msgs::Float32>("pilotHeading", 100);
 	ros::Publisher pilotDepthMsg = pilotN.advertise<std_msgs::Float32>("pilotDepth", 100);
 	ros::Publisher pilotPitchMsg = pilotN.advertise<std_msgs::Float32>("pilotPitch", 100);
-	ros::Publisher pilotTGoMsg = pilotN.advertise<std_msgs::Float32>("pilotTGo", 100);
+	ros::Publisher pilotTGoMsg = pilotN.advertise<std_msgs::UInt32>("pilotTGo", 100);
 	ros::Publisher pilotSpeedMsg = pilotN.advertise<std_msgs::Float32>("pilotSpeed", 100);
 
 	/*Sets up the message structures*/
@@ -27,7 +28,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 pilotHeading;
 	std_msgs::Float32 pilotDepth;
 	std_msgs::Float32 pilotPitch;
-	std_msgs::Float32 pilotTGo;
+	std_msgs::UInt32 pilotTGo;
 	std_msgs::Float32 pilotSpeed;
 
 
@@ -50,7 +51,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		ros::spinOnce();
 
 		if(flip == 0){
-			while(go!=1.0){
+			while(go!=1){
 				ros::spinOnce();
 				loop_rate.sleep();
 			}
@@ -82,7 +83,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 ** Returns the go				**
 *************************************************/
 
-void goCallback(const std_msgs::Float32::ConstPtr& keyGo){
+void goCallback(const std_msgs::UInt32::ConstPtr& keyGo){
 	go = keyGo->data;
 	return;
 }

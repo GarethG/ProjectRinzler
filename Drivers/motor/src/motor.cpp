@@ -1,6 +1,4 @@
 #include "ros/ros.h"
-#include "std_msgs/String.h"
-#include "std_msgs/Float32.h"
 #include "std_msgs/UInt32.h"
 
 #include "roboard.h"
@@ -43,7 +41,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	while (ros::ok()){
 		if(once){
-			while(go != 1.0){
+			while(go != 1){
 				ros::spinOnce();
 				ROS_WARN("Motors waiting for go");
 				ros::Duration(1.0).sleep();
@@ -70,7 +68,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 ** Returns the go signal			**
 *************************************************/
 
-void goCallback(const std_msgs::Float32::ConstPtr& pilotGo){
+void goCallback(const std_msgs::UInt32::ConstPtr& pilotGo){
 	go4 = go3 = go2 = go = pilotGo->data;
 	return;
 }
@@ -85,12 +83,12 @@ void frontCallback(const std_msgs::UInt32::ConstPtr& pidRampFront){
 	frontPWM += ZERO_DUTY_CYCLE_US;
 
 	ROS_DEBUG("Front: %u",frontPWM);
-	if(go == 1.0){
+	if(go == 1){
 		#ifdef DEBUG
 		frontPWM = DEBUGSPEED;
 		#endif
 		updatePWM(FRONT_MOTOR_CHANNEL, frontPWM);
-		go = 0.0;
+		go = 0;
 	}
 	else{
 		updatePWM(FRONT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
@@ -109,12 +107,12 @@ void leftCallback(const std_msgs::UInt32::ConstPtr& pidRampLeft){
 
 	ROS_DEBUG("Left: %u",leftPWM);
 	
-	if(go2 == 1.0){
+	if(go2 == 1){
 		#ifdef DEBUG
 		leftPWM = DEBUGSPEED;
 		#endif
 		updatePWM(LEFT_MOTOR_CHANNEL, leftPWM);
-		go2 = 0.0;
+		go2 = 0;
 	}
 	else{
 		updatePWM(LEFT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
@@ -133,12 +131,12 @@ void rightCallback(const std_msgs::UInt32::ConstPtr& pidRampRight){
 
 	ROS_DEBUG("Right: %u",rightPWM);
 	
-	if(go3 == 1.0){
+	if(go3 == 1){
 		#ifdef DEBUG
 		rightPWM = DEBUGSPEED;
 		#endif
 		updatePWM(RIGHT_MOTOR_CHANNEL, rightPWM);
-		go3 = 0.0;
+		go3 = 0;
 	}
 	else{
 		updatePWM(RIGHT_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);
@@ -157,12 +155,12 @@ void backCallback(const std_msgs::UInt32::ConstPtr& pidRampBack){
 
 	ROS_DEBUG("Back: %u",backPWM);
 	
-	if(go == 1.0){
+	if(go4 == 1){
 		#ifdef DEBUG
 		backPWM = DEBUGSPEED;
 		#endif
 		updatePWM(BACK_MOTOR_CHANNEL, backPWM);
-		go4 = 0.0;
+		go4 = 0;
 	}
 	else{
 		updatePWM(BACK_MOTOR_CHANNEL, ZERO_DUTY_CYCLE_US);

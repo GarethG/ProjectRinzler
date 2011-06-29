@@ -4,9 +4,9 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "std_msgs/Float32.h"
-void goTCallback(const std_msgs::Float32::ConstPtr& pilotTGo);
-float go = 0.0;
+#include "std_msgs/UInt32.h"
+void goTCallback(const std_msgs::UInt32::ConstPtr& pilotTGo);
+unsigned int go = 0;
 int main(int argc, char **argv){
 
 
@@ -19,9 +19,9 @@ int main(int argc, char **argv){
 
 	/* Publish */
 
-	ros::Publisher pilotGoMsg = haltN.advertise<std_msgs::Float32>("pilotGo", 100);
+	ros::Publisher pilotGoMsg = haltN.advertise<std_msgs::UInt32>("pilotGo", 100);
 
-	std_msgs::Float32 pilotGo;
+	std_msgs::UInt32 pilotGo;
 
 	/* Subscribe */
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 ** Returns the go				**
 *************************************************/
 
-void goTCallback(const std_msgs::Float32::ConstPtr& pilotTGo){
+void goTCallback(const std_msgs::UInt32::ConstPtr& pilotTGo){
 	go = pilotTGo->data;
 	return;
 }

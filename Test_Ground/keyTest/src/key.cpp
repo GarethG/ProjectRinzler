@@ -6,6 +6,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/UInt32.h"
 
 
 int main(int argc, char **argv){
@@ -21,7 +22,7 @@ int main(int argc, char **argv){
 
 	/* Publish */
 
-	ros::Publisher keyGoMsg = keyN.advertise<std_msgs::Float32>("keyGo", 100);
+	ros::Publisher keyGoMsg = keyN.advertise<std_msgs::UInt32>("keyGo", 100);
 	ros::Publisher keyHeadingMsg = keyN.advertise<std_msgs::Float32>("keyHeading", 100);
 	ros::Publisher keyDepthMsg = keyN.advertise<std_msgs::Float32>("keyDepth", 100);
 	ros::Publisher keyPitchMsg = keyN.advertise<std_msgs::Float32>("keyPitch", 100);
@@ -29,13 +30,13 @@ int main(int argc, char **argv){
 
 	/*Sets up the message structures*/
 
-	std_msgs::Float32 keyGo;
+	std_msgs::UInt32 keyGo;
 	std_msgs::Float32 keyHeading;
 	std_msgs::Float32 keyDepth;
 	std_msgs::Float32 keyPitch;
 	std_msgs::Float32 keySpeed;
 
-	keyGo.data = 0.0;
+	keyGo.data = 0;
 	keyHeading.data = 0.0;
 	keyDepth.data = 0.0;
 	keyPitch.data = 0.0;
@@ -50,7 +51,7 @@ int main(int argc, char **argv){
 		if(c!='Y'){
 			ROS_INFO("Would you like to go yet? Y to go.");
 			scanf("%c",&c);
-			keyGo.data = 1.0;
+			keyGo.data = 1;
 		}
 		if(c=='Y'){		
 			ROS_INFO("Please Enter Your Heading (Float)");

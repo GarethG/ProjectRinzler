@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/UInt32.h"
 
 #include "pilot.h"
 
@@ -19,7 +20,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Publisher pilotHeadingMsg = pilotN.advertise<std_msgs::Float32>("pilotHeading", 100);
 	ros::Publisher pilotDepthMsg = pilotN.advertise<std_msgs::Float32>("pilotDepth", 100);
 	ros::Publisher pilotPitchMsg = pilotN.advertise<std_msgs::Float32>("pilotPitch", 100);
-	ros::Publisher pilotGoMsg = pilotN.advertise<std_msgs::Float32>("pilotGo", 100);
+	ros::Publisher pilotGoMsg = pilotN.advertise<std_msgs::UInt32>("pilotGo", 100);
 	ros::Publisher pilotSpeedMsg = pilotN.advertise<std_msgs::Float32>("pilotSpeed", 100);
 
 	/*Sets up the message structures*/
@@ -27,7 +28,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 pilotHeading;
 	std_msgs::Float32 pilotDepth;
 	std_msgs::Float32 pilotPitch;
-	std_msgs::Float32 pilotGo;
+	std_msgs::UInt32 pilotGo;
 	std_msgs::Float32 pilotSpeed;
 
 
@@ -57,11 +58,11 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			counter--;
 
 			if(counter == 0){
-				pilotGo.data = 1.0;
+				pilotGo.data = 1;
 				pilotGoMsg.publish(pilotGo);
 			}
 			else{
-				pilotGo.data = 0.0;
+				pilotGo.data = 0;
 				pilotGoMsg.publish(pilotGo);
 			}
 		}

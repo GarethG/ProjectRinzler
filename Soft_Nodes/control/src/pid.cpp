@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "ros/ros.h"
-#include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/UInt32.h"
 
 #include "pid.h"
 
@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 		while(ros::ok()){
 
 			if(once){
-				while(go != 1.0){
+				while(go != 1){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
 					ros::Duration(1.0).sleep();
@@ -111,7 +111,7 @@ int main(int argc, char **argv){
 		while(ros::ok()){
 			
 			if(once){
-				while(go != 1.0){
+				while(go != 1){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
 					ros::Duration(1.0).sleep();
@@ -176,7 +176,7 @@ int main(int argc, char **argv){
 		while(ros::ok()){
 
 			if(once){
-				while(go != 1.0){
+				while(go != 1){
 					ros::spinOnce();
 					ROS_WARN("%s waiting for go",argv[1]);
 					ros::Duration(1.0).sleep();
@@ -220,7 +220,7 @@ int main(int argc, char **argv){
 ** Returns the go signal			**
 *************************************************/
 
-void goCallback(const std_msgs::Float32::ConstPtr& pilotGo){
+void goCallback(const std_msgs::UInt32::ConstPtr& pilotGo){
 	go = pilotGo->data;
 	return;
 }

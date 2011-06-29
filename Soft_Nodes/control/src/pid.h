@@ -26,14 +26,14 @@ float targetPitch=0.0;
 float depth=0.0;
 float targetDepth=0.0;
 float speed=0.0;
-float go = 0.0;
+unsigned int go = 0;
 
 float KP,KD,KI;
 
 /* Function Declerations */
 
 float correctError(float error);
-void goCallback(const std_msgs::Float32::ConstPtr& pilotGo);
+void goCallback(const std_msgs::UInt32::ConstPtr& pilotGo);
 void speedCallback(const std_msgs::Float32::ConstPtr& pilotSpeed);
 void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading);
 void targetHeadingCallback(const std_msgs::Float32::ConstPtr& pilotHeading);
