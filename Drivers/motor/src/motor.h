@@ -16,8 +16,6 @@
 #define	FRONT_PWM_OFFSET	0
 #define	BACK_PWM_OFFSET		0
 
-#define	SCALAR			5
-
 #define	DEBUGSPEED		1800
 
 /* Globals */

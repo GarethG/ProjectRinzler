@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Int32.h"
 #include "std_msgs/UInt32.h"
 #include "std_msgs/Float32.h"
 
@@ -68,7 +69,7 @@ int main(int argc, char **argv){
 *************************************************/
 
 void frontRateCallback(const std_msgs::Float32::ConstPtr& frontRate){
-	targetRate[FRONT] = (unsigned int)frontRate->data;
+	targetRate[FRONT] = (int)frontRate->data;
 	return;
 }
 
@@ -77,7 +78,7 @@ void frontRateCallback(const std_msgs::Float32::ConstPtr& frontRate){
 *************************************************/
 
 void leftRateCallback(const std_msgs::Float32::ConstPtr& leftRate){
-	targetRate[LEFT] = (unsigned int)leftRate->data;
+	targetRate[LEFT] = (int)leftRate->data;
 	return;
 }
 
@@ -86,7 +87,7 @@ void leftRateCallback(const std_msgs::Float32::ConstPtr& leftRate){
 *************************************************/
 
 void rightRateCallback(const std_msgs::Float32::ConstPtr& rightRate){
-	targetRate[RIGHT] = (unsigned int)rightRate->data;
+	targetRate[RIGHT] = (int)rightRate->data;
 	return;
 }
 
@@ -95,7 +96,7 @@ void rightRateCallback(const std_msgs::Float32::ConstPtr& rightRate){
 *************************************************/
 
 void backRateCallback(const std_msgs::Float32::ConstPtr& backRate){
-	targetRate[BACK] = (unsigned int)backRate->data;
+	targetRate[BACK] = (int)backRate->data;
 	return;
 }
 
@@ -128,7 +129,11 @@ unsigned int slewer(unsigned int pos){
 		currentRate[pos] = MINSPEED;
 	}
 
-	ROS_DEBUG("Chan %u Speed %u Target %u",pos,currentRate[pos],targetRate[pos]);
+	outRate[pos] = currentRate[pos];
+	outRate[pos] *= SCALAR;
+	outRate[pos] = outRate[pos] + ZERO_DUTY_CYCLE_US;
 
-	return currentRate[pos];
+	ROS_DEBUG("Chan %u Speed %d Target %d Out %d",pos,currentRate[pos],targetRate[pos],outRate[pos]);
+
+	return (unsigned int)outRate[pos];
 }

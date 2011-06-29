@@ -79,8 +79,6 @@ void goCallback(const std_msgs::UInt32::ConstPtr& pilotGo){
 
 void frontCallback(const std_msgs::UInt32::ConstPtr& pidRampFront){
 	frontPWM = pidRampFront->data;
-	frontPWM *= SCALAR;
-	frontPWM += ZERO_DUTY_CYCLE_US;
 
 	ROS_DEBUG("Front: %u",frontPWM);
 	if(go == 1){
@@ -102,8 +100,6 @@ void frontCallback(const std_msgs::UInt32::ConstPtr& pidRampFront){
 
 void leftCallback(const std_msgs::UInt32::ConstPtr& pidRampLeft){
 	leftPWM = pidRampLeft->data;
-	leftPWM *= SCALAR;
-	leftPWM += ZERO_DUTY_CYCLE_US;
 
 	ROS_DEBUG("Left: %u",leftPWM);
 	
@@ -126,8 +122,6 @@ void leftCallback(const std_msgs::UInt32::ConstPtr& pidRampLeft){
 
 void rightCallback(const std_msgs::UInt32::ConstPtr& pidRampRight){
 	rightPWM = pidRampRight->data;
-	rightPWM *= SCALAR;
-	rightPWM += ZERO_DUTY_CYCLE_US;
 
 	ROS_DEBUG("Right: %u",rightPWM);
 	
@@ -150,8 +144,6 @@ void rightCallback(const std_msgs::UInt32::ConstPtr& pidRampRight){
 
 void backCallback(const std_msgs::UInt32::ConstPtr& pidRampBack){
 	backPWM = pidRampBack->data;
-	backPWM *= SCALAR;
-	backPWM += ZERO_DUTY_CYCLE_US;
 
 	ROS_DEBUG("Back: %u",backPWM);
 	
