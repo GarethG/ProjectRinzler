@@ -22,15 +22,10 @@
 
 /* Globals */
 
-float 	frontPWM,
-	leftPWM,
-	rightPWM,
-	backPWM;
-
-unsigned int	frontUPWM,
-		leftUPWM,
-		rightUPWM,
-		backUPWM;
+unsigned int 	frontPWM,
+		leftPWM,
+		rightPWM,
+		backPWM;
 
 float go = 0.0, go2 = 0.0, go3 = 0.0, go4 = 0.0;
 
@@ -38,8 +33,8 @@ float go = 0.0, go2 = 0.0, go3 = 0.0, go4 = 0.0;
 
 void goCallback(const std_msgs::Float32::ConstPtr& pilotGo);
 void updatePWM(unsigned int channel, unsigned int rate);
-void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront);
-void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft);
-void rightCallback(const std_msgs::Float32::ConstPtr& pidRampRight);
-void backCallback(const std_msgs::Float32::ConstPtr& pidRampBack);
+void frontCallback(const std_msgs::UInt32::ConstPtr& pidRampFront);
+void leftCallback(const std_msgs::UInt32::ConstPtr& pidRampLeft);
+void rightCallback(const std_msgs::UInt32::ConstPtr& pidRampRight);
+void backCallback(const std_msgs::UInt32::ConstPtr& pidRampBack);
 int initMotors(void);

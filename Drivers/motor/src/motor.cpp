@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/UInt32.h"
 
 #include "roboard.h"
 #include "pwm.h"
@@ -78,18 +79,17 @@ void goCallback(const std_msgs::Float32::ConstPtr& pilotGo){
 ** Returns the PWM rate for the front motor	**
 *************************************************/
 
-void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront){
+void frontCallback(const std_msgs::UInt32::ConstPtr& pidRampFront){
 	frontPWM = pidRampFront->data;
 	frontPWM *= SCALAR;
-	frontUPWM = (unsigned int)frontPWM;
-	frontUPWM += ZERO_DUTY_CYCLE_US;
+	frontPWM += ZERO_DUTY_CYCLE_US;
 
-	ROS_DEBUG("Front: %u",frontUPWM);
+	ROS_DEBUG("Front: %u",frontPWM);
 	if(go == 1.0){
 		#ifdef DEBUG
-		frontUPWM = DEBUGSPEED;
+		frontPWM = DEBUGSPEED;
 		#endif
-		updatePWM(FRONT_MOTOR_CHANNEL, frontUPWM);
+		updatePWM(FRONT_MOTOR_CHANNEL, frontPWM);
 		go = 0.0;
 	}
 	else{
@@ -102,19 +102,18 @@ void frontCallback(const std_msgs::Float32::ConstPtr& pidRampFront){
 ** Returns the PWM rate for the left motor	**
 *************************************************/
 
-void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft){
+void leftCallback(const std_msgs::UInt32::ConstPtr& pidRampLeft){
 	leftPWM = pidRampLeft->data;
 	leftPWM *= SCALAR;
-	leftUPWM = (unsigned int)leftPWM;
-	leftUPWM += ZERO_DUTY_CYCLE_US;
+	leftPWM += ZERO_DUTY_CYCLE_US;
 
-	ROS_DEBUG("Left: %u",leftUPWM);
+	ROS_DEBUG("Left: %u",leftPWM);
 	
 	if(go2 == 1.0){
 		#ifdef DEBUG
-		leftUPWM = DEBUGSPEED;
+		leftPWM = DEBUGSPEED;
 		#endif
-		updatePWM(LEFT_MOTOR_CHANNEL, leftUPWM);
+		updatePWM(LEFT_MOTOR_CHANNEL, leftPWM);
 		go2 = 0.0;
 	}
 	else{
@@ -127,19 +126,18 @@ void leftCallback(const std_msgs::Float32::ConstPtr& pidRampLeft){
 ** Returns the PWM rate for the right motor	**
 *************************************************/
 
-void rightCallback(const std_msgs::Float32::ConstPtr& pidRampRight){
+void rightCallback(const std_msgs::UInt32::ConstPtr& pidRampRight){
 	rightPWM = pidRampRight->data;
 	rightPWM *= SCALAR;
-	rightUPWM = (unsigned int)rightPWM;
-	rightUPWM += ZERO_DUTY_CYCLE_US;
+	rightPWM += ZERO_DUTY_CYCLE_US;
 
-	ROS_DEBUG("Right: %u",rightUPWM);
+	ROS_DEBUG("Right: %u",rightPWM);
 	
 	if(go3 == 1.0){
 		#ifdef DEBUG
-		rightUPWM = DEBUGSPEED;
+		rightPWM = DEBUGSPEED;
 		#endif
-		updatePWM(RIGHT_MOTOR_CHANNEL, rightUPWM);
+		updatePWM(RIGHT_MOTOR_CHANNEL, rightPWM);
 		go3 = 0.0;
 	}
 	else{
@@ -152,19 +150,18 @@ void rightCallback(const std_msgs::Float32::ConstPtr& pidRampRight){
 ** Returns the PWM rate for the back motor	**
 *************************************************/
 
-void backCallback(const std_msgs::Float32::ConstPtr& pidRampBack){
+void backCallback(const std_msgs::UInt32::ConstPtr& pidRampBack){
 	backPWM = pidRampBack->data;
 	backPWM *= SCALAR;
-	backUPWM = (unsigned int)backPWM;
-	backUPWM += ZERO_DUTY_CYCLE_US;
+	backPWM += ZERO_DUTY_CYCLE_US;
 
-	ROS_DEBUG("Back: %u",backUPWM);
+	ROS_DEBUG("Back: %u",backPWM);
 	
 	if(go == 1.0){
 		#ifdef DEBUG
-		backUPWM = DEBUGSPEED;
+		backPWM = DEBUGSPEED;
 		#endif
-		updatePWM(BACK_MOTOR_CHANNEL, backUPWM);
+		updatePWM(BACK_MOTOR_CHANNEL, backPWM);
 		go4 = 0.0;
 	}
 	else{

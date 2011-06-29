@@ -1,8 +1,8 @@
 /* Defines */
 
-#define CATCHRATE	0.1
-#define MAXSPEED	30.0
-#define	MINSPEED	-30.0
+#define CATCHRATE	1
+#define MAXSPEED	30
+#define	MINSPEED	-30
 
 #define	FRONT		0
 #define	LEFT		1
@@ -11,8 +11,8 @@
 
 /* Globals */
 
-float targetRate[4];
-float currentRate[4];
+unsigned int targetRate[4];
+unsigned int currentRate[4];
 unsigned int first = 1;
 
 /* Function Declerations */
@@ -21,4 +21,5 @@ void frontRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
 void leftRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
 void rightRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
 void backRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
-float slewer(unsigned int pos);
+unsigned int slewer(unsigned int pos);
+

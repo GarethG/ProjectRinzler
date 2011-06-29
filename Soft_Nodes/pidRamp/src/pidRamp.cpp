@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/UInt32.h"
 #include "std_msgs/Float32.h"
 
 #include "pidRamp.h"
@@ -14,15 +15,15 @@ int main(int argc, char **argv){
 
 	/* Publish */
 
-	ros::Publisher frontMsg = pidRampN.advertise<std_msgs::Float32>("pidRampFront", 100);
-	ros::Publisher leftMsg = pidRampN.advertise<std_msgs::Float32>("pidRampLeft", 100);
-	ros::Publisher rightMsg = pidRampN.advertise<std_msgs::Float32>("pidRampRight", 100);
-	ros::Publisher backMsg = pidRampN.advertise<std_msgs::Float32>("pidRampBack", 100);
+	ros::Publisher frontMsg = pidRampN.advertise<std_msgs::UInt32>("pidRampFront", 100);
+	ros::Publisher leftMsg = pidRampN.advertise<std_msgs::UInt32>("pidRampLeft", 100);
+	ros::Publisher rightMsg = pidRampN.advertise<std_msgs::UInt32>("pidRampRight", 100);
+	ros::Publisher backMsg = pidRampN.advertise<std_msgs::UInt32>("pidRampBack", 100);
 
-	std_msgs::Float32 pidRampFront;
-	std_msgs::Float32 pidRampLeft;
-	std_msgs::Float32 pidRampRight;
-	std_msgs::Float32 pidRampBack;
+	std_msgs::UInt32 pidRampFront;
+	std_msgs::UInt32 pidRampLeft;
+	std_msgs::UInt32 pidRampRight;
+	std_msgs::UInt32 pidRampBack;
 
 	/* Subscribe */
 
@@ -50,7 +51,7 @@ int main(int argc, char **argv){
 		rightMsg.publish(pidRampRight);
 		backMsg.publish(pidRampBack);
 
-		ROS_DEBUG("F: %.3f L: %.3f R: %.3f B: %.3f",pidRampFront.data,pidRampLeft.data,pidRampRight.data,pidRampBack.data);
+		ROS_DEBUG("F: %u L: %u R: %u B: %u",pidRampFront.data,pidRampLeft.data,pidRampRight.data,pidRampBack.data);
 
 		loop_rate.sleep();
 
@@ -67,7 +68,7 @@ int main(int argc, char **argv){
 *************************************************/
 
 void frontRateCallback(const std_msgs::Float32::ConstPtr& frontRate){
-	targetRate[FRONT] = frontRate->data;
+	targetRate[FRONT] = (unsigned int)frontRate->data;
 	return;
 }
 
@@ -76,7 +77,7 @@ void frontRateCallback(const std_msgs::Float32::ConstPtr& frontRate){
 *************************************************/
 
 void leftRateCallback(const std_msgs::Float32::ConstPtr& leftRate){
-	targetRate[LEFT] = leftRate->data;
+	targetRate[LEFT] = (unsigned int)leftRate->data;
 	return;
 }
 
@@ -85,7 +86,7 @@ void leftRateCallback(const std_msgs::Float32::ConstPtr& leftRate){
 *************************************************/
 
 void rightRateCallback(const std_msgs::Float32::ConstPtr& rightRate){
-	targetRate[RIGHT] = rightRate->data;
+	targetRate[RIGHT] = (unsigned int)rightRate->data;
 	return;
 }
 
@@ -94,7 +95,7 @@ void rightRateCallback(const std_msgs::Float32::ConstPtr& rightRate){
 *************************************************/
 
 void backRateCallback(const std_msgs::Float32::ConstPtr& backRate){
-	targetRate[BACK] = backRate->data;
+	targetRate[BACK] = (unsigned int)backRate->data;
 	return;
 }
 
@@ -105,7 +106,7 @@ void backRateCallback(const std_msgs::Float32::ConstPtr& backRate){
 ** which damaged one of the motor pins		**
 *************************************************/
 
-float slewer(unsigned int pos){
+unsigned int slewer(unsigned int pos){
 	
 	if(first){
 		currentRate[pos] = 0;//targetRate[pos]; //could be why the pwm wasn't starting (i.e. ramp too fast)
