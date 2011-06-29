@@ -1,8 +1,8 @@
 /* Defines */
 
 #define CATCHRATE	1
-#define MAXSPEED	30
-#define	MINSPEED	-30
+#define MAXSPEED	50
+#define	MINSPEED	-50
 
 #define	FRONT		0
 #define	LEFT		1
