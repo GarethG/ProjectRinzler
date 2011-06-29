@@ -1,7 +1,7 @@
 /* Defines */
 
 /* Heading */
-#define KPH 0.01
+#define KPH 1.0
 #define KDH 0.1
 #define KIH 0.1
 /* Depth */
@@ -13,8 +13,10 @@
 #define KDP 0.1
 #define KIP 0.1
 /* Others */
-#define MAXVAL		30.0
-#define MINVAL		00.0
+#define MAXSPEEDH	50.0
+#define	MINSPEEDH	-50.0
+#define MAXVAL		50.0
+#define MINVAL		-50.0
 #define FRONTTHRESH	20.0
 
 /* Globals*/
