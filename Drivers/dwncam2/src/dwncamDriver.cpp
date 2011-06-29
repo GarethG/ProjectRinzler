@@ -49,12 +49,15 @@ public:
 
     Demo (ros::NodeHandle & nh):nh_ (nh), it_ (nh_)
   {
+    ROS_INFO("Getting Cam");
     // Listen for image messages on a topic and setup callback
-    image_sub_ = it_.subscribe ("/gscam1/image_raw", 1, &Demo::imageCallback, this);
+    image_sub_ = it_.subscribe ("/gscam/image_raw", 1, &Demo::imageCallback, this);
     // Open HighGUI Window
+    ROS_INFO("Got Cam");
     cv::namedWindow ("input", 1);
     cv::namedWindow ("binary image", 1);
     cv::namedWindow ("segmented output", 1);
+    ROS_INFO("Opened window?");
   }
 
   void imageCallback (const sensor_msgs::ImageConstPtr & msg_ptr)
@@ -128,6 +131,7 @@ main (int argc, char **argv)
   // Start node and create a Node Handle
   ros::NodeHandle nh;
   // Instaniate Demo Object
+  ROS_INFO("Online");
   Demo d (nh);
   // Spin ...
   ros::spin ();

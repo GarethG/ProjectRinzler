@@ -7,9 +7,14 @@
 /* Globals */
 
 /* Image Names */
+IplImage *cv_input_;
 IplImage*	camStream = NULL;
 IplImage*	hlsStream = NULL;
+IplImage*	hlsStream2 = NULL;
 IplImage*	greyStream = NULL;
+
+cv::Mat img_in_;
+cv::Mat img_out_;
 
 /* Storage Areas */
 CvMemStorage*	hlsStorage = NULL;
