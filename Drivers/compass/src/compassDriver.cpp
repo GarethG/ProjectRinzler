@@ -76,14 +76,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 *****************************************/
 int openPort(void){
 
-	char port[20] = “/dev/ttyS0″; /* port to connect to */
+	char port[20] = "/dev/ttyS0"; /* port to connect to */
 	speed_t baud = B38400; /* baud rate */
 
 	serialPort = open(port, O_RDWR); /* connect to port */
 	
 	/* set the other settings (in this case, 9600 8N1) */
 	struct termios settings;
-	tcgetattr(fd, &settings);
+	tcgetattr(serialPort, &settings);
 	
 	cfsetospeed(&settings, baud); /* baud rate */
 	settings.c_cflag &= ~PARENB; /* no parity */
@@ -93,8 +93,8 @@ int openPort(void){
 	settings.c_lflag = ICANON; /* canonical mode */
 	settings.c_oflag &= ~OPOST; /* raw output */
 	
-	tcsetattr(fd, TCSANOW, &settings); /* apply the settings */
-	tcflush(fd, TCOFLUSH);
+	tcsetattr(serialPort, TCSANOW, &settings); /* apply the settings */
+	tcflush(serialPort, TCOFLUSH);
 
 	/*serialPort = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
 	if (serialPort == -1){
