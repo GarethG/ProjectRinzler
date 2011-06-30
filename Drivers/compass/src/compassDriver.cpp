@@ -21,6 +21,10 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	
 	char *returnPtr;
 
+	struct termios tio;
+        struct termios stdio;
+        int tty_fd;
+        fd_set rdset;
 
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
@@ -33,7 +37,34 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
-	if(!openPort()){
+	stdio.c_iflag=0;
+        stdio.c_oflag=0;
+        stdio.c_cflag=0;
+        stdio.c_lflag=0;
+        stdio.c_cc[VMIN]=1;
+        stdio.c_cc[VTIME]=0;
+        tcsetattr(STDOUT_FILENO,TCSANOW,&stdio);
+        tcsetattr(STDOUT_FILENO,TCSAFLUSH,&stdio);
+        fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);       // make the reads non-blocking
+ 
+ 
+ 
+ 
+        memset(&tio,0,sizeof(tio));
+        tio.c_iflag=0;
+        tio.c_oflag=0;
+        tio.c_cflag=CS8|CREAD|CLOCAL;           // 8n1, see termios.h for more information
+        tio.c_lflag=0;
+        tio.c_cc[VMIN]=1;
+        tio.c_cc[VTIME]=5;
+ 
+        tty_fd=open("/dev/ttyS0", O_RDWR | O_NONBLOCK);      
+        cfsetospeed(&tio,B38400);            // 115200 baud
+        cfsetispeed(&tio,B38400);            // 115200 baud
+ 
+        tcsetattr(tty_fd,TCSANOW,&tio);
+
+	/*if(!openPort()){
 		printf("Port Open Failure\n");
 		return 0;
 	}
@@ -46,7 +77,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	}
 
 	printf("PNI started\n");
-
+*/
 	//int count = 0;
 	while (ros::ok()){
 		/*std_msgs::String msg;
@@ -63,8 +94,13 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		
 		++count;*/
 
-		returnPtr = strtok(readPni(),"&");		//reads serial and cuts off any garbage present
-		printf("Read: %s\n",returnPtr);
+		/*returnPtr = strtok(readPni(),"&");		//reads serial and cuts off any garbage present
+		printf("Read: %s\n",returnPtr);*/
+		
+		if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial port, print it out
+                //if (read(STDIN_FILENO,&c,1)>0)  write(tty_fd,&c,1);                     // if new data is available on the console, send it to the serial port
+
+
 		loop_rate.sleep();
 
 	}
@@ -80,36 +116,10 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 *****************************************/
 int openPort(void){
 
-	char port[20] = "/dev/ttyS0"; /* port to connect to */
-	speed_t baud = B38400; /* baud rate */
-
-	printf("Opening Port\n");
-
-	serialPort = open(port, O_RDWR); /* connect to port */
-	
-	printf("Port should be open\n");
-
-	/* set the other settings (in this case, 9600 8N1) */
-	struct termios settings;
-	tcgetattr(serialPort, &settings);
-	
-	cfsetospeed(&settings, baud); /* baud rate */
-	settings.c_cflag &= ~PARENB; /* no parity */
-	settings.c_cflag &= ~CSTOPB; /* 1 stop bit */
-	settings.c_cflag &= ~CSIZE;
-	settings.c_cflag |= CS8 | CLOCAL; /* 8 bits */
-	settings.c_lflag = ICANON; /* canonical mode */
-	settings.c_oflag &= ~OPOST; /* raw output */
-	
-	tcsetattr(serialPort, TCSANOW, &settings); /* apply the settings */
-	tcflush(serialPort, TCOFLUSH);
-
-	/*serialPort = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
+	serialPort = open("/dev/ttyS0", O_RDWR | O_NOCTTY | O_NDELAY);
 	if (serialPort == -1){
 		perror("open_port: Unable to open /dev/ttyS0 - ");
-	}*/
-
-	printf("End of openPort()\n");
+	}
 
 	return (serialPort);
 }
