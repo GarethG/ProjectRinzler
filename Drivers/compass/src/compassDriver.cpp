@@ -56,12 +56,12 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 		ros::spinOnce();
 
-		loop_rate.sleep();
+		
 		++count;*/
 
 		returnPtr = strtok(readPni(),"&");		//reads serial and cuts off any garbage present
 		printf("Read: %s\n",returnPtr);
-		
+		loop_rate.sleep();
 
 	}
 
@@ -89,7 +89,7 @@ int openPort(void){
 *****************************************/
 
 int startPni(void){
-	return write(serialPort, "go", 2);
+	return write(serialPort, "00 05 04 bf 71", 13);
 }
 
 /*****************************************

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/james/ProjectRinzler/Drivers/compass/src/compassDriver.cpp
+/home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.cpp
 stdio.h
 -
 string.h
@@ -20,15 +20,15 @@ errno.h
 termios.h
 -
 ros/ros.h
-/home/james/ProjectRinzler/Drivers/compass/src/ros/ros.h
+/home/jamest/ProjectRinzler/Drivers/compass/src/ros/ros.h
 std_msgs/String.h
-/home/james/ProjectRinzler/Drivers/compass/src/std_msgs/String.h
+/home/jamest/ProjectRinzler/Drivers/compass/src/std_msgs/String.h
 sstream
 -
 compassDriver.h
-/home/james/ProjectRinzler/Drivers/compass/src/compassDriver.h
+/home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.h
 
-/home/james/ProjectRinzler/Drivers/compass/src/compassDriver.h
+/home/jamest/ProjectRinzler/Drivers/compass/src/compassDriver.h
 
 /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/advertise_options.h
 ros/forwards.h
