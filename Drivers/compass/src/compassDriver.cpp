@@ -38,10 +38,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		return 0;
 	}
 	
+	printf("Starting PNI\n");
+
 	if(!startPni()){
 		printf("Port Write Failed\n");
 		return 0;
 	}
+
+	printf("PNI started\n");
 
 	//int count = 0;
 	while (ros::ok()){
@@ -79,8 +83,12 @@ int openPort(void){
 	char port[20] = "/dev/ttyS0"; /* port to connect to */
 	speed_t baud = B38400; /* baud rate */
 
+	printf("Opening Port\n");
+
 	serialPort = open(port, O_RDWR); /* connect to port */
 	
+	printf("Port should be open\n");
+
 	/* set the other settings (in this case, 9600 8N1) */
 	struct termios settings;
 	tcgetattr(serialPort, &settings);
@@ -100,6 +108,8 @@ int openPort(void){
 	if (serialPort == -1){
 		perror("open_port: Unable to open /dev/ttyS0 - ");
 	}*/
+
+	printf("End of openPort()\n");
 
 	return (serialPort);
 }
