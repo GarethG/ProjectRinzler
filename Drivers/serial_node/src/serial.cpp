@@ -175,6 +175,9 @@ int main(int argc, char **argv){
 		}
 	}
 
+	baud = DEFAULT_BAUDRATE;
+	strcpy(port, DEFAULT_SERIALPORT);
+
 	ROS_INFO("connection initializing (%s) at %d baud", port, baud);
 	fpSerial = serialInit(port, baud);
 	
