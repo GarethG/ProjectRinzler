@@ -25,6 +25,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
         struct termios stdio;
         int tty_fd;
         fd_set rdset;
+	unsigned char c='D';
 
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
