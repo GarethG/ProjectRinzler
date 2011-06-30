@@ -18,14 +18,9 @@
 int serialPort;
 
 int main(int argc, char **argv){ //we need argc and argv for the rosInit function
-	
+
 	char *returnPtr;
 
-	struct termios tio;
-        struct termios stdio;
-        int tty_fd;
-        fd_set rdset;
-	unsigned char c='D';
 
 	ros::init(argc, argv, "compass");	//inits the driver
 	ros::NodeHandle n;			//this is what ROS uses to connect to a node
@@ -38,47 +33,16 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
-	stdio.c_iflag=0;
-        stdio.c_oflag=0;
-        stdio.c_cflag=0;
-        stdio.c_lflag=0;
-        stdio.c_cc[VMIN]=1;
-        stdio.c_cc[VTIME]=0;
-        tcsetattr(STDOUT_FILENO,TCSANOW,&stdio);
-        tcsetattr(STDOUT_FILENO,TCSAFLUSH,&stdio);
-        fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);       // make the reads non-blocking
- 
- 
- 
- 
-        memset(&tio,0,sizeof(tio));
-        tio.c_iflag=0;
-        tio.c_oflag=0;
-        tio.c_cflag=CS8|CREAD|CLOCAL;           // 8n1, see termios.h for more information
-        tio.c_lflag=0;
-        tio.c_cc[VMIN]=1;
-        tio.c_cc[VTIME]=5;
- 
-        tty_fd=open("/dev/ttyS0", O_RDWR | O_NONBLOCK);      
-        cfsetospeed(&tio,B38400);            // 115200 baud
-        cfsetispeed(&tio,B38400);            // 115200 baud
- 
-        tcsetattr(tty_fd,TCSANOW,&tio);
-
-	/*if(!openPort()){
+	if(!openPort()){
 		printf("Port Open Failure\n");
 		return 0;
 	}
-	
-	printf("Starting PNI\n");
 
 	if(!startPni()){
 		printf("Port Write Failed\n");
 		return 0;
 	}
 
-	printf("PNI started\n");
-*/
 	//int count = 0;
 	while (ros::ok()){
 		/*std_msgs::String msg;
@@ -95,13 +59,8 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		
 		++count;*/
 
-		/*returnPtr = strtok(readPni(),"&");		//reads serial and cuts off any garbage present
-		printf("Read: %s\n",returnPtr);*/
-		
-		if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial port, print it out
-                //if (read(STDIN_FILENO,&c,1)>0)  write(tty_fd,&c,1);                     // if new data is available on the console, send it to the serial port
-
-
+		returnPtr = strtok(readPni(),"&");		//reads serial and cuts off any garbage present
+		printf("Read: %s\n",returnPtr);
 		loop_rate.sleep();
 
 	}
@@ -140,7 +99,7 @@ int startPni(void){
 *****************************************/
 
 char *readPni(void){
-	
+
 	char returnBuffer[1000];
 	int ok;
 
