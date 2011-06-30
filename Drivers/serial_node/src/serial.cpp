@@ -9,6 +9,7 @@
 #include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define DEFAULT_BAUDRATE 38400
 #define DEFAULT_SERIALPORT "/dev/ttyS0"
@@ -86,6 +87,18 @@ void ucCommandCallback(const std_msgs::String::ConstPtr& msg){
 } //ucCommandCallback
 
 
+int startPni(void){
+
+	time_t now;
+
+	time(&now);
+
+	ROS_INFO("Writing to serial driver");
+	//fputs(asctime(localtime(&now)), fpSerial);
+	fputs("00 05 04 bf 71\n", fpSerial);
+	return 1;
+}
+
 //Receive command responses from robot uController
 //and publish as a ROS message
 void *rcvThread(void *arg){
@@ -94,6 +107,7 @@ void *rcvThread(void *arg){
 	char *bufPos;
 	std_msgs::String msg;
 	std::stringstream ss;
+	ros::Rate loop_rate(1); 
 
 	ROS_INFO("rcvThread: receive thread running");
 
@@ -103,15 +117,19 @@ void *rcvThread(void *arg){
 			ROS_DEBUG("uc%dResponse: %s", ucIndex, ucResponse);
 			msg.data = ucResponse;
 			ucResponseMsg.publish(msg);
+			printf("I read: %s\n",bufPos);
 		}
+		else{
+			if(!startPni()){
+				ROS_ERROR("failed to transmit message");
+			}
+		}
+		loop_rate.sleep();
 	}
 	return NULL;
 } //rcvThread
 
-int startPni(void){
-	ROS_INFO("Writing to serial driver");
-	return write(fpSerial, "00 05 04 bf 71", 13);
-}
+
 
 
 int main(int argc, char **argv){
