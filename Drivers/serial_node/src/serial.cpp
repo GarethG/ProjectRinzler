@@ -108,6 +108,11 @@ void *rcvThread(void *arg){
 	return NULL;
 } //rcvThread
 
+int startPni(void){
+	ROS_INFO("Writing to serial driver");
+	return write(fpSerial, "00 05 04 bf 71", 13);
+}
+
 
 int main(int argc, char **argv){
 	char port[20];    //port name
@@ -167,6 +172,11 @@ int main(int argc, char **argv){
 
 	//Setup to publish ROS messages
 	ucResponseMsg = rosNode.advertise<std_msgs::String>(topicPublish, 100);
+
+	if(!startPni()){
+		ROS_ERROR("failed to transmit message");
+		return 1;
+	}
 
 	//Create receive thread
 	err = pthread_create(&rcvThrID, NULL, rcvThread, NULL);
