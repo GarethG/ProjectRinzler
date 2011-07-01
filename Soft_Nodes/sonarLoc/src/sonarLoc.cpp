@@ -14,6 +14,20 @@
 
 using namespace std;
 
+/* Function Declerations */
+
+void headingCallback(const std_msgs::Int16::ConstPtr& compassHeading);
+int heading = 0;
+
+int main( int argc, char **argv )
+{
+//char wait; 
+float grad = 3000;
+float bearing = 0;
+int scale = 20;
+int samples = 200;
+int binIndex = 55;
+int range = 0;
 	ros::init(argc, argv, "SonarLoc");	//inits the driver
 
 	/* Messages and services */
@@ -22,14 +36,14 @@ using namespace std;
 
 	/* Publish */
 
-	ros::Publisher sonarLocHeadingMsg = sonarLocN.advertise<std_msgs::Int16>("sonarLocCMD", 100);//Publish a generic command to the sonar
+	ros::Publisher sonarLocMsg = sonarLocN.advertise<std_msgs::Int16>("sonarLocCMD", 100);//Publish a generic command to the sonar
 
 	/*Sets up the message structures*/
 
-	std_msgs::int16_t sonarLocCMD;
+	std_msgs::Int16 sonarLocCMD;
 
 
-	ros::Subscriber sub1 = pilotN.subscribe("compassHeading", 100, headingCallback);
+	ros::Subscriber sub1 = sonarLocN.subscribe("compassHeading", 100, headingCallback);
 //	ros::Subscriber sub2 = pilotN.subscribe("SonarArray", 100, SonarCallback);
 //	ros::Subscriber sub3 = pilotN.subscribe("svpDepth", 100, depthCallback); // if out of water stop? if near surface might be getting bad readings - should change threshold?
 //	ros::Subscriber sub4 = pilotN.subscribe("compassPitch", 100, pitchCallback); compensate trigonometry? 
@@ -62,15 +76,7 @@ using namespace std;
 
 
 
-int main( int argc, char **argv )
-{
-char wait; 
-float grad = 3000;
-float bearing = 0;
-int scale = 20;
-int samples = 200;
-int binIndex = 55;
-int range = 0;
+
 
 ros::Rate loop_rate(1); // what speed is this?
 
@@ -91,7 +97,14 @@ ros::Rate loop_rate(1); // what speed is this?
 }// end main
 
 
+/*************************************************
+** Returns the compass heading			**
+*************************************************/
 
+void headingCallback(const std_msgs::Int16::ConstPtr& compassHeading){
+	heading = compassHeading->data;
+	return;
+}
 
 
 
