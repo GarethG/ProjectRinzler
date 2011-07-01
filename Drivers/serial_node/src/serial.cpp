@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>  /* UNIX standard function definitions */
 
 #define DEFAULT_BAUDRATE 38400
 #define DEFAULT_SERIALPORT "/dev/ttyS0"
@@ -95,7 +96,7 @@ int startPni(void){
 
 	ROS_INFO("Writing to serial driver");
 	//fputs(asctime(localtime(&now)), fpSerial);
-	fputs("00 05 04 bf 71\n", fpSerial);
+	fputs("\\0x00\\0x05\\0x04", fpSerial);
 	return 1;
 }
 

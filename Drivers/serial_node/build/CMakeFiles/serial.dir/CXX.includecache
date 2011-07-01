@@ -31,6 +31,8 @@ stdlib.h
 -
 time.h
 -
+unistd.h
+-
 
 /opt/ros/diamondback/stacks/ros_comm/clients/cpp/roscpp/include/ros/advertise_options.h
 ros/forwards.h
