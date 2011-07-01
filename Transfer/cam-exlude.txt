@@ -14,4 +14,7 @@ moto*
 adc*
 Sof*
 Roboa*
-dwncam
+dwncam*
+Imag*
+Trans*
+

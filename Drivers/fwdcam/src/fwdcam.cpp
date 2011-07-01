@@ -188,7 +188,9 @@ int main(int argc, char **argv){
 	while(ros::ok()){
 		ros::spinOnce();
 		fwdcamX.data = x_centre;
+		fwdcamY.data = y_centre;
 		fwdcamXMsg.publish(fwdcamX);
+		fwdcamYMsg.publish(fwdcamY);
 	}
 	// ... until done
 	return 0;
