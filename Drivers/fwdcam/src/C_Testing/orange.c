@@ -33,9 +33,11 @@ void on_trackbar(int a){
 
 	CvSeq* contours = 0;							//wut?
 	cvCvtColor( g_image, g_gray, CV_RGB2HLS);				//creates HLS colour
+	cvShowImage("Before", g_gray );
 	cvThreshold( g_gray, g_gray, g_thresh, 255, CV_THRESH_BINARY_INV);	//threshold up
+	cvShowImage("First", g_gray );
 	cvThreshold( g_gray, g_gray, g_thresh_l, 255, CV_THRESH_BINARY);	//threshold down
-	
+	cvShowImage("Second", g_gray );
 	if( g_storage2 == NULL ){						//create bw channel
 		g_grey = cvCreateImage( cvGetSize( g_gray ), 8, 1 );
 		g_storage2 = cvCreateMemStorage(0);
@@ -43,8 +45,9 @@ void on_trackbar(int a){
 		cvClearMemStorage( g_storage2 );
 	}
 	cvCvtColor( g_gray, g_grey, CV_RGB2GRAY);				//convert colour to bw
+	cvShowImage("Before2", g_grey );
 	cvThreshold( g_grey, g_grey, new_thresh, 255, CV_THRESH_BINARY);	//threshold
-
+	cvShowImage("Third", g_grey );
 	return;
 }
 
@@ -95,7 +98,7 @@ void somethingNew(void){
 		}
 	}
 
-	if(count < 10000){				//arbritrary size threshold
+	if(count < 3000){				//arbritrary size threshold
 		printf("No Target in sight saw only %d\n",count);
 	}
 	else{
@@ -153,6 +156,11 @@ int main(int argc, char** argv){
 	// create a window
 	cvNamedWindow("Target", CV_WINDOW_AUTOSIZE);  
 	cvNamedWindow("Target2", CV_WINDOW_AUTOSIZE);  
+	cvNamedWindow("Before", CV_WINDOW_AUTOSIZE); 
+	cvNamedWindow("First", CV_WINDOW_AUTOSIZE); 
+	cvNamedWindow("Second", CV_WINDOW_AUTOSIZE); 
+	cvNamedWindow("Before2", CV_WINDOW_AUTOSIZE); 
+	cvNamedWindow("Third", CV_WINDOW_AUTOSIZE); 
 
 	while(quit != 'q'){
 
