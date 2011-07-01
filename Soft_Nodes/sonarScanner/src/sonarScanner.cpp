@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <vector>
 #include <iostream>
 #include <GL/glfw.h> // Include OpenGL Framework library
 
@@ -10,6 +11,9 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/ByteMultiArray.h"
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+#include "std_msgs/Int32MultiArray.h"
 
 #include "sonarScanner.h"
 
@@ -45,6 +49,8 @@ int main(int argc, char **argv)
 	
 	ros::Subscriber sub1 = scannerN.subscribe("sonarBearing", 100, bearingCallback);
 	ros::Subscriber sub2 = scannerN.subscribe("sonarBins", 100, binsCallback);
+	
+	ros::Subscriber sub3 = scannerN.subscribe("sonarBinsArr", 100, binsArrCallback);
 	
 	// Frame counter and window settings variables
 	int frame      = 0, width  = WIDTH, height      = HEIGHT;
@@ -94,17 +100,23 @@ int main(int argc, char **argv)
 
 */
 		int j = 0;
-		for(i = 0; i < 360; i++)
+		i = 0;
+		while(1)
 		{
 
+			if(i > 360)
+				i = 1;
+				
+				ros::spinOnce();
 				for(j = 1; j < 90; j++)
 				{
-					pixelPlace((float)i, j, genRand(255));
+					pixelPlace((float)i, j*2, binsArr[j]);
 				}
 				
 				drawScene( (int)imgx, (int)imgy, 150);
 				running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 				usleep(1000);
+				i++;
 		}
 		
 	glfwTerminate();		
@@ -261,7 +273,7 @@ void drawScene(unsigned int x, unsigned int y, unsigned int depth)
 			if(imageArray[i][j] >= 1)
 			{
 		
-				glColor3ub(imageArray[i][j], 0, 0);
+				glColor3ub(0, imageArray[i][j], imageArray[i][j]);
 				glVertex2f(i, j);
 				glVertex2f(0, 0);
 
@@ -296,5 +308,21 @@ bins = sonarBins->data;
 return;
 }
 
+/*************************************************
+** Returns the sonar bearing **
+*************************************************/
 
+void binsArrCallback(const std_msgs::Int32MultiArray::ConstPtr& sonarBinsArr)
+{
+	
+int i = 0;
+  // print all the remaining numbers
+  for(std::vector<int>::const_iterator it = sonarBinsArr->data.begin(); it != sonarBinsArr->data.end(); ++it)
+  {
+    binsArr[i] = *it;
+    i++;
+  }
+
+return;
+}
 
