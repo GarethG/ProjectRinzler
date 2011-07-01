@@ -25,16 +25,18 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 #include <math.h>
+#include "std_msgs/UInt32.h"
 
 // ROS/OpenCV HSV Demo
 // Based on http://www.ros.org/wiki/cv_bridge/Tutorials/UsingCvBridgeToConvertBetweenROSImagesAndOpenCVImages
 
-
+int x_centre, y_centre;
 
 class Demo{
 
 	protected:
 		ros::NodeHandle nh_;
+		
 		image_transport::ImageTransport it_;
 		image_transport::Subscriber image_sub_;
 		sensor_msgs::CvBridge bridge_;
@@ -53,18 +55,18 @@ class Demo{
 		// Listen for image messages on a topic and setup callback
 		image_sub_ = it_.subscribe ("/gscam/image_raw", 1, &Demo::imageCallback, this);
 		// Open HighGUI Window
-		cv::namedWindow ("input", 1);
+		/*cv::namedWindow ("input", 1);
 		cv::namedWindow ("hls", 1);
 		cv::namedWindow ("thresh hls up", 1);
 		cv::namedWindow ("thresh hls down", 1);
 		cv::namedWindow ("grey", 1);
-		cv::namedWindow ("out", 1);
+		cv::namedWindow ("out", 1);*/
 		//cv::moveWindow("input",200 ,200);
 		//cv::namedWindow ("thresh hsv", 1);
 	}
 
 	void findCentre(void){
-		int x, y, count, x_estimate, y_estimate, x_centre, y_centre;
+		int x, y, count, x_estimate, y_estimate;
 		int x_draw1, x_draw2, y_draw1, y_draw2;
 		CvScalar s;
 
@@ -85,7 +87,8 @@ class Demo{
 		}
 
 		if(count < 3000){				//arbritrary size threshold
-			printf("No Target in sight saw only %d\n",count);
+			//printf("No Target in sight saw only %d\n",count);
+			ROS_WARN("No Target %d",count);
 		}
 		else{
 			x_centre = y_estimate / count;		//estimate center of x
@@ -118,7 +121,8 @@ class Demo{
 			img_out_ = cv::Mat (&ipl_img).clone ();
 			img_thresh_hls2_ = cv::Mat (&ipl_hls).clone ();
 
-			printf("X: %d Y: %d Count: %d Yeahhhhhhhhhhhhhhhhhhhhhh buoy!\n",x_centre,y_centre,count);
+			//printf("X: %d Y: %d Count: %d Yeahhhhhhhhhhhhhhhhhhhhhh buoy!\n",x_centre,y_centre,count);
+			ROS_DEBUG("Target Found at %d %d with a count of %d",x_centre,y_centre,count);
 		}
 
 		return;
@@ -151,12 +155,12 @@ class Demo{
 		findCentre();
 
 		// Display Input image
-		cv::imshow ("input", img_in_);
+		/*cv::imshow ("input", img_in_);
 		cv::imshow ("hls", img_hls_);
 		cv::imshow ("thresh hls up", img_thresh_hls_);
 		cv::imshow ("thresh hls down", img_thresh_hls2_);
 		cv::imshow ("grey", img_grey_);
-		cv::imshow ("out", img_out_);
+		cv::imshow ("out", img_out_);*/
 		//cv::imshow ("thresh hsv", img_thresh_hsv_);
 
 		// Needed to  keep the HighGUI window open
@@ -171,11 +175,21 @@ int main(int argc, char **argv){
 	ros::init (argc, argv, "camtest");
 	// Start node and create a Node Handle
 	ros::NodeHandle nh;
+	ros::Publisher fwdcamXMsg = nh.advertise<std_msgs::UInt32>("fwdcamX", 100);
+	ros::Publisher fwdcamYMsg = nh.advertise<std_msgs::UInt32>("fwdcamY", 100);
+
+	std_msgs::UInt32 fwdcamX;
+	std_msgs::UInt32 fwdcamY;
+
 	// Instaniate Demo Object
 	ROS_INFO("Online");
 	Demo d (nh);
 	// Spin ...
-	ros::spin ();
+	while(ros::ok()){
+		ros::spinOnce();
+		fwdcamX.data = x_centre;
+		fwdcamXMsg.publish(fwdcamX);
+	}
 	// ... until done
 	return 0;
 }
