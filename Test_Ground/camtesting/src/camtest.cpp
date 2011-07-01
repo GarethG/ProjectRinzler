@@ -1,6 +1,3 @@
-//export GSCAM_CONFIG="v4l2src device=/dev/video0 ! video/x-raw-rgb ! ffmpegcolorspace"
-
-
 /*
  *  OpenCV Demo for ROS
  *  Copyright (C) 2010, I Heart Robotics
@@ -32,7 +29,7 @@
 // ROS/OpenCV HSV Demo
 // Based on http://www.ros.org/wiki/cv_bridge/Tutorials/UsingCvBridgeToConvertBetweenROSImagesAndOpenCVImages
 
-int thresh = 0;
+
 
 class Demo{
 
@@ -42,13 +39,12 @@ class Demo{
 		image_transport::Subscriber image_sub_;
 		sensor_msgs::CvBridge bridge_;
 		cv::Mat img_in_;
+		cv::Mat img_hls_;
 		cv::Mat img_hsv_;
-		cv::Mat img_hue_;
-		cv::Mat img_sat_;
-		cv::Mat img_bin_;
+		cv::Mat img_thresh_hls_;
+		cv::Mat img_thresh_hls2_;
+		cv::Mat img_grey_;
 		cv::Mat img_out_;
-		cv::Mat img_out;
-		cv::Mat img_bw;
 		IplImage *cv_input_;
 
 	public:
@@ -58,8 +54,13 @@ class Demo{
 		image_sub_ = it_.subscribe ("/gscam/image_raw", 1, &Demo::imageCallback, this);
 		// Open HighGUI Window
 		cv::namedWindow ("input", 1);
-		cv::namedWindow ("binary image", 1);
-		cv::namedWindow ("segmented output", 1);
+		cv::namedWindow ("hls", 1);
+		cv::namedWindow ("thresh hls up", 1);
+		cv::namedWindow ("thresh hls down", 1);
+		cv::namedWindow ("grey", 1);
+		cv::namedWindow ("out", 1);
+		//cv::moveWindow("input",200 ,200);
+		//cv::namedWindow ("thresh hsv", 1);
 	}
 
 	void findCentre(void){
@@ -69,7 +70,8 @@ class Demo{
 
 		x_estimate = y_estimate = count = 0;
 	
-		IplImage ipl_img = img_out;
+		IplImage ipl_img = img_out_;
+		IplImage ipl_hls = img_thresh_hls2_;
 
 		for(x=0;x<ipl_img.height;x++){
 			for(y=0;y<ipl_img.width;y++){
@@ -82,7 +84,7 @@ class Demo{
 			}
 		}
 
-		if(count < 10000){				//arbritrary size threshold
+		if(count < 3000){				//arbritrary size threshold
 			printf("No Target in sight saw only %d\n",count);
 		}
 		else{
@@ -106,14 +108,15 @@ class Demo{
 			cvLine(&ipl_img, pt1 , pt2, s, 1, 8,0);
 			cvLine(&ipl_img, pt3 , pt4, s, 1, 8,0);
 
-			/*s.val[0] = 0;
+			s.val[0] = 0;
 			s.val[1] = 255;
 			s.val[2] = 0;
 
-			cvLine(g_gray, pt1 , pt2, s, 1, 8,0);
-			cvLine(g_gray, pt3 , pt4, s, 1, 8,0);*/
+			cvLine(&ipl_hls, pt1 , pt2, s, 1, 8,0);
+			cvLine(&ipl_hls, pt3 , pt4, s, 1, 8,0);
 
-			img_out = cv::Mat (&ipl_img).clone ();
+			img_out_ = cv::Mat (&ipl_img).clone ();
+			img_thresh_hls2_ = cv::Mat (&ipl_hls).clone ();
 
 			printf("X: %d Y: %d Count: %d Yeahhhhhhhhhhhhhhhhhhhhhh buoy!\n",x_centre,y_centre,count);
 		}
@@ -132,25 +135,29 @@ class Demo{
 
 		// Convert IplImage to cv::Mat
 		img_in_ = cv::Mat (cv_input_).clone ();
-		// output = input
-		img_out_ = img_in_.clone ();
 		// Convert Input image from BGR to HSV
-		cv::cvtColor (img_in_, img_hsv_, CV_BGR2HSV);
-		//IplImage* img_bw = cvCreateImage(cvGetSize(img_hsv_),IPL_DEPTH_8U,1);
-		img_bw = img_hsv_ > 60;
-		img_bw = img_bw < 90;
-		cv::cvtColor (img_bw, img_bin_, CV_BGR2GRAY);
-		img_out = img_bin_ > 80;
+		cv::cvtColor (img_in_, img_hls_, CV_BGR2HLS);
 
+		//cv::threshold(img_hls_, img_thresh_hls_, 120, 255, CV_THRESH_BINARY);
+		//cv::threshold(img_hsv_, img_thresh_hsv_, 120, 255, CV_THRESH_BINARY);
+
+		img_thresh_hls_ = img_hls_ > 80;
+		img_thresh_hls2_ = img_thresh_hls_ < 70;
+
+		cv::cvtColor (img_thresh_hls2_, img_grey_, CV_BGR2GRAY);
+
+		img_out_ = img_grey_ > 70;
 
 		findCentre();
 
 		// Display Input image
 		cv::imshow ("input", img_in_);
-		// Display Binary Image
-		cv::imshow ("binary image", img_bw);
-		// Display segmented image
-		cv::imshow ("segmented output", img_out);
+		cv::imshow ("hls", img_hls_);
+		cv::imshow ("thresh hls up", img_thresh_hls_);
+		cv::imshow ("thresh hls down", img_thresh_hls2_);
+		cv::imshow ("grey", img_grey_);
+		cv::imshow ("out", img_out_);
+		//cv::imshow ("thresh hsv", img_thresh_hsv_);
 
 		// Needed to  keep the HighGUI window open
 		cv::waitKey (3);
@@ -161,7 +168,7 @@ class Demo{
 
 int main(int argc, char **argv){
 	// Initialize ROS Node
-	ros::init (argc, argv, "ihr_demo1");
+	ros::init (argc, argv, "camtest");
 	// Start node and create a Node Handle
 	ros::NodeHandle nh;
 	// Instaniate Demo Object
