@@ -13,18 +13,22 @@
 
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
-#include "std_msgs/ByteMultiArray.h"
 
-#define	RANGE			75 //200
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+
+#include "std_msgs/Int32MultiArray.h"
+
+#define	RANGE			5 //200
 #define	LEFTANGLE		0
 #define	RIGHTANGLE		6399
 #define	ADSPAN			81
 #define	ADLOW			8
-#define	GAIN			84
+#define	GAIN			10//84
 #define	ADINTERVAL		104
 #define MIN_AD_INTERVAL 5
 
-#define	NUMBEROFBINS	20//200
+#define	NUMBEROFBINS	90//200
 #define STEPANGLE		8
 #define MOTIME			20
 
@@ -48,7 +52,9 @@ unsigned char 	header,		//Message Header.
 				term;		//Message Terminator
 				
 unsigned int	bins,
-				bearing;		
+				bearing;	
+
+int 			binsArr[90];	
 
 unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
 			bp1_buffLen,
@@ -74,8 +80,11 @@ int main( int argc, char **argv )
 	ros::Publisher sonarBearingMsg = n.advertise<std_msgs::Float32>("sonarBearing", 100);
 	ros::Publisher sonarBinsMsg = n.advertise<std_msgs::Float32>("sonarBins", 100);
 	
+	ros::Publisher pub = n.advertise<std_msgs::Int32MultiArray>("sonarBinsArr", 100);
+	
 	std_msgs::Float32 sonarBearing;
 	std_msgs::Float32 sonarBins;
+	std_msgs::Int32MultiArray sonarBinsArr;
 	
 	/* Open and Configure the Serial Port. */
 	open_port();	
@@ -105,7 +114,7 @@ int main( int argc, char **argv )
 	
 	//makePacket(mtStopAlive);	
 	/* ask for some data, will get datas */
-	while(i < 30)
+	while(i < 3600)
 	{
 		
 		requestData();
@@ -115,9 +124,16 @@ int main( int argc, char **argv )
 		sonarBearing.data = (float) bearing;
 		sonarBins.data = (float) bins;
 		
+		sonarBinsArr.data.clear();
+		for (int i = 0; i < 90; i++)
+		{
+			sonarBinsArr.data.push_back(binsArr[i]);
+		}
+		
 		//publish
 		sonarBearingMsg.publish(sonarBearing);
 		sonarBinsMsg.publish(sonarBins);
+		pub.publish(sonarBinsArr);
 		
 		//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
 		//printf("%d - %d\n", bearing, bins);
@@ -142,7 +158,7 @@ int main( int argc, char **argv )
 int open_port(void)
 {	
 
-	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY);// O_NDELAY |
+	fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY);// O_NDELAY |
 	//printf("/dev/ttyS0\n");
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
@@ -342,7 +358,7 @@ int sortPacket(void)
 	temp[263],
 	msgLen,
 	binFlag;
-	
+		
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
 	//printf("buffLen = %d\n", buffLen);
@@ -406,9 +422,13 @@ int sortPacket(void)
 			else
 				printf("Multi Packet\n");
 			binFlag = 0;
+
+			
 			//printf("\nBearing: %f\n Bins: ", (float) getU16(temp[41], temp[40]) / 17.775 );
 			for(i = 44; i < buffLen-1; i++ )
 			{
+
+				binsArr[i-44] = temp[i];
 				//printf("%d, ", temp[i]);
 				if(temp[i] >= THRESHOLD && binFlag == 0)
 				{

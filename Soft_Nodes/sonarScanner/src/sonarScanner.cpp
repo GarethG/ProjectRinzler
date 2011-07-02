@@ -101,6 +101,7 @@ int main(int argc, char **argv)
 */
 		int j = 0;
 		i = 0;
+		
 		while(1)
 		{
 
@@ -108,11 +109,11 @@ int main(int argc, char **argv)
 				i = 1;
 				
 				ros::spinOnce();
+				
 				for(j = 1; j < 90; j++)
 				{
-					pixelPlace((float)i, j*2, binsArr[j]);
-				}
-				
+					pixelPlace((float)bearing / 17.775, j*2, binsArr[j]);
+				}			
 				drawScene( (int)imgx, (int)imgy, 150);
 				running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED);
 				usleep(1000);
