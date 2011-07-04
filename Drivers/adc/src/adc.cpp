@@ -110,7 +110,7 @@ void readADC(void){
 		}
 		spi_Close();
 	}
-	return;
+	return; 
 }
 
 void findForce(void){
