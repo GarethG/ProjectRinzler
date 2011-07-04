@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/UInt32.h"
 
 #include "roboard.h"
 #include "ad79x8.h"
@@ -18,7 +19,8 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::NodeHandle adcN;
 
 	/* Publish */
-
+	
+	#ifdef FORCE
 	ros::Publisher adcXMsg = adcN.advertise<std_msgs::Float32>("adcX", 100);
 	ros::Publisher adcYMsg = adcN.advertise<std_msgs::Float32>("adcY", 100);
 	ros::Publisher adcZMsg = adcN.advertise<std_msgs::Float32>("adcZ", 100);
@@ -26,6 +28,12 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 adcX;
 	std_msgs::Float32 adcY;
 	std_msgs::Float32 adcZ;
+	#endif
+
+	#ifdef GOBUTTON
+	ros::Publisher adcGoMsg = adcN.advertise<std_msgs::UInt32>("adcGo", 100);
+	std_msgs::UInt32 adcGo;
+	#endif
 
 	initADC();
 
@@ -36,6 +44,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	while (ros::ok()){
 		//ros::spin();
 		readADC();
+		#ifdef FORCE
 		findForce();
 
 		adcX.data = acc[X].R;
@@ -46,6 +55,16 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 		adcYMsg.publish(adcY);
 		adcZMsg.publish(adcZ);
 
+		#endif
+
+		#ifdef GOBUTTON
+
+		adcGo.data = checkGo();
+		
+		adcGoMsg.publish(adcGo);
+
+		#endif
+
 		loop_rate.sleep();
 	}
 
@@ -54,7 +73,20 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	return 0;
 }
 
+int checkGo(void){
+	goTmp = (float)accRaw[GO];
+	goTmp /= ADCRES;
+	goTmp *= VREFH;
+	
+	if(goTmp >= VON){
+		return 1; //if we have an appropriate voltage return go
+	}
+	
+	return 0;	//else return stop
+}	
+
 void initADC(void){
+	#ifdef FORCE
 	acc[X].zeroG = (float)ZEROX;
 	acc[X].zeroG /= ADCRES;
 	acc[X].zeroG *= VREFH;
@@ -64,6 +96,7 @@ void initADC(void){
 	acc[Z].zeroG = (float)ZEROZ;
 	acc[Z].zeroG /= ADCRES;
 	acc[Z].zeroG *= VREFH;
+	#endif
 }
 
 void readADC(void){

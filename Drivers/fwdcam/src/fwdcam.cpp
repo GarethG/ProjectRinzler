@@ -55,12 +55,12 @@ class Demo{
 		// Listen for image messages on a topic and setup callback
 		image_sub_ = it_.subscribe ("/gscam/image_raw", 1, &Demo::imageCallback, this);
 		// Open HighGUI Window
-		/*cv::namedWindow ("input", 1);
+		cv::namedWindow ("input", 1);
 		cv::namedWindow ("hls", 1);
 		cv::namedWindow ("thresh hls up", 1);
 		cv::namedWindow ("thresh hls down", 1);
 		cv::namedWindow ("grey", 1);
-		cv::namedWindow ("out", 1);*/
+		cv::namedWindow ("out", 1);
 		//cv::moveWindow("input",200 ,200);
 		//cv::namedWindow ("thresh hsv", 1);
 	}
@@ -155,12 +155,12 @@ class Demo{
 		findCentre();
 
 		// Display Input image
-		/*cv::imshow ("input", img_in_);
+		cv::imshow ("input", img_in_);
 		cv::imshow ("hls", img_hls_);
 		cv::imshow ("thresh hls up", img_thresh_hls_);
 		cv::imshow ("thresh hls down", img_thresh_hls2_);
 		cv::imshow ("grey", img_grey_);
-		cv::imshow ("out", img_out_);*/
+		cv::imshow ("out", img_out_);
 		//cv::imshow ("thresh hsv", img_thresh_hsv_);
 
 		// Needed to  keep the HighGUI window open
