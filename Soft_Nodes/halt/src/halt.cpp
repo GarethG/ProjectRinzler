@@ -5,11 +5,14 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/UInt32.h"
-void goTCallback(const std_msgs::UInt32::ConstPtr& pilotTGo);
+
+#define COUNTLIM 150
+
+void adcGoCallback(const std_msgs::UInt32::ConstPtr& adcGo);
 unsigned int go = 0;
 int main(int argc, char **argv){
 
-
+	unsigned int count = 0;
 
 	ros::init(argc, argv, "halt");
 
@@ -25,7 +28,7 @@ int main(int argc, char **argv){
 
 	/* Subscribe */
 
-	ros::Subscriber sub1 = haltN.subscribe("pilotTGo", 	100, goTCallback);
+	ros::Subscriber sub1 = haltN.subscribe("adcGo", 	100, adcGoCallback);
 
 	ros::Rate loop_rate(30);
 
@@ -33,7 +36,18 @@ int main(int argc, char **argv){
 
 	while(ros::ok()){
 		ros::spinOnce();
-		pilotGo.data = go;
+		if(go && (count > COUNTLIM)){
+			pilotGo.data = 1;
+		}
+		else if(go){
+			pilotGo.data = 0;
+			count++;
+		}
+		else{
+			pilotGo.data = 0;
+			count = 0;
+		}
+		
 		pilotGoMsg.publish(pilotGo);
 		loop_rate.sleep();
 
@@ -48,7 +62,7 @@ int main(int argc, char **argv){
 ** Returns the go				**
 *************************************************/
 
-void goTCallback(const std_msgs::UInt32::ConstPtr& pilotTGo){
-	go = pilotTGo->data;
+void adcGoCallback(const std_msgs::UInt32::ConstPtr& adcGo){
+	go = adcGo->data;
 	return;
 }
