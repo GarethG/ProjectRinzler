@@ -79,9 +79,10 @@ unsigned int checkGo(void){
 	goTmp *= VREFH;
 	
 	if(goTmp >= VON){
+		ROS_DEBUG("GO!!");
 		return 1; //if we have an appropriate voltage return go
 	}
-	
+	ROS_DEBUG("STOP!!");
 	return 0;	//else return stop
 }	
 
@@ -106,7 +107,7 @@ void readADC(void){
 	if(spi_Init(SPICLK_21400KHZ)){
 		for(i=0;i<8;i++){
 			accRaw[i] = adc_ReadChannel(i, ADCMODE_RANGE_2VREF,ADCMODE_UNSIGNEDCODING);
-			printf("Val at channel %u: is %u\n",i,accRaw[i]);
+			//printf("Val at channel %u: is %u\n",i,accRaw[i]);
 		}
 		spi_Close();
 	}
