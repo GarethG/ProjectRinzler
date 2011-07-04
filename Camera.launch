@@ -1,6 +1,7 @@
 <launch>
 	<!-- DISPLAY NAME	NODE NAME	RUN NAME	ARGUMENTS	-->
 	<node name="svpDepth"	pkg="svp"	type="svp"	/>
-	<node name="gscam"	pkg="gscam"	type="gscam"	/>
-	<node name="fwdcam"	pkg="fwdcam"	type="camera"	/>
+	<node name="ADC"	pkg="adc"	type="adc"	/>
+	<!-- <node name="gscam"	pkg="gscam"	type="gscam"	/> -->
+	<!-- <node name="fwdcam"	pkg="fwdcam"	type="camera"	/> -->
 </launch>

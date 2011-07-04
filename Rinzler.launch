@@ -1,6 +1,9 @@
 <launch>
 	<!--	DISPLAY NAME	NODE NAME	RUN NAME	ARGUMENTS	-->
 	<node name="Heading"	pkg="control"	type="pid"	args="heading"	/>
+	<node name="Depth"	pkg="control"	type="pid"	args="depth"	/>
+	<node name="Pitch"	pkg="control"	type="pid"	args="pitch"	/>
+	<node name="DepthMod"	pkg="depthMod"	type="depthMod"			/>
 	<node name="PIDRamp"	pkg="pidRamp"	type="slew"			/>
 	
 	<node name="Motors"	pkg="motor"	type="motor"			/>

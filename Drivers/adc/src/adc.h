@@ -6,8 +6,8 @@
 
 #define X	1
 #define	Y	2
-#define	Z	3
-#define GO	4
+#define	Z	4
+#define GO	3
 
 //#define FORCE
 #define GOBUTTON
@@ -34,7 +34,7 @@ float goTmp=0.0;
 
 /* Function Declerations */
 
-int checkGo(void);
+unsigned int checkGo(void);
 void initADC(void);
 void readADC(void);
 void findForce(void);

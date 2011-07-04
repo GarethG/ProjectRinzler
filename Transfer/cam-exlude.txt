@@ -11,10 +11,9 @@ Doc*
 halt
 comp*
 moto*
-adc*
 Sof*
-Roboa*
 dwncam*
 Imag*
 Trans*
-
+stac*
+fwd*

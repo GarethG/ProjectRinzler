@@ -73,7 +73,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	return 0;
 }
 
-int checkGo(void){
+unsigned int checkGo(void){
 	goTmp = (float)accRaw[GO];
 	goTmp /= ADCRES;
 	goTmp *= VREFH;
@@ -106,7 +106,7 @@ void readADC(void){
 	if(spi_Init(SPICLK_21400KHZ)){
 		for(i=0;i<8;i++){
 			accRaw[i] = adc_ReadChannel(i, ADCMODE_RANGE_2VREF,ADCMODE_UNSIGNEDCODING);
-			printf("Val at channel %u: is %u\n",accRaw[i],val);
+			printf("Val at channel %u: is %u\n",i,accRaw[i]);
 		}
 		spi_Close();
 	}
