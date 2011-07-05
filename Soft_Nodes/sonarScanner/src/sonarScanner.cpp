@@ -49,7 +49,6 @@ int main(int argc, char **argv)
 	
 	ros::Subscriber sub1 = scannerN.subscribe("sonarBearing", 100, bearingCallback);
 	ros::Subscriber sub2 = scannerN.subscribe("sonarBins", 100, binsCallback);
-	
 	ros::Subscriber sub3 = scannerN.subscribe("sonarBinsArr", 100, binsArrCallback);
 	
 	// Frame counter and window settings variables

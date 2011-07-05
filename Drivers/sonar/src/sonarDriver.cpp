@@ -9,7 +9,6 @@
 #include <string>
 
 #include "ros/ros.h"
-#include "sonarDriver.h"
 
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
@@ -18,19 +17,26 @@
 #include "std_msgs/MultiArrayDimension.h"
 
 #include "std_msgs/Int32MultiArray.h"
+#include "std_msgs/Int32.h"
 
-#define	RANGE			5 //200
-#define	LEFTANGLE		0
-#define	RIGHTANGLE		6399
-#define	ADSPAN			81
-#define	ADLOW			8
-#define	GAIN			10//84
-#define	ADINTERVAL		104
-#define MIN_AD_INTERVAL 5
+#include "sonarDriver.h"
 
-#define	NUMBEROFBINS	90//200
-#define STEPANGLE		8
-#define MOTIME			20
+
+
+int	RANGE 			=	5; 		//200
+int	LEFTANGLE 		=	0;
+int	RIGHTANGLE		=	6399;
+int	ADSPAN			=	81;
+int	ADLOW			=	8;
+int	GAIN			=	10;		//84
+int	ADINTERVAL		=	104;
+int MIN_AD_INTERVAL = 	5;
+
+int	NUMBEROFBINS	=	90;		//200
+int STEPANGLE		=	8;
+int MOTIME			=	20;
+
+int hdCmd 			=	0x23;	//23 no stare, 2B stareLL
 
 #define WRITEDEL		250000//
 
@@ -60,6 +66,8 @@ unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
 			bp1_buffLen,
 			bp1_bLength;
 			
+int sCMD;
+			
 //byte byteBins[45];
 
 /******************************************************
@@ -71,15 +79,20 @@ int main( int argc, char **argv )
 {
 	
 	int i, j;
+	int limCount = 0;
+
 
 	ros::init(argc, argv, "sonar");
 	
 	ros::NodeHandle n;
 	
+	ros::Subscriber sub1 = n.subscribe("sonarCmd", 100, cmdCallback);
+	ros::Subscriber sub2 = n.subscribe("sonarRange", 100, rangeCallback);
+	//ros::Subscriber sub3 = n.subscribe("sonarHeadCmd", 100, headCmdCallback);
+	
 	//ros::Publisher nodenameVariablenameMsg = handle.outsidness<libraryname::type>("nodenameVariablename", bufflen?);					
 	ros::Publisher sonarBearingMsg = n.advertise<std_msgs::Float32>("sonarBearing", 100);
 	ros::Publisher sonarBinsMsg = n.advertise<std_msgs::Float32>("sonarBins", 100);
-	
 	ros::Publisher pub = n.advertise<std_msgs::Int32MultiArray>("sonarBinsArr", 100);
 	
 	std_msgs::Float32 sonarBearing;
@@ -114,7 +127,7 @@ int main( int argc, char **argv )
 	
 	//makePacket(mtStopAlive);	
 	/* ask for some data, will get datas */
-	while(i < 3600)
+/*	while(i < 3600)
 	{
 		
 		requestData();
@@ -140,6 +153,114 @@ int main( int argc, char **argv )
 		ros::spinOnce();
 		i++;
 	
+	}
+	
+*/	
+		
+	while(ros::ok())
+	{
+		ros::spinOnce();
+
+		if(sCMD == 0)
+		{
+			
+			//run full scan.
+			
+			LEFTANGLE	=	0;
+			RIGHTANGLE	=	6399;
+			
+			headSetup();
+			
+			requestData();
+			//
+			//tcflush(fd, TCIFLUSH);//remove
+			//pass datas	
+			sonarBearing.data = (float) bearing;
+			sonarBins.data = (float) bins;
+			
+			sonarBinsArr.data.clear();
+			for (int i = 0; i < 90; i++)
+			{
+				sonarBinsArr.data.push_back(binsArr[i]);
+			}
+			
+			//publish
+			sonarBearingMsg.publish(sonarBearing);
+			sonarBinsMsg.publish(sonarBins);
+			pub.publish(sonarBinsArr);
+			
+			//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
+			//printf("%d - %d\n", bearing, bins);
+			ros::spinOnce();
+			i++;
+			
+		}
+		else if(sCMD == 1)
+		{
+			
+			//left limb stare 0, 90, 180, 270
+			
+			hdCmd 		= 	0x2B;
+			
+			if(limCount == 0)
+			{
+				LEFTANGLE	=	0;
+				RIGHTANGLE	=	1600;
+				limCount ++;
+			}
+			else if(limCount == 1)
+			{
+				LEFTANGLE	=	1600;
+				RIGHTANGLE	=	3200;
+				limCount ++;
+			}
+			else if(limCount == 2)
+			{
+				LEFTANGLE	=	3200;
+				RIGHTANGLE	=	4800;
+				limCount ++;
+			}
+			else
+			{
+				LEFTANGLE	=	4800;
+				RIGHTANGLE	=	6400;
+				limCount = 0;
+			}
+			
+			headSetup();
+			
+			requestData();
+			//
+			//tcflush(fd, TCIFLUSH);//remove
+			//pass datas	
+			sonarBearing.data = (float) bearing;
+			sonarBins.data = (float) bins;
+			
+			//Send array of the packet recieved.
+			sonarBinsArr.data.clear();
+			for (int i = 0; i < 90; i++)
+			{
+				sonarBinsArr.data.push_back(binsArr[i]);
+			}
+			
+			//publish
+			sonarBearingMsg.publish(sonarBearing);
+			sonarBinsMsg.publish(sonarBins);
+			pub.publish(sonarBinsArr);
+			
+			//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
+			//printf("%d - %d\n", bearing, bins);
+			ros::spinOnce();
+			i++;
+			
+			
+		}
+		else
+		{
+			ROS_ERROR("Neither Scanning nor LLStare, going back to scanning.");
+		}
+		
+		
 	}
 				
 	/* close file and exit program */	
@@ -580,7 +701,7 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 					0x80,
 					0x02,
 					0x1D,						//Head Command Type - 1 = Normal, 29 Dual Channel
-					0x85, 0x2B,					//HdCtrl bytes  0x85, 0x23, | 0x83, 0x2B
+					0x85, hdCmd,				//HdCtrl bytes  0x85, 0x23, | 0x83, 0x2B
 					0x03,						//Head Type
 					0x99, 0x99, 0x99, 0x02,		//TxN Channel 1
 					0x66, 0x66, 0x66, 0x05,		//TxN Channel 2
@@ -863,4 +984,24 @@ int requestData( void )
 
 	return 0;
 	
+}
+
+/*************************************************
+** Returns the sonar bearing **
+*************************************************/
+
+void cmdCallback(const std_msgs::Int32::ConstPtr& sonarCmd)
+{
+	sCMD = sonarCmd->data;
+	return;
+}
+
+/*************************************************
+** Returns the sonar bearing **
+*************************************************/
+
+void rangeCallback(const std_msgs::Int32::ConstPtr& sonarRange)
+{
+	RANGE = sonarRange->data;
+	return;
 }

@@ -31,13 +31,14 @@ int main(int argc, char **argv)
 	ros::Subscriber sub1 = n.subscribe("logX", 100, xCallback);
 	ros::Subscriber sub2 = n.subscribe("logY", 100, yCallback);
 	ros::Subscriber sub3 = n.subscribe("logZ", 100, zCallback);
-	
 	ros::Subscriber sub4 = n.subscribe("logAction", 100, aCallback);
 
 	ros::spinOnce();
 
 	while (ros::ok())
 	{
+
+		ltime=time(NULL); /* get current cal time */
 
 		printf("%s,%d.x,%d.y,%d.z,%s.aa\n",asctime( localtime(&ltime) ), x, y, z, aa);
 		

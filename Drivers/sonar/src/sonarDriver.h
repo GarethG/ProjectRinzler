@@ -64,3 +64,6 @@ int initSonar( void );
 int sendBB( void );
 int headSetup( void );
 int requestData( void );
+
+void cmdCallback(const std_msgs::Int32::ConstPtr& sonarCmd);
+void rangeCallback(const std_msgs::Int32::ConstPtr& sonarRange);
