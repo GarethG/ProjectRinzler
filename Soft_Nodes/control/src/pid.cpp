@@ -137,7 +137,7 @@ int main(int argc, char **argv){
 			tmp = pid(targetDepth,depth);
 
 			if(depth > targetDepth){	//if we are too deep don't turn on the motors, use bouyancy
-				tmp = 0.0f;
+				tmp *= 0.5f;
 			}
 			else{
 				tmp *= -1.0;

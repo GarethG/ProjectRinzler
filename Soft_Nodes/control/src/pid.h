@@ -17,7 +17,7 @@
 #define	MINSPEEDH	-50.0
 #define MAXVAL		50.0
 #define MINVAL		-50.0
-#define FRONTTHRESH	20.0
+#define FRONTTHRESH	2.0
 
 /* Globals*/
 
