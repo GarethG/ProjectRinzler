@@ -7,10 +7,10 @@ spammer
 logger
 Test_Ground
 son*
-High_Lev*
+pilot
+mission*
 Doc*
 svp
-halt
 *cam*
 stac*
 adc

@@ -8,4 +8,7 @@
 	
 	<node name="Motors"	pkg="motor"	type="motor"			/>
 	<node name="Compass"	pkg="compass"	type="compass"			/>
+
+	<node name="halt"	pkg="halt"	type="halt"			/>
+	<node name="pilot"	pkg="pilotKeys"	type="pilotKey"			/>
 </launch>
