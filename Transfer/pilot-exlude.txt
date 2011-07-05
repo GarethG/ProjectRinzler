@@ -4,7 +4,7 @@ bin
 ros_tutorials
 fwdcam
 spammer
-logger
+log*
 Test_Ground
 son*
 pilot
@@ -14,3 +14,11 @@ svp
 *cam*
 stac*
 adc
+Imag*
+Trans*
+itx*
+Itx*
+Local.launch
+Cam*
+READ*
+build_all*

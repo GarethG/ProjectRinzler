@@ -17,3 +17,10 @@ Imag*
 Trans*
 stac*
 fwd*
+itx*
+Local.lau*
+Itx*
+Rinzler.la*
+READ*
+build_all*
+launc.sh
