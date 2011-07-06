@@ -97,7 +97,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::Float32 svpDepth;
 	std_msgs::Float32 svpVelo;
 
-	ros::Rate loop_rate(2); //how many times a second (i.e. Hz) the code should run
+	ros::Rate loop_rate(1); //how many times a second (i.e. Hz) the code should run
 
 	if(!open_port()){
 		return 0;	//we failed to open the port so end

@@ -5,11 +5,11 @@
 #define KDH 1.0
 #define KIH 0.1
 /* Depth */
-#define KPD 200.0
+#define KPD 300.0
 #define KDD 0.1
 #define KID 0.1
 /* Pitch */
-#define KPP 0.01
+#define KPP 2.0
 #define KDP 0.1
 #define KIP 0.1
 /* Others */
@@ -17,10 +17,12 @@
 #define	MINSPEEDH	-50.0
 #define MAXVAL		50.0
 #define MINVAL		-50.0
-#define FRONTTHRESH	0.5
+#define FRONTTHRESH	0.8
 
 #define PLUSBUFFH	5.0
 #define	MINUSBUFFH	-5.0
+
+#define BUFFTHRESH	10
 
 #define PLUSBUFFD	5.0
 #define	MINUSBUFFD	-5.0
@@ -40,6 +42,7 @@ float KP,KD,KI;
 
 int PLUSBUFF, MINUSBUFF;
 int deadZ =0;
+int buffCheck = 0;
 
 /* Function Declerations */
 

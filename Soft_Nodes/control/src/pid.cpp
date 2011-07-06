@@ -153,7 +153,7 @@ int main(int argc, char **argv){
 			frontRate.data = tmp;
 
 			if((targetDepth - depth) > FRONTTHRESH){	//if we are really far off target
-				backDRate.data = tmp * -1.0;			//add rear motor power
+				backDRate.data = tmp * -0.4;			//add rear motor power
 				backDRateMsg.publish(backDRate);
 			}
 			else{
@@ -207,7 +207,11 @@ int main(int argc, char **argv){
 
 			ros::spinOnce();
 
-			backPRate.data = pid(targetPitch,pitch);
+			tmp = p(pitch,targetPitch);
+
+			tmp *= -1.0f;
+
+			backPRate.data = tmp;
 
 			if(backPRate.data < 0.0){	//if the nose is high
 				backPRate.data = 0.0;	//use bouyancy
@@ -314,30 +318,38 @@ void targetDepthCallback(const std_msgs::Float32::ConstPtr& pilotDepth){
 float correctError(float error){
 	//ROS_INFO("Error %.3f P %.3f M %.3f",error,PLUSBUFF,MINUSBUFF);
 	if(error > 180.0f){
-		ROS_INFO("Origninal Error %.3f",error);
+		//ROS_INFO("Origninal Error %.3f",error);
 		error /= 360.0f;
 		error = 1.0f - error;
 		error *= 360.0f;
 		error *= -1.0f;
-		ROS_INFO("New Error %.3f",error);
+		//ROS_INFO("New Error %.3f",error);
 	}
 	else if(error < -180.0f){
-		ROS_INFO("Origninal Error %.3f",error);
+		//ROS_INFO("Origninal Error %.3f",error);
 		error /= 360.0f;
 		error *= -1.0f;
 		error = 1.0f - error;
 		error *= 360.0f;
-		ROS_INFO("New Error %.3f",error);
+		//ROS_INFO("New Error %.3f",error);
 	}
 
 	if(deadZ){
 		if((error < PLUSBUFF) && (error > MINUSBUFF)){
-			ROS_INFO("Warn");
+			//ROS_INFO("Warn");
 			ROS_WARN("DEAD ZONE");
+			buffCheck++;
+			if(buffCheck < BUFFTHRESH){
+				error *= -0.5;
+				return error;
+			}
 			return 0.0;
 		} 
-		ROS_INFO("Not warn");
+		//ROS_INFO("Not warn");
 	}
+
+	buffCheck = 0;
+
 	return error;
 }
 
@@ -350,7 +362,7 @@ float p(float value, float targetValue){
 
 	error = targetValue - value;	//error is target - actual
 
-	ROS_INFO("Error: %.3f Target: %.3f Actual %.3f",error, targetValue, value);
+	ROS_DEBUG("Error: %.3f Target: %.3f Actual %.3f",error, targetValue, value);
 
 	error = correctError(error);
 

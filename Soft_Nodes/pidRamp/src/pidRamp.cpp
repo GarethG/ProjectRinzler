@@ -118,19 +118,39 @@ unsigned int slewer(unsigned int pos){
 	}
 	else{
 		if(targetRate[pos] > currentRate[pos]){
-			if((currentRate[pos] + 10) > targetRate[pos]){
-				currentRate[pos] += 1;
+			if(pos == FRONT){
+				if((currentRate[pos] + 10) > targetRate[pos]){
+					currentRate[pos] += 1;
+				}
+				else{
+					currentRate[pos] += CATCHRATEF;
+				}	
 			}
 			else{
-				currentRate[pos] += CATCHRATE;
+				if((currentRate[pos] + 10) > targetRate[pos]){
+					currentRate[pos] += 1;
+				}
+				else{
+					currentRate[pos] += CATCHRATE;
+				}
 			}
 		}
 		else if(targetRate[pos] < currentRate[pos]){
-			if((currentRate[pos] - 10) < targetRate[pos]){
-				currentRate[pos] -= 1;
+			if(pos == FRONT){
+				if((currentRate[pos] - 10) < targetRate[pos]){
+					currentRate[pos] -= 1;
+				}
+				else{
+					currentRate[pos] -= CATCHRATEF;
+				}
 			}
 			else{
-				currentRate[pos] -= CATCHRATE;
+				if((currentRate[pos] - 10) < targetRate[pos]){
+					currentRate[pos] -= 1;
+				}
+				else{
+					currentRate[pos] -= CATCHRATE;
+				}
 			}
 		}
 	}
