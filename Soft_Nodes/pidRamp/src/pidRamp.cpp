@@ -135,13 +135,25 @@ unsigned int slewer(unsigned int pos){
 		}
 	}
 
-	if(currentRate[pos] > MAXSPEED){
-		currentRate[pos] = MAXSPEED;
-	}
+	if((pos == LEFT) || (pos == RIGHT)){
 
-	if(currentRate[pos] < MINSPEED){
-		currentRate[pos] = MINSPEED;
+		if(currentRate[pos] > MAXSPEED){
+			currentRate[pos] = MAXSPEED;
+		}
+
+		if(currentRate[pos] < MINSPEED){
+			currentRate[pos] = MINSPEED;
+		}
 	}
+	else{
+		if(currentRate[pos] > MAXSPEEDD){
+			currentRate[pos] = MAXSPEEDD;
+		}
+
+		if(currentRate[pos] < MINSPEEDD){
+			currentRate[pos] = MINSPEEDD;
+		}
+	}		
 
 	outRate[pos] = currentRate[pos];
 	outRate[pos] *= SCALAR;

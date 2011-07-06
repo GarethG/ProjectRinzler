@@ -5,7 +5,7 @@
 #define KDH 1.0
 #define KIH 0.1
 /* Depth */
-#define KPD 100.0
+#define KPD 200.0
 #define KDD 0.1
 #define KID 0.1
 /* Pitch */
@@ -17,7 +17,7 @@
 #define	MINSPEEDH	-50.0
 #define MAXVAL		50.0
 #define MINVAL		-50.0
-#define FRONTTHRESH	5.0
+#define FRONTTHRESH	0.5
 
 #define PLUSBUFFH	5.0
 #define	MINUSBUFFH	-5.0

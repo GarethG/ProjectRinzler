@@ -144,23 +144,26 @@ int main(int argc, char **argv){
 			tmp = p(depth,targetDepth);
 
 			if(depth > targetDepth){	//if we are too deep don't turn on the motors, use bouyancy
-				tmp *= 0.5f;
+				tmp *= -0.5f;
 			}
 			else{
-				tmp *= -1.0;
+				tmp *= 1.0;
 			}
 
 			frontRate.data = tmp;
 
 			if((targetDepth - depth) > FRONTTHRESH){	//if we are really far off target
-				backDRate.data = tmp;			//add rear motor power
+				backDRate.data = tmp * -1.0;			//add rear motor power
 				backDRateMsg.publish(backDRate);
+			}
+			else{
+				backDRate.data = 0.0;
 			}
 							
 
 			frontRateMsg.publish(frontRate);
 
-			ROS_DEBUG("Depth PID Front %.3f",frontRate.data);
+			ROS_DEBUG("Depth PID Front %.3f Depth Rear %.3f",frontRate.data,backDRate.data);
 
 			loop_rate.sleep();
 

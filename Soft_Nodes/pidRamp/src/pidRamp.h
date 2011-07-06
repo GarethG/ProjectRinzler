@@ -4,6 +4,9 @@
 #define MAXSPEED		50
 #define	MINSPEED		-50
 
+#define MAXSPEEDD		90
+#define	MINSPEEDD		-90
+
 #define	FRONT			0
 #define	LEFT			1
 #define RIGHT			2
