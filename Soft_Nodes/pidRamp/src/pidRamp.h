@@ -1,6 +1,6 @@
 /* Defines */
 
-#define CATCHRATE		10
+#define CATCHRATE		20
 #define MAXSPEED		50
 #define	MINSPEED		-50
 

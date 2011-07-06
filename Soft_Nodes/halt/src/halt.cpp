@@ -8,7 +8,7 @@
 
 #define COUNTLIM 150
 
-void adcGoCallback(const std_msgs::UInt32::ConstPtr& adcGo);
+void pilotTGoCallback(const std_msgs::UInt32::ConstPtr& pilotTGo);
 unsigned int go = 0;
 int main(int argc, char **argv){
 
@@ -28,8 +28,8 @@ int main(int argc, char **argv){
 
 	/* Subscribe */
 
-	ros::Subscriber sub1 = haltN.subscribe("adcGo", 	100, adcGoCallback);
-
+	//ros::Subscriber sub1 = haltN.subscribe("adcGo", 	100, adcGoCallback);
+	ros::Subscriber sub1 = haltN.subscribe("pilotTGo", 	100, pilotTGoCallback);
 	ros::Rate loop_rate(30);
 
 	ROS_INFO("Halt Ready");
@@ -62,7 +62,7 @@ int main(int argc, char **argv){
 ** Returns the go				**
 *************************************************/
 
-void adcGoCallback(const std_msgs::UInt32::ConstPtr& adcGo){
-	go = adcGo->data;
+void pilotTGoCallback(const std_msgs::UInt32::ConstPtr& pilotTGo){
+	go = pilotTGo->data;
 	return;
 }

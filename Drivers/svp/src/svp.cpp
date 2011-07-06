@@ -116,8 +116,8 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			}
 			depth = strtod(depthArr, &dEnd);
 
-			depth -= SURFACE;	//pressure - surface pressure = specific weight x depth
-			depth /= DENSITY;
+			//depth -= SURFACE;	//pressure - surface pressure = specific weight x depth
+			//depth /= DENSITY;
 			
 			svpDepth.data = depth;	//dMsg = 1.01240;//
 

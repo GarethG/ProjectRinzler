@@ -113,12 +113,26 @@ unsigned int slewer(unsigned int pos){
 		currentRate[pos] = 0;//targetRate[pos]; //could be why the pwm wasn't starting (i.e. ramp too fast)
 		first = 0;
 	}
-
-	if(targetRate[pos] > currentRate[pos]){
-		currentRate[pos] += CATCHRATE;
+	if(targetRate[pos] == 0){
+		currentRate[pos] = 0;
 	}
-	else if(targetRate[pos] < currentRate[pos]){
-		currentRate[pos] -= CATCHRATE;
+	else{
+		if(targetRate[pos] > currentRate[pos]){
+			if((currentRate[pos] + 10) > targetRate[pos]){
+				currentRate[pos] += 1;
+			}
+			else{
+				currentRate[pos] += CATCHRATE;
+			}
+		}
+		else if(targetRate[pos] < currentRate[pos]){
+			if((currentRate[pos] - 10) < targetRate[pos]){
+				currentRate[pos] -= 1;
+			}
+			else{
+				currentRate[pos] -= CATCHRATE;
+			}
+		}
 	}
 
 	if(currentRate[pos] > MAXSPEED){

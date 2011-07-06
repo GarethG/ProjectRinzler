@@ -8,7 +8,6 @@
 
 #include "pid.h"
 
-
 int main(int argc, char **argv){
 
 	float tmp;
@@ -47,8 +46,11 @@ int main(int argc, char **argv){
 		KD = KDH;
 		KI = KIH;
 
+		PLUSBUFF = PLUSBUFFH;
+		MINUSBUFF = MINUSBUFFH;
+		deadZ = 1;
 		while(ros::ok()){
-
+			
 			if(once){
 				while(go != 1){
 					ros::spinOnce();
@@ -66,7 +68,7 @@ int main(int argc, char **argv){
 
 			ros::spinOnce();
 
-			tmp = pid(targetHeading,heading);	//get PID value
+			tmp = p(heading,targetHeading);	//get PID value
 
 			if(tmp > MAXSPEEDH){
 				tmp = MAXSPEEDH;
@@ -76,7 +78,7 @@ int main(int argc, char **argv){
 			}
 
 			rightRate.data = tmp;			//left does opposite of right
-			leftRate.data = (tmp * -1.0);
+			leftRate.data = (tmp * 0.75);
 
 			//leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
 			//rightRate.data += speed;
@@ -115,6 +117,11 @@ int main(int argc, char **argv){
 		KD = KDD;
 		KI = KID;
 
+		PLUSBUFF = PLUSBUFFD;
+		MINUSBUFF = MINUSBUFFD;
+
+		deadZ = 0;
+
 		while(ros::ok()){
 			
 			if(once){
@@ -134,7 +141,7 @@ int main(int argc, char **argv){
 
 			ros::spinOnce();
 
-			tmp = pid(targetDepth,depth);
+			tmp = p(depth,targetDepth);
 
 			if(depth > targetDepth){	//if we are too deep don't turn on the motors, use bouyancy
 				tmp *= 0.5f;
@@ -302,13 +309,32 @@ void targetDepthCallback(const std_msgs::Float32::ConstPtr& pilotDepth){
 *************************************************/
 
 float correctError(float error){
-	if(error > 180.0){
-		error -= 360.0;
+	//ROS_INFO("Error %.3f P %.3f M %.3f",error,PLUSBUFF,MINUSBUFF);
+	if(error > 180.0f){
+		ROS_INFO("Origninal Error %.3f",error);
+		error /= 360.0f;
+		error = 1.0f - error;
+		error *= 360.0f;
+		error *= -1.0f;
+		ROS_INFO("New Error %.3f",error);
 	}
-	else if(error < -180.0){
-		error += 360.0;
+	else if(error < -180.0f){
+		ROS_INFO("Origninal Error %.3f",error);
+		error /= 360.0f;
+		error *= -1.0f;
+		error = 1.0f - error;
+		error *= 360.0f;
+		ROS_INFO("New Error %.3f",error);
 	}
-	
+
+	if(deadZ){
+		if((error < PLUSBUFF) && (error > MINUSBUFF)){
+			ROS_INFO("Warn");
+			ROS_WARN("DEAD ZONE");
+			return 0.0;
+		} 
+		ROS_INFO("Not warn");
+	}
 	return error;
 }
 
@@ -321,7 +347,13 @@ float p(float value, float targetValue){
 
 	error = targetValue - value;	//error is target - actual
 
+	ROS_INFO("Error: %.3f Target: %.3f Actual %.3f",error, targetValue, value);
+
 	error = correctError(error);
+
+	if(error == 0.0){
+		return error;
+	}
 
 	error *= KP;				//multiply by constant
 
@@ -338,6 +370,10 @@ float pd(float value, float targetValue){
 	error = targetValue - value;
 
 	error = correctError(error);
+
+	if(error == 0.0){
+		return error;
+	}
 	
 	derivative = lastError - error;
 
@@ -362,6 +398,10 @@ float pi(float value, float targetValue){
 	error = targetValue - value;
 
 	error = correctError(error);
+
+	if(error == 0.0){
+		return error;
+	}
 
 	tmp1 = error - lastError;
 	tmp1 *= KP;
@@ -391,6 +431,10 @@ float pid(float value, float targetValue){
 	error = targetValue - value;
 
 	error = correctError(error);
+
+	if(error == 0.0){
+		return error;
+	}
 
 	tmp1 = error - lastError;
 	tmp1 *= KP;

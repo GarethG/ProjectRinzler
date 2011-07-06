@@ -1,11 +1,11 @@
 /* Defines */
 
 /* Heading */
-#define KPH 1.0
-#define KDH 0.1
+#define KPH 2.0
+#define KDH 1.0
 #define KIH 0.1
 /* Depth */
-#define KPD 0.01
+#define KPD 100.0
 #define KDD 0.1
 #define KID 0.1
 /* Pitch */
@@ -17,7 +17,13 @@
 #define	MINSPEEDH	-50.0
 #define MAXVAL		50.0
 #define MINVAL		-50.0
-#define FRONTTHRESH	2.0
+#define FRONTTHRESH	5.0
+
+#define PLUSBUFFH	5.0
+#define	MINUSBUFFH	-5.0
+
+#define PLUSBUFFD	5.0
+#define	MINUSBUFFD	-5.0
 
 /* Globals*/
 
@@ -31,6 +37,9 @@ float speed=0.0;
 unsigned int go = 0;
 
 float KP,KD,KI;
+
+int PLUSBUFF, MINUSBUFF;
+int deadZ =0;
 
 /* Function Declerations */
 
