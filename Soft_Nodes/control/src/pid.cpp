@@ -80,8 +80,8 @@ int main(int argc, char **argv){
 			rightRate.data = tmp;			//left does opposite of right
 			leftRate.data = (tmp * 0.75);
 
-			//leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
-			//rightRate.data += speed;
+			leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
+			rightRate.data += speed;
 			
 			leftRateMsg.publish(leftRate);
 			rightRateMsg.publish(rightRate);
