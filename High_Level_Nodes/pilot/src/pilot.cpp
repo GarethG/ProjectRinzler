@@ -67,12 +67,61 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			}
 		}
 		else{
-			pilotHeading.data = 90.0f;
-			pilotDepth.data = 0.0f;
-			pilotPitch.data = 0.0f;
-			pilotSpeed.data = 10.0f;
+			switch(switcher){
+				case	0:	pilotHeading.data = FIRSTHEADING;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = 0.0f;
 
-			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %.1f",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotGo.data);
+						if((heading < (FIRSTHEADING + HACC)) && (heading > (FIRSTHEADING - HACC))){
+							switcher++;
+							tcounter=0;
+						}
+						break;
+
+				case	1:	pilotHeading.data = FIRSTHEADING;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = RUNSPEED;
+
+						if(tcounter >= OUTTIME){
+							switcher++;
+							tcounter=0;
+						}
+						break;
+	
+				case	2:	pilotHeading.data = SECONDHEADING;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = 0.0f;
+
+						if((heading < (SECONDHEADING + HACC)) && (heading > (SECONDHEADING - HACC))){
+							switcher++;
+							tcounter=0;
+						}
+						break;
+
+				case	3:	pilotHeading.data = SECONDHEADING;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = RUNSPEED;
+
+						if(tcounter >= INTIME){
+							switcher++;
+							tcounter=0;
+						}
+						break;
+
+				default:	pilotHeading.data = STOPHEADING;
+						pilotDepth.data = STOPDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = STOPSPEED;
+						break;
+			}
+			
+			
+			tcounter++;
+			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotGo.data);
 
 			/*Below here we publish our readings*/
 			pilotSpeedMsg.publish(pilotSpeed);

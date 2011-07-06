@@ -24,6 +24,7 @@ int targetRate[4];
 int currentRate[4];
 int outRate[4];
 unsigned int first = 1;
+float speed;
 
 /* Function Declerations */
 
@@ -31,5 +32,6 @@ void frontRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
 void leftRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
 void rightRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
 void backRateCallback(const std_msgs::Float32::ConstPtr& pidRate);
+void speedCallback(const std_msgs::Float32::ConstPtr& pilotSpeed);
 unsigned int slewer(unsigned int pos);
 

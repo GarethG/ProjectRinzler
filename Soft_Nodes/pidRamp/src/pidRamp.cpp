@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 	ros::Subscriber sub2 = pidRampN.subscribe("leftRate", 100, leftRateCallback);
 	ros::Subscriber sub3 = pidRampN.subscribe("rightRate", 100, rightRateCallback);
 	ros::Subscriber sub4 = pidRampN.subscribe("backRate", 100, backRateCallback);
-
+	ros::Subscriber sub5 = pidRampN.subscribe("pilotSpeed", 100, speedCallback);
 
 	ros::Rate loop_rate(25);
 
@@ -101,6 +101,15 @@ void backRateCallback(const std_msgs::Float32::ConstPtr& backRate){
 }
 
 /*************************************************
+** Returns the pilots speed			**
+*************************************************/
+
+void speedCallback(const std_msgs::Float32::ConstPtr& pilotSpeed){
+	speed = pilotSpeed->data;
+	return;
+}
+
+/*************************************************
 ** Slides the current PWM value until it is	**
 ** matching the target PWM value. This should	**
 ** prevent the snapping motion seen before 	**
@@ -157,12 +166,27 @@ unsigned int slewer(unsigned int pos){
 
 	if((pos == LEFT) || (pos == RIGHT)){
 
-		if(currentRate[pos] > MAXSPEED){
-			currentRate[pos] = MAXSPEED;
+		if(speed == 0.0){
+			if(currentRate[pos] > MAXSPEED){
+				currentRate[pos] = MAXSPEED;
+			}
+	
+			if(currentRate[pos] < MINSPEED){
+				currentRate[pos] = MINSPEED;
+			}
 		}
+		else{
+			if(currentRate[pos] > (MAXSPEED + speed)){
+				currentRate[pos] = (MAXSPEED + speed);
+			}
+	
+			if(currentRate[pos] < MINSPEED){
+				currentRate[pos] = MINSPEED;
+			}
 
-		if(currentRate[pos] < MINSPEED){
-			currentRate[pos] = MINSPEED;
+			if(currentRate[pos] > 100.0){
+				currentRate[pos] = 100.0;
+			}
 		}
 	}
 	else{
