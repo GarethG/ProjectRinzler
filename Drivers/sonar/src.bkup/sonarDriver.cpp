@@ -12,25 +12,31 @@
 
 #include "std_msgs/String.h"
 #include "std_msgs/Float32.h"
+
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+
 #include "std_msgs/Int32MultiArray.h"
 #include "std_msgs/Int32.h"
 
 #include "sonarDriver.h"
 
-//#define	RANGE			75 //200
-//#define	LEFTANGLE		0
-//#define	RIGHTANGLE		6399
-//#define 	SCANSTARE 0x23
 
-#define	ADSPAN			81
-#define	ADLOW			8
-#define	GAIN			84
-#define	ADINTERVAL		104
-#define MIN_AD_INTERVAL 5
 
-#define	NUMBEROFBINS	90//200
-#define STEPANGLE		8
-#define MOTIME			20
+#define	RANGE 			=	5; 		//200
+#define	LEFTANGLE 		=	0;
+#define	RIGHTANGLE		=	6399;
+#define	ADSPAN			=	81;
+#define	ADLOW			=	8;
+#define	GAIN			=	10;		//84
+#define	ADINTERVAL		=	104;
+#define 	MIN_AD_INTERVAL = 	5;
+
+#define	NUMBEROFBINS	=	90;		//200
+#define 	STEPANGLE		=	8;
+#define 	MOTIME			=	20;
+
+#define hdCmd 			=	0x23;	//23 no stare, 2B stareLL
 
 #define WRITEDEL		250000//
 
@@ -38,15 +44,10 @@
 
 struct termios orig_terimos;
 
-int RANGE = 75;
-int LEFTANGLE = 0;
-int RIGHTANGLE = 6399;
-int SCANSTARE = 0x23; //or 0x2B
-
 int fd; 							/* File descriptor for the port */
 unsigned char returnBuffer[500]; 	/*Buffer which stores read data*/
 unsigned char *rBptr;				/*Ptr*/
-
+	
 unsigned char 	header,		//Message Header. 
 				hLength,	//Hex Length of whole binary packet
 				bLength,	//Binary Word of above Hex Length.
@@ -55,20 +56,19 @@ unsigned char 	header,		//Message Header.
 				byteCount,	//Byte Count of attached message that follows this byte.
 				msg[263],	//Command / Reply Message
 				term;		//Message Terminator
-
+				
 unsigned int	bins,
-				bearing;		
+				bearing;	
+
+int 			binsArr[90];	
 
 unsigned int bp1_temp[263],	//Clone dataset, for bad packet recovery
 			bp1_buffLen,
 			bp1_bLength;
-
+			
+int sCMD;
+			
 //byte byteBins[45];
-
-int switchCmd = 0;
-int switchFlag = 0;
-
-int tempBinArray[NUMBEROFBINS];
 
 /******************************************************
  * 
@@ -77,173 +77,203 @@ int tempBinArray[NUMBEROFBINS];
  * ***************************************************/
 int main( int argc, char **argv )
 {
-
+	
 	int i, j;
+	int limCount = 0;
+
 
 	ros::init(argc, argv, "sonar");
-
-	ros::NodeHandle n;
-
-	//ros::Publisher nodenameVariablenameMsg = handle.outsidness<libraryname::type>("nodenameVariablename", bufflen?);					
-	ros::Publisher sonarBearingMsg = n.advertise<std_msgs::Float32>("sonarBearing", 100);
-	ros::Publisher sonarBinsMsg = n.advertise<std_msgs::Float32>("sonarBins", 100);
 	
-	ros::Publisher sonarBinsArrMsg = n.advertise<std_msgs::Int32MultiArray>("sonarBinsArr", 100);
-
+	ros::NodeHandle n;
 	
 	ros::Subscriber sub1 = n.subscribe("sonarCmd", 100, cmdCallback);
 	ros::Subscriber sub2 = n.subscribe("sonarRange", 100, rangeCallback);
 	ros::Subscriber sub3 = n.subscribe("sonarLeft", 100, leftCallback);
-
-	std_msgs::Float32 sonarBearing;
-	std_msgs::Float32 sonarBins;
+	//ros::Subscriber sub4 = n.subscribe("sonarRight", 100, rightCallback);
+	//ros::Subscriber sub3 = n.subscribe("sonarHeadCmd", 100, headCmdCallback);
 	
+	//ros::Publisher nodenameVariablenameMsg = handle.outsidness<libraryname::type>("nodenameVariablename", bufflen?);					
+	ros::Publisher sonarBearingMsg = n.advertise<std_msgs::Float32>("sonarBearing", 100);
+//	ros::Publisher sonarBinsMsg = n.advertise<std_msgs::Float32>("sonarBins", 100);
+	ros::Publisher sonarBinsArrMsg = n.advertise<std_msgs::Int32MultiArray>("sonarBinsArr", 100);
+	
+	std_msgs::Float32 sonarBearing;
+//	std_msgs::Float32 sonarBins;
 	std_msgs::Int32MultiArray sonarBinsArr;
-
 
 	/* Open and Configure the Serial Port. */
 	open_port();	
-
+	
 	if( tcgetattr(fd, &orig_terimos) < 0)
 	{
-		ROS_ERROR("Probably didn't get the serial port (is it connected?).\n");
+		printf("no settings, bro.\n");
 		return 0;
 	}
 
 	config_port();
-
+	
 	//makePacket(mtReBoot);
-
+	
 	//printf("dihqwdi %d\n", getU16(0x0A, 0x80));
-
+	
 	/* Initilise the sonar */
 	initSonar();
-
+	
 	/* optional, sendBBUser command, doesnt work :/ */
 	//sendBB();
+	
+	/* Make and send the head parameters, currently defined at the top of this file */
+	headSetup();
 
-
+	i = 0;
+	
+	//makePacket(mtStopAlive);	
+	/* ask for some data, will get datas */
+	
+	
+	while(i < 3600)
+	{
+		
+		requestData();
+		//
+		//tcflush(fd, TCIFLUSH);//remove
+		//pass datas	
+		sonarBearing.data = (float) bearing;
+//		sonarBins.data = (float) bins;
+		
+		sonarBinsArr.data.clear();
+		for (int k = 0; k < 90; k++)
+		{
+			sonarBinsArr.data.push_back(binsArr[k]);
+		}
+		
+		//publish
+		sonarBearingMsg.publish(sonarBearing);
+//		sonarBinsMsg.publish(sonarBins);
+		sonarBinsArrMsg.publish(sonarBinsArr);
+		
+		//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
+		//printf("%d - %d\n", bearing, bins);
+		ros::spinOnce();
+		i++;
+	
+	}
+	
+/*	
+		
 	while(ros::ok())
 	{
+		ros::spinOnce();
 
-		switchCmd = 0;
-		//Stare LL
-		if(switchCmd == 0)
+		if(sCMD == 0)
 		{
-
-			/* Make and send the head parameters, currently defined at the top of this file */
-			if(switchFlag == 0)
+			
+			//run full scan.
+			
+			LEFTANGLE	=	0;
+			RIGHTANGLE	=	6399;
+			
+			headSetup();
+			
+			requestData();
+			//
+			//tcflush(fd, TCIFLUSH);//remove
+			//pass datas	
+			sonarBearing.data = (float) bearing;
+			sonarBins.data = (float) bins;
+			
+			sonarBinsArr.data.clear();
+			for (int i = 0; i < 90; i++)
 			{
-				SCANSTARE = 0x2B;
-				RANGE = 5;
-				LEFTANGLE = 3200;
-				RIGHTANGLE = 3300;
-				
-				headSetup();
-				switchFlag = 1;
-				
-				ROS_INFO("Stare Initilized");
+				sonarBinsArr.data.push_back(binsArr[i]);
 			}
-
-//			i = 0;
-
-			//makePacket(mtStopAlive);	
-			/* ask for some data, will get datas */
-//			while(i < 30)
-//			{
-
-				requestData();
-				//
-				//tcflush(fd, TCIFLUSH);//remove
-				//pass datas	
-				sonarBearing.data = (float) bearing;
-				
-				//printf("%d", bearing);
-				
-				sonarBins.data = (float) bins;
-				
-				sonarBinsArr.data.clear();
-				for (int k = 0; k < 90; k++)
-				{
-					sonarBinsArr.data.push_back(tempBinArray[k]);
-				}
-
-				//publish
-				sonarBearingMsg.publish(sonarBearing);
-				sonarBinsMsg.publish(sonarBins);
-				sonarBinsArrMsg.publish(sonarBinsArr);
-
-
-				//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
-				//printf("%d - %d\n", bearing, bins);
-				//ros::spinOnce();
-				i++;
-
-//			}
+			
+			//publish
+			sonarBearingMsg.publish(sonarBearing);
+			sonarBinsMsg.publish(sonarBins);
+			pub.publish(sonarBinsArr);
+			
+			//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
+			//printf("%d - %d\n", bearing, bins);
+			ros::spinOnce();
+			i++;
+			
 		}
-		//scanner
+		else if(sCMD == 1)
+		{
+			
+			//left limb stare 0, 90, 180, 270
+			
+			hdCmd 		= 	0x2B;
+			
+			if(limCount == 0)
+			{
+				LEFTANGLE	=	0;
+				RIGHTANGLE	=	1600;
+				limCount ++;
+			}
+			else if(limCount == 1)
+			{
+				LEFTANGLE	=	1600;
+				RIGHTANGLE	=	3200;
+				limCount ++;
+			}
+			else if(limCount == 2)
+			{
+				LEFTANGLE	=	3200;
+				RIGHTANGLE	=	4800;
+				limCount ++;
+			}
+			else
+			{
+				LEFTANGLE	=	4800;
+				RIGHTANGLE	=	6400;
+				limCount = 0;
+			}
+			
+			headSetup();
+			
+			requestData();
+			//
+			//tcflush(fd, TCIFLUSH);//remove
+			//pass datas	
+			sonarBearing.data = (float) bearing;
+			sonarBins.data = (float) bins;
+			
+			//Send array of the packet recieved.
+			sonarBinsArr.data.clear();
+			for (int i = 0; i < 90; i++)
+			{
+				sonarBinsArr.data.push_back(binsArr[i]);
+			}
+			
+			//publish
+			sonarBearingMsg.publish(sonarBearing);
+			sonarBinsMsg.publish(sonarBins);
+			pub.publish(sonarBinsArr);
+			
+			//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
+			//printf("%d - %d\n", bearing, bins);
+			ros::spinOnce();
+			i++;
+			
+			
+		}
 		else
 		{
-			
-			/* Make and send the head parameters, currently defined at the top of this file */
-			if(switchFlag == 0)
-			{
-				
-				SCANSTARE = 0x23;
-				RANGE = 75;
-				LEFTANGLE = 4800;
-				RIGHTANGLE = LEFTANGLE -1;
-				
-				headSetup();
-				switchFlag = 1;
-				
-				ROS_INFO("Scanner Activated");
-			}
-
-			i = 0;
-
-			//makePacket(mtStopAlive);	
-			/* ask for some data, will get datas */
-//			while(i < 30)
-//			{
-
-				requestData();
-				//
-				//tcflush(fd, TCIFLUSH);//remove
-				//pass datas	
-				sonarBearing.data = (float) bearing;
-				sonarBins.data = (float) bins;
-				
-				sonarBinsArr.data.clear();
-				for (int k = 0; k < 90; k++)
-				{
-					sonarBinsArr.data.push_back(tempBinArray[k]);
-				}
-
-				//publish
-				sonarBearingMsg.publish(sonarBearing);
-				sonarBinsMsg.publish(sonarBins);
-				sonarBinsArrMsg.publish(sonarBinsArr);
-
-				//ROS_INFO("Bearing: %f, Bins: %f", bearing, bins);
-				//printf("%d - %d\n", bearing, bins);
-				//ros::spinOnce();
-				i++;
-
-//			}			
-			
+			ROS_ERROR("Neither Scanning nor LLStare, going back to scanning.");
+			sCMD = 0;
 		}
 		
-		ros::spinOnce();
 		
 	}
-
+*/				
 	/* close file and exit program */	
-
+	
 	tcflush(fd, TCIFLUSH);
-
+	
 	tcsetattr(fd, TCSANOW, &(orig_terimos));
-
+			
 	close(fd);
 	return 0;
 }
@@ -254,7 +284,7 @@ int main( int argc, char **argv )
 int open_port(void)
 {	
 
-	fd = open("/dev/ttyS0", O_RDWR | O_NOCTTY);// O_NDELAY |
+	fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY);// O_NDELAY |
 	//printf("/dev/ttyS0\n");
 	if (fd == -1){
 		ROS_ERROR("Could not open port");
@@ -304,7 +334,7 @@ tcsetattr(fd, TCSANOW, &options);
 	options1.c_cflag |= CS8;
 	options1.c_cflag &=~(PARENB);
 	options1.c_cflag &=~(CSTOPB);
-
+	
 	cfsetispeed(&options1, BAUDRATE);
 	cfsetospeed(&options1, BAUDRATE);
 
@@ -314,9 +344,9 @@ tcsetattr(fd, TCSANOW, &options);
 	options1.c_iflag &= ~(IXON | IXOFF | IXANY);
 	options1.c_cc[VTIME] = 10;
 	options1.c_cc[VMIN] = 0;
-
-
-
+	
+	
+	
 	tcflush(fd, TCIFLUSH);
 
 	tcsetattr(fd, TCSANOW, &options1);
@@ -330,7 +360,7 @@ tcsetattr(fd, TCSANOW, &options);
 *************************************************/
 int write_port(unsigned char sendBuffer[SENDBUFFSIZE], unsigned int sendSize)
 {
-
+	
 	int n;
 
 	n = write(fd,sendBuffer, sendSize);
@@ -379,7 +409,7 @@ int read_port(void){
 	//printf("We read %d bytes\n", n);
 
 	//printf("\n\n");
-
+	
 	//	printf("<< ");
 	//	for(j = 0; j < n; j ++)
 	//		printf("%x : ", returnBuffer[j]);
@@ -454,14 +484,14 @@ int sortPacket(void)
 	temp[263],
 	msgLen,
 	binFlag;
-
+		
 	//How long was the msg, according to read() ?
 	buffLen = read_port();
 	//printf("buffLen = %d\n", buffLen);
 	rBptr = &returnBuffer[0];	//set pointer for recieved data
-
+			
 	//Store all packets into temp[]	
-
+	
 	for( i = 0; i < buffLen; i++ )
 	{
 		leFlag = temp[i];
@@ -470,11 +500,11 @@ int sortPacket(void)
 		{
 			buffLen = i;
 		}
-
+		
 	}
 
 	//Store temp stuff into right place
-
+	
 	header = temp[0];
 	hLength = getU32(temp[1], temp[2], temp[3], temp[4]);
 	bLength = getU16(temp[6], temp[5]);
@@ -482,13 +512,13 @@ int sortPacket(void)
 	dID = temp[8];
 	byteCount = temp[9];
 	term = temp[buffLen-1];
-
+	
 	//Clear msg buffer first
 	for(i = 0; i < 263; i++)
 		msg[i] = NULL;
-
+		
 	msgLen = 0;
-
+	
 	//Store the msg, works for varying lengths
 	for( i = 10; i < (buffLen-2); i ++)
 	{
@@ -506,23 +536,25 @@ int sortPacket(void)
 		//for(i = 0; i < buffLen; i ++)
 		//	printf("%x : ", temp[i]);
 		//printf("\n");
-
+		
 		packetFlag = 1;
-
-
+		
+		
 		if(msg[0] == mtHeadData)
 		{
-
+			
 			if(byteCount == 0)
 				printf("Single Packet\n");
 			else
 				printf("Multi Packet\n");
 			binFlag = 0;
+
+			
 			//printf("\nBearing: %f\n Bins: ", (float) getU16(temp[41], temp[40]) / 17.775 );
 			for(i = 44; i < buffLen-1; i++ )
 			{
-				
-				tempBinArray[i-44] = temp[i];
+
+				binsArr[i-44] = temp[i];
 				//printf("%d, ", temp[i]);
 				if(temp[i] >= THRESHOLD && binFlag == 0)
 				{
@@ -531,18 +563,18 @@ int sortPacket(void)
 				}
 			}
 			//printf("%d\n", bins * 6);
-
+	
 			bearing = getU16(temp[41], temp[40]);
-
+			
 		}
-
+		
 		//printf("%d, %d\n", byteCount, msgLen+1);
 	}
 	else
 	{
 		packetFlag = -1;
 	}
-
+	
 	return packetFlag; 
 }
 
@@ -565,12 +597,12 @@ void makePacket(int command)
 {
 
 	/************ 14 byte commands ***********************/
-
+	
 	if(command == mtReBoot || command == mtSendVersion || command == mtSendBBUser || command == mtStopAlive)
 	{
-
+		
 		unsigned char sendBuffer[14];
-
+		
 		sendBuffer = {	0x40, 		//Header
 						0x30, 
 						0x30, 
@@ -585,19 +617,19 @@ void makePacket(int command)
 						0x80, 
 						0x02, 
 						0x0A };		//Footer
-
+						
 		//Send		
 		write_port(sendBuffer, 14);
-
+		
 	}
-
+	
 	/************ 18 byte commands ***********************/
 
 	else if(command == mtSendData)
 	{		
-
+		
 		unsigned char sendBuffer[18];
-
+		
 		sendBuffer = {	0x40, 		//Header
 						0x30, 
 						0x30, 
@@ -616,10 +648,10 @@ void makePacket(int command)
 						0x00, //buff[2], 
 						0x00, //buff[3], 
 						0x0A };		//Footer
-
+		
 		//Send
 		write_port(sendBuffer, 18);
-
+		
 	}
 	else
 	{
@@ -636,7 +668,7 @@ void makePacket(int command)
 //	}
 //	printf("%x", sendBuffer[j]);
 //	printf("\n");
-
+	
 }
 
 /************************************************
@@ -645,23 +677,23 @@ void makePacket(int command)
 void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int endAngle, unsigned int ADspan, 
 					unsigned int ADlow, unsigned int gain, unsigned int ADInterval, unsigned int numBins)
 {
-
+	
 	int drange = range * 10;
 	const unsigned int MAX_GAIN = 210;
 	unsigned int gainByte = (gain * MAX_GAIN);
 	unsigned char sendBuffer[82];
-
+	
 	double pingtime = 2.0 * range * 1000.0 / 1.5; // in usec
     double bintime = pingtime / numBins;
     ADInterval = round( (bintime/64.0)*100.0 );
-
+	
 	if ( ADInterval < MIN_AD_INTERVAL )
 	{
 		//fprintf( stderr, "Error: Unable to make AD interval small enough\n" );
 		printf("AD interval too small\n");
 		//ADInterval = MIN_AD_INTERVAL;
 	}
-
+	
 					//Step 1, setup
 	sendBuffer = { 	0x40,						//Header
 					0x30, 0x30, 0x34, 0x43, 	//Hex Length
@@ -674,7 +706,7 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 					0x80,
 					0x02,
 					0x1D,						//Head Command Type - 1 = Normal, 29 Dual Channel
-					0x85, SCANSTARE,					//HdCtrl bytes  0x85, 0x23, | 0x83, 0x2B
+					0x85, hdCmd,				//HdCtrl bytes  0x85, 0x23, | 0x83, 0x2B
 					0x03,						//Head Type
 					0x99, 0x99, 0x99, 0x02,		//TxN Channel 1
 					0x66, 0x66, 0x66, 0x05,		//TxN Channel 2
@@ -736,9 +768,9 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
 //	}
 //	printf("%x", sendBuffer[j]);
 //	printf("\n");
-
+	
 	write_port(sendBuffer, 82);
-
+	
 }
 
 /**********************************************
@@ -749,25 +781,25 @@ void makeHeadPacket(unsigned int range, unsigned int startAngle, unsigned int en
  * *******************************************/
 int packetLength(int flag)
 {
-
+	
 	int len, temp = 0;
 	//rcvBuffer
 	if(flag == 1)
 	{
-
+	
 		while(1)
 		{
 			while( returnBuffer[len] != 0 )
 			{
 				len++;
-
+				
 				if( returnBuffer[len] == 0 && temp == 0x10 )
 					return len;
-
+				
 				temp = returnBuffer[len];
 			}
 		}
-
+		
 	}
 	else
 	{
@@ -783,18 +815,18 @@ int packetLength(int flag)
  * *******************************************/
 int initSonar( void )
 {
-
+	
 	int initFlag = 0, initAlive = 0;
-
+	
 	ROS_INFO("Sonar Initilization\n");
-
+	
 	// Check port for mtAlive
 	while( initFlag != 1 )
 	{
-
+		
 		//Read Port
 		sortPacket();
-
+		
 		//Check for mtAlive command
 		if( returnMsg() == mtAlive )
 		{
@@ -803,7 +835,7 @@ int initSonar( void )
 			//Send over the mtSendVersion
 			makePacket(mtSendVersion);
 			ROS_INFO("initSonar \t>> mtSendVersion\n");
-
+			
 		}
 		// Did we get back mtVersionData and is the alive flag set?
 		else if( returnMsg() == mtVersionData && initAlive == 1)
@@ -820,20 +852,20 @@ int initSonar( void )
 		{
 			initFlag = 0;
 		}
-
+		
 	}
-
+	
 	return 0;
-
+	
 }
 
 int sendBB( void )
 {
 	int bbFlag = 0;
-
+	
 	while( bbFlag != 1 )
 	{
-
+		
 		if( returnMsg() == mtBBUserData )
 		{
 			ROS_INFO("sendBB \t<< mtBBUserData!\n");
@@ -844,20 +876,20 @@ int sendBB( void )
 			makePacket(mtSendBBUser);
 			ROS_INFO("sendBB \t>> mtSendBBUser\n");			
 		}
-
+		
 	}
-
+	
 	return 0;
-
+	
 }
 
 int headSetup( void )
 {
-
+	
 	int headFlag = 0;
-
+	
 	ROS_INFO("Sonar Head Setup.\n");
-
+	
 	//Read Port
 	sortPacket();	
 
@@ -889,18 +921,18 @@ int headSetup( void )
 		{
 			headFlag = 0;
 		}
-
+		
 	}
 	return 0;
-
+	
 }
 
 int requestData( void )
 {
-
+	
 	int recieveFlag = 0, sendFlag = 0, headPack = 0;
 	int count;
-
+	
 	while(recieveFlag != 1)
 	{
 
@@ -928,7 +960,7 @@ int requestData( void )
 				ROS_INFO("requestData \t<< mtHeadData!!\n");
 				headPack = 1;
 				return 0;
-
+				
 			}
 			else if(returnMsg() == mtAlive && headPack == 1)
 			{
@@ -947,16 +979,16 @@ int requestData( void )
 					sendFlag = 1;	
 					count = 0;
 				}	
-
+				
 				count ++;	
 				//printf("%d\n", count);	
 			}
 		}
-
+			
 	}
 
 	return 0;
-
+	
 }
 
 /*************************************************
@@ -965,8 +997,7 @@ int requestData( void )
 
 void cmdCallback(const std_msgs::Int32::ConstPtr& sonarCmd)
 {
-	switchCmd = sonarCmd->data;
-	switchFlag = 0;
+	sCMD = sonarCmd->data;
 	return;
 }
 
@@ -990,3 +1021,4 @@ void leftCallback(const std_msgs::Int32::ConstPtr& sonarLeft)
 	RIGHTANGLE = sonarLeft->data + (1600);
 	return;
 }
+
