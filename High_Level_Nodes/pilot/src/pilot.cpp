@@ -121,7 +121,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			
 			
 			tcounter++;
-			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotGo.data);
+			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u State: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotGo.data, switcher);
 
 			/*Below here we publish our readings*/
 			pilotSpeedMsg.publish(pilotSpeed);
