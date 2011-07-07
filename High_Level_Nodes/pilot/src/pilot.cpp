@@ -87,7 +87,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 				case	0:	pilotHeading.data = FIRSTHEADING;
 						pilotDepth.data = RUNDEPTH;
 						pilotPitch.data = 0.0f;
-						pilotSpeed.data = 0.0f;
+						pilotSpeed.data = -10.0f;
 
 						if((heading < (FIRSTHEADING + HACC)) && (heading > (FIRSTHEADING - HACC))){
 							if(hcounter > HCOUNT){
@@ -115,7 +115,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 				case	2:	pilotHeading.data = SECONDHEADING;
 						pilotDepth.data = RUNDEPTH;
 						pilotPitch.data = 0.0f;
-						pilotSpeed.data = 0.0f;
+						pilotSpeed.data = -10.0f;
 
 						if((heading < (SECONDHEADING + HACC)) && (heading > (SECONDHEADING - HACC))){
 							if(hcounter > HCOUNT){

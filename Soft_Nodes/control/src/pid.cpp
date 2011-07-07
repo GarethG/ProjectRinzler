@@ -77,12 +77,15 @@ int main(int argc, char **argv){
 				tmp = MINSPEEDH;
 			}
 
-			rightRate.data = tmp;			//left does opposite of right
-			leftRate.data = (tmp * 0.75);
+			right = tmp;			//left does opposite of right
+			left = (tmp * 0.75);
 
-			leftRate.data += speed;	//bit hacks but ensures we keep moving forwards even when balanced
-			rightRate.data += speed;
+			left += speed;	//bit hacks but ensures we keep moving forwards even when balanced
+			right -= speed;
 			
+			leftRate.data = left;
+			rightRate.data = right;
+
 			leftRateMsg.publish(leftRate);
 			rightRateMsg.publish(rightRate);
 

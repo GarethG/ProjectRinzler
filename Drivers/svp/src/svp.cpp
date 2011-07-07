@@ -18,7 +18,7 @@
 
 int fd; 				/* File descriptor for the port */
 char returnBuffer[100]; 	/*Buffer which stores read data*/
-float depth, velocity;		/*Floats for the returned values*/
+float depth, velocity, lastDepth;		/*Floats for the returned values*/
 
 /*********************************
 ** Reads the data		**
@@ -130,8 +130,17 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 			ROS_DEBUG("Depth: %.3f Velocity: %.3f",depth,velocity);
 
+			if(depth > 9.0){
+				lastDepth = depth;
+			}
+			else{
+				ROS_ERROR("SVP DEPTH READING FAILURE");
+				depth = lastDepth;
+			}
+
 			svpDepthMsg.publish(svpDepth);
 			svpVeloMsg.publish(svpVelo);
+
 			
 		}
 		else{

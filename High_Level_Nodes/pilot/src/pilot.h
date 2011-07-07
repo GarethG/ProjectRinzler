@@ -1,21 +1,21 @@
 /* Defines */
 
-#define RUNDEPTH 	10.6
+#define RUNDEPTH 	11.3
 #define RUNSPEED	80.0
-#define HACC		5.0
+#define HACC		7.0
 #define HCOUNT		10
 
 /* state 0*/
 #define FIRSTHEADING	225.0
 
 /* state 1 */
-#define OUTTIME		20
+#define OUTTIME		120
 
 /* state 2 */
-#define SECONDHEADING	85.0
+#define SECONDHEADING	80.0
 
 /* state 3 */
-#define INTIME		20
+#define INTIME		180
 
 /* default */
 

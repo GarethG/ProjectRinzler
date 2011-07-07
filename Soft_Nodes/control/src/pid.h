@@ -38,6 +38,9 @@ float targetDepth=0.0;
 float speed=0.0;
 unsigned int go = 0;
 
+float left;
+float right;
+
 float KP,KD,KI;
 
 int PLUSBUFF, MINUSBUFF;
