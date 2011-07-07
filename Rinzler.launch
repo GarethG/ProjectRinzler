@@ -10,5 +10,5 @@
 	<node name="Compass"	pkg="compass"	type="compass"			/>
 
 	<node name="halt"	pkg="halt"	type="halt"			/>
-	<node name="pilot"	pkg="pilotKeys"	type="pilotKey"			/>
+	<node name="pilot"	pkg="pilot"	type="pilot"			/>
 </launch>

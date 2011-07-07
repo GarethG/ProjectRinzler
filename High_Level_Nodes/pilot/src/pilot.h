@@ -1,7 +1,7 @@
 /* Defines */
 
 #define RUNDEPTH 	10.6
-#define RUNSPEED	30.0
+#define RUNSPEED	-10.0
 #define HACC		10.0
 
 /* state 0*/
@@ -31,8 +31,12 @@ float depth=0.0;
 unsigned int switcher=0;
 unsigned int tcounter=0;
 
+unsigned int go = 0;
+unsigned int latch = 0;
+
 /* Function Declerations */
 
 void headingCallback(const std_msgs::Float32::ConstPtr& compassHeading);
 void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch);
 void depthCallback(const std_msgs::Float32::ConstPtr& svpDepth);
+void adcGoCallback(const std_msgs::UInt32::ConstPtr& adcGo);

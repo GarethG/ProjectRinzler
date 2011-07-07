@@ -30,6 +30,8 @@ struct acc_type{
 
 unsigned int accRaw[8];
 
+unsigned int latch = 0;
+
 float goTmp=0.0;
 
 /* Function Declerations */

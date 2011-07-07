@@ -7,7 +7,7 @@ spammer
 log*
 Test_Ground
 son*
-pilot
+pilotKey*
 mission*
 Doc*
 svp

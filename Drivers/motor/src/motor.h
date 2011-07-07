@@ -35,4 +35,5 @@ void frontCallback(const std_msgs::UInt32::ConstPtr& pidRampFront);
 void leftCallback(const std_msgs::UInt32::ConstPtr& pidRampLeft);
 void rightCallback(const std_msgs::UInt32::ConstPtr& pidRampRight);
 void backCallback(const std_msgs::UInt32::ConstPtr& pidRampBack);
+void alertCallback(const std_msgs::UInt32::ConstPtr& alertFront);
 int initMotors(void);

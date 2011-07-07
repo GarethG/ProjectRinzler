@@ -20,16 +20,18 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Publisher pilotHeadingMsg = pilotN.advertise<std_msgs::Float32>("pilotHeading", 100);
 	ros::Publisher pilotDepthMsg = pilotN.advertise<std_msgs::Float32>("pilotDepth", 100);
 	ros::Publisher pilotPitchMsg = pilotN.advertise<std_msgs::Float32>("pilotPitch", 100);
-	ros::Publisher pilotGoMsg = pilotN.advertise<std_msgs::UInt32>("pilotGo", 100);
+	ros::Publisher pilotOkGoMsg = pilotN.advertise<std_msgs::UInt32>("pilotOkGo", 100);
 	ros::Publisher pilotSpeedMsg = pilotN.advertise<std_msgs::Float32>("pilotSpeed", 100);
+	ros::Publisher alertFrontMsg = pilotN.advertise<std_msgs::UInt32>("alertFront", 100);
 
 	/*Sets up the message structures*/
 
 	std_msgs::Float32 pilotHeading;
 	std_msgs::Float32 pilotDepth;
 	std_msgs::Float32 pilotPitch;
-	std_msgs::UInt32 pilotGo;
+	std_msgs::UInt32 pilotOkGo;
 	std_msgs::Float32 pilotSpeed;
+	std_msgs::UInt32 alertFront;
 
 
 	/* Subscribe */
@@ -37,6 +39,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Subscriber sub1 = pilotN.subscribe("compassHeading", 100, headingCallback);
 	ros::Subscriber sub2 = pilotN.subscribe("svpDepth", 100, depthCallback);
 	ros::Subscriber sub3 = pilotN.subscribe("compassPitch", 100, pitchCallback);
+	ros::Subscriber sub4 = pilotN.subscribe("adcGo", 	100, adcGoCallback);
 
 	//ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
 
@@ -51,22 +54,35 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 		ros::spinOnce();
 
-		if(counter > 0){
+		if(latch){
+			go = 1;
+		}
+
+		if((counter > 0) && go){
 
 			ROS_INFO("We go in %d seconds",counter);
 
 			counter--;
 
 			if(counter == 0){
-				pilotGo.data = 1;
-				pilotGoMsg.publish(pilotGo);
+				pilotOkGo.data = 1;
+				pilotOkGoMsg.publish(pilotOkGo);
 			}
 			else{
-				pilotGo.data = 0;
-				pilotGoMsg.publish(pilotGo);
+				if(counter > 7){
+					alertFront.data = 1750;
+					alertFrontMsg.publish(alertFront);
+				}
+				else{
+					alertFront.data = 1500;
+					alertFrontMsg.publish(alertFront);
+				}
+
+				pilotOkGo.data = 0;
+				pilotOkGoMsg.publish(pilotOkGo);
 			}
 		}
-		else{
+		else if(go){
 			switch(switcher){
 				case	0:	pilotHeading.data = FIRSTHEADING;
 						pilotDepth.data = RUNDEPTH;
@@ -121,11 +137,11 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			
 			
 			tcounter++;
-			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u State: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotGo.data, switcher);
+			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u State: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotOkGo.data, switcher);
 
 			/*Below here we publish our readings*/
 			pilotSpeedMsg.publish(pilotSpeed);
-			pilotGoMsg.publish(pilotGo);
+			pilotOkGoMsg.publish(pilotOkGo);
 			pilotHeadingMsg.publish(pilotHeading);		
 			pilotDepthMsg.publish(pilotDepth);		
 			pilotPitchMsg.publish(pilotPitch);
@@ -164,5 +180,19 @@ void pitchCallback(const std_msgs::Float32::ConstPtr& compassPitch){
 
 void depthCallback(const std_msgs::Float32::ConstPtr& svpDepth){
 	depth = svpDepth->data;
+	return;
+}
+
+/*************************************************
+** Returns the ADC				**
+*************************************************/
+
+void adcGoCallback(const std_msgs::UInt32::ConstPtr& adcGo){
+	go = adcGo->data;
+	
+	if(go){
+		latch = 1;
+	}
+
 	return;
 }

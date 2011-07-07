@@ -36,6 +36,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Subscriber sub3 = motorN.subscribe("pidRampRight",	100, rightCallback);
 	ros::Subscriber sub4 = motorN.subscribe("pidRampBack",	100, backCallback);
 	ros::Subscriber sub5 = motorN.subscribe("pilotGo",	100, goCallback);
+	ros::Subscriber sub6 = motorN.subscribe("alertFront",	100, alertCallback);
 
 	ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
 
@@ -70,6 +71,18 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 void goCallback(const std_msgs::UInt32::ConstPtr& pilotGo){
 	go4 = go3 = go2 = go = pilotGo->data;
+	return;
+}
+
+/*************************************************
+** Returns the PWM rate for the alert motor	**
+*************************************************/
+
+void alertCallback(const std_msgs::UInt32::ConstPtr& alertFront){
+	frontPWM = alertFront->data;
+
+	ROS_DEBUG("Alert: %u",frontPWM);
+	updatePWM(FRONT_MOTOR_CHANNEL, frontPWM);
 	return;
 }
 
