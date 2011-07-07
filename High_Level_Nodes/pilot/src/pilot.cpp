@@ -90,8 +90,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						pilotSpeed.data = 0.0f;
 
 						if((heading < (FIRSTHEADING + HACC)) && (heading > (FIRSTHEADING - HACC))){
-							switcher++;
-							tcounter=0;
+							if(hcounter > HCOUNT){
+								switcher++;
+								tcounter=0;
+								hcounter = 0;
+							}
+							else{
+								hcounter++;
+							}
 						}
 						break;
 
@@ -112,8 +118,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						pilotSpeed.data = 0.0f;
 
 						if((heading < (SECONDHEADING + HACC)) && (heading > (SECONDHEADING - HACC))){
-							switcher++;
-							tcounter=0;
+							if(hcounter > HCOUNT){
+								switcher++;
+								tcounter=0;
+								hcounter = 0;
+							}
+							else{
+								hcounter++;
+							}
 						}
 						break;
 
@@ -141,7 +153,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			
 			
 			tcounter++;
-			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u State: %u Count: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotOkGo.data, switcher,tcounter);
+			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u State: %u Count: %u H %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotOkGo.data, switcher,tcounter,hcounter);
 
 			/*Below here we publish our readings*/
 			pilotSpeedMsg.publish(pilotSpeed);

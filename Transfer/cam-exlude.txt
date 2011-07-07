@@ -23,4 +23,4 @@ Itx*
 Rinzler.la*
 READ*
 build_all*
-launc.sh
+launch.sh
