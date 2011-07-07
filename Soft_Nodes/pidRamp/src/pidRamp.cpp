@@ -146,12 +146,13 @@ unsigned int slewer(unsigned int pos){
 		}
 		else if(targetRate[pos] < currentRate[pos]){
 			if(pos == FRONT){
-				if((currentRate[pos] - 10) < targetRate[pos]){
+				/*if((currentRate[pos] - 10) < targetRate[pos]){
 					currentRate[pos] -= 1;
 				}
 				else{
 					currentRate[pos] -= CATCHRATEF;
-				}
+				}*/
+				currentRate[pos] = targetRate[pos];
 			}
 			else{
 				if((currentRate[pos] - 10) < targetRate[pos]){

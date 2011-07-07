@@ -128,16 +128,20 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						}
 						break;
 
-				default:	pilotHeading.data = STOPHEADING;
+				case 	4:	pilotHeading.data = STOPHEADING;
 						pilotDepth.data = STOPDEPTH;
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = STOPSPEED;
+						if(tcounter >= 4){
+							pilotOkGo.data = 0;
+						}
 						break;
+				default:	ROS_ERROR("WRONG!");	break;
 			}
 			
 			
 			tcounter++;
-			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u State: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotOkGo.data, switcher);
+			ROS_DEBUG("PH: %.3f PD: %.3f PP: %.3f GO: %u State: %u Count: %u",pilotHeading.data,pilotDepth.data,pilotPitch.data,pilotOkGo.data, switcher,tcounter);
 
 			/*Below here we publish our readings*/
 			pilotSpeedMsg.publish(pilotSpeed);
