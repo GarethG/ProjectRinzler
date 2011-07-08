@@ -112,7 +112,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						}
 						break;
 	
-				case	2:	pilotHeading.data = SECONDHEADING;
+				case	2:	/*pilotHeading.data = SECONDHEADING;
 						pilotDepth.data = RUNDEPTH;
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = -10.0f;
@@ -140,7 +140,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						}
 						break;
 
-				case 	4:	pilotHeading.data = STOPHEADING;
+				case 	4:	*/pilotHeading.data = STOPHEADING;
 						pilotDepth.data = STOPDEPTH;
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = STOPSPEED;

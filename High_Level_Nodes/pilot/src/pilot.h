@@ -6,10 +6,10 @@
 #define HCOUNT		10
 
 /* state 0*/
-#define FIRSTHEADING	225.0
+#define FIRSTHEADING	200.0
 
 /* state 1 */
-#define OUTTIME		120
+#define OUTTIME		90
 
 /* state 2 */
 #define SECONDHEADING	80.0
