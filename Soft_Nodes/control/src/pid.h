@@ -1,7 +1,7 @@
 /* Defines */
 
 /* Heading */
-#define KPH 2.0
+#define KPH 4.0
 #define KDH 1.0
 #define KIH 0.1
 /* Depth */

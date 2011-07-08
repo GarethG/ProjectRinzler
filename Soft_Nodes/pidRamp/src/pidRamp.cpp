@@ -34,7 +34,7 @@ int main(int argc, char **argv){
 	ros::Subscriber sub4 = pidRampN.subscribe("backRate", 100, backRateCallback);
 	ros::Subscriber sub5 = pidRampN.subscribe("pilotSpeed", 100, speedCallback);
 
-	ros::Rate loop_rate(25);
+	ros::Rate loop_rate(50);
 
 	ROS_INFO("PID Rate Online");
 

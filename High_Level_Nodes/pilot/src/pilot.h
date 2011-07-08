@@ -1,15 +1,15 @@
 /* Defines */
 
-#define RUNDEPTH 	11.3
-#define RUNSPEED	80.0
+#define RUNDEPTH 	10.6
+#define RUNSPEED	35.0
 #define HACC		7.0
 #define HCOUNT		10
 
 /* state 0*/
-#define FIRSTHEADING	200.0
+#define FIRSTHEADING	220.0
 
 /* state 1 */
-#define OUTTIME		90
+#define OUTTIME		20
 
 /* state 2 */
 #define SECONDHEADING	80.0
@@ -20,7 +20,7 @@
 /* default */
 
 #define	STOPSPEED	-10.0
-#define	STOPHEADING	90.0
+#define	STOPHEADING	290.0
 #define	STOPDEPTH	10.2
 
 /* Globals*/
