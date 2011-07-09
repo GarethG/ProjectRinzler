@@ -61,10 +61,25 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 		adcGo.data = checkGo();
 		
-		if(latch){
-			adcGo.data = 1;
+		if((latch == 1) && (adcGo.data == 1)){
+			if(counter > 100){
+				adcGo.data = 2;
+				latch = 2;
+				counter = 0;
+			}
 		}
 
+		if(latch == 1){
+			adcGo.data = 1;
+		}
+		if(latch == 2){
+			adcGo.data = 2;
+			if(counter > 100){
+				latch = 0;
+			}
+		}
+		ROS_DEBUG("Latch: %u, counter: %u",latch,counter);
+		counter++;
 		adcGoMsg.publish(adcGo);
 
 		#endif
@@ -84,7 +99,12 @@ unsigned int checkGo(void){
 	
 	if(goTmp >= VON){
 		ROS_DEBUG("GO!!");
-		latch = 1;
+		if(latch == 0){
+			counter = 0;
+		}
+		if(latch != 2){
+			latch = 1;
+		}
 		return 1; //if we have an appropriate voltage return go
 	}
 	ROS_DEBUG("STOP!!");

@@ -23,6 +23,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Publisher pilotOkGoMsg = pilotN.advertise<std_msgs::UInt32>("pilotOkGo", 100);
 	ros::Publisher pilotSpeedMsg = pilotN.advertise<std_msgs::Float32>("pilotSpeed", 100);
 	ros::Publisher alertFrontMsg = pilotN.advertise<std_msgs::UInt32>("alertFront", 100);
+	ros::Publisher fullScanMsg = pilotN.advertise<std_msgs::UInt32>("fullScan", 100);
 
 	/*Sets up the message structures*/
 
@@ -32,6 +33,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	std_msgs::UInt32 pilotOkGo;
 	std_msgs::Float32 pilotSpeed;
 	std_msgs::UInt32 alertFront;
+	std_msgs::UInt32 fullScan;
 
 
 	/* Subscribe */
@@ -40,6 +42,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Subscriber sub2 = pilotN.subscribe("svpDepth", 100, depthCallback);
 	ros::Subscriber sub3 = pilotN.subscribe("compassPitch", 100, pitchCallback);
 	ros::Subscriber sub4 = pilotN.subscribe("adcGo", 	100, adcGoCallback);
+
 
 	//ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
 
@@ -54,8 +57,11 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 		ros::spinOnce();
 
-		if(latch){
+		if(latch && (go != 2)){
 			go = 1;
+		}
+		else{
+			go = 0;
 		}
 
 		if((counter > 0) && go){
@@ -112,7 +118,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						}
 						break;
 	
-				case	2:	/*pilotHeading.data = SECONDHEADING;
+				case	2:	pilotHeading.data = SECONDHEADING;
 						pilotDepth.data = RUNDEPTH;
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = -10.0f;
@@ -122,6 +128,9 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 								switcher++;
 								tcounter=0;
 								hcounter = 0;
+								ros::Subscriber sub5 = pilotN.subscribe("sonarFront", 	100, sonarFCallback);
+								ros::Subscriber sub6 = pilotN.subscribe("sonarRight", 	100, sonarRCallback);
+								ros::Subscriber sub7 = pilotN.subscribe("sonarDone", 	100, sonarDCallback);
 							}
 							else{
 								hcounter++;
@@ -134,13 +143,85 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = RUNSPEED;
 
-						if(tcounter >= INTIME){
+						if(fRange = -1.0f){
+							pilotSpeed.data = STOPSPEED;
+						}
+						else if(fRange <= FTHRESH){
 							switcher++;
 							tcounter=0;
 						}
 						break;
 
-				case 	4:	*/pilotHeading.data = STOPHEADING;
+				case 	4:	pilotHeading.data = THIRDHEADING;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = STOPSPEED;
+						if((heading < (THIRDHEADING + HACC)) && (heading > (THIRDHEADING - HACC))){
+							if(hcounter > HCOUNT){
+								switcher++;
+								tcounter=0;
+								hcounter = 0;
+							}
+							else{
+								hcounter++;
+							}
+						}
+						break;
+
+				case	5:	pilotSpeed.data = RUNSPEED;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						if(rRange = -1.0f){
+							pilotSpeed.data = STOPSPEED;
+						}
+						else if(rRange > (WALLRANGE + WALLACC)){
+							theading = pilotHeading.data;
+							theading = theading + 1.0;
+							pilotHeading.data = theading;
+						}
+						else if(rRange < (WALLRANGE - WALLACC)){
+							theading = pilotHeading.data;
+							theading = theading - 1.0;
+							pilotHeading.data = theading;
+						}
+						if(fRange = -1.0f){
+							pilotSpeed.data = STOPSPEED;
+						}
+						else if(fRange <= FTHRESH){
+							switcher++;
+							tcounter=0;
+						}
+						break;
+				
+				case	6:	pilotHeading.data = FOURTHHEADING;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = STOPSPEED;
+						if((heading < (FOURTHHEADING + HACC)) && (heading > (FOURTHHEADING - HACC))){
+							if(hcounter > HCOUNT){
+								switcher++;
+								tcounter=0;
+								hcounter = 0;
+							}
+							else{
+								hcounter++;
+							}
+						}
+						break;
+
+				case	7:	fullScan.data = 1;
+						fullScanMsg.publish(fullScan);
+						if(done){
+							tcounter = 0;
+							switcher++;
+						}
+						else if(tcounter > 300){
+							tcounter = 0;
+							switcher++;
+						}
+						break;
+
+				case	8:	pilotHeading.data = STOPHEADING;
 						pilotDepth.data = STOPDEPTH;
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = STOPSPEED;
@@ -210,5 +291,32 @@ void adcGoCallback(const std_msgs::UInt32::ConstPtr& adcGo){
 		latch = 1;
 	}
 
+	return;
+}
+
+/*************************************************
+** Returns the front range			**
+*************************************************/
+
+void sonarFCallback(const std_msgs::Float32::ConstPtr& sonarFront){
+	fRange = sonarFront->data;
+	return;
+}
+
+/*************************************************
+** Returns the right range			**
+*************************************************/
+
+void sonarRCallback(const std_msgs::Float32::ConstPtr& sonarRight){
+	rRange = sonarRight->data;
+	return;
+}
+
+/*************************************************
+** Returns the done				**
+*************************************************/
+
+void sonarDCallback(const std_msgs::UInt32::ConstPtr& sonarDone){
+	done = sonarDone->data;
 	return;
 }
