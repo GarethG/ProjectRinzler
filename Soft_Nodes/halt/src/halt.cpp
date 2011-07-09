@@ -29,7 +29,8 @@ int main(int argc, char **argv){
 	/* Subscribe */
 
 
-	ros::Subscriber sub1 = haltN.subscribe("pilotOkGo", 	100, pilotOkGoCallback);
+	//ros::Subscriber sub1 = haltN.subscribe("pilotOkGo", 	100, pilotOkGoCallback);
+	ros::Subscriber sub1 = haltN.subscribe("pilotTGo", 	100, pilotOkGoCallback);
 	ros::Rate loop_rate(30);
 
 	ROS_INFO("Halt Ready");

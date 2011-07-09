@@ -42,6 +42,9 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 	ros::Subscriber sub2 = pilotN.subscribe("svpDepth", 100, depthCallback);
 	ros::Subscriber sub3 = pilotN.subscribe("compassPitch", 100, pitchCallback);
 	ros::Subscriber sub4 = pilotN.subscribe("adcGo", 	100, adcGoCallback);
+	ros::Subscriber sub5 = pilotN.subscribe("sonarFront", 	100, sonarFCallback);
+	ros::Subscriber sub6 = pilotN.subscribe("sonarRight", 	100, sonarRCallback);
+	ros::Subscriber sub7 = pilotN.subscribe("sonarDone", 	100, sonarDCallback);
 
 
 	//ros::Rate loop_rate(10); //how many times a second (i.e. Hz) the code should run
@@ -128,9 +131,6 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 								switcher++;
 								tcounter=0;
 								hcounter = 0;
-								ros::Subscriber sub5 = pilotN.subscribe("sonarFront", 	100, sonarFCallback);
-								ros::Subscriber sub6 = pilotN.subscribe("sonarRight", 	100, sonarRCallback);
-								ros::Subscriber sub7 = pilotN.subscribe("sonarDone", 	100, sonarDCallback);
 							}
 							else{
 								hcounter++;

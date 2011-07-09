@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv){
 
-	char c='X';
+	char c='X',s='N';
 	float newHeading=0.0, newDepth=0.0, newPitch=0.0, newSpeed=0.0;
 
 	ros::init(argc, argv, "key");
@@ -83,12 +83,17 @@ int main(int argc, char **argv){
 			}
 			ROS_INFO("Please Enter Your Speed (Float)");
 			scanf("%f", &newSpeed);
-			if((newSpeed < -10.0) || (newSpeed > 20.0)){
+			if((newSpeed < -30.0) || (newSpeed > 80.0)){
 				ROS_ERROR("Invalid Speed");
 			}
 			else{
 				ROS_INFO("New Speed is %.3f",newSpeed);
 				keySpeed.data = newSpeed;
+			}
+			ROS_INFO("Going For Scan? Y/N");
+			scanf("%c",&s);
+			if(s=='Y'){
+				ROS_WARN("SONAR SCAN NOW");
 			}
 
 			keyGoMsg.publish(keyGo);
