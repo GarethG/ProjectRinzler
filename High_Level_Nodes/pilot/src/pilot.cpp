@@ -168,7 +168,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 							spcounter = 0;
 						}
 
-						if(tcounter >= 120){
+						if(tcounter >= 60){
 							switcher++;
 							first = 1;
 							tcounter = 0;
@@ -198,7 +198,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 							spcounter = 0;
 						}
 
-						if(tcounter >= 120){
+						if(tcounter >= 60){
 							switcher++;
 							first = 1;
 							tcounter = 0;
@@ -242,7 +242,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 							spcounter = 0;
 						}
 
-						if(tcounter >= 120){
+						if(tcounter >= 60){
 							switcher++;
 							first = 1;
 							tcounter = 0;

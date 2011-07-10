@@ -10,7 +10,7 @@
 	<node name="Compass"	pkg="compass"	type="compass"			/>
 
 	<node name="halt"	pkg="halt"	type="halt"			/>
-	<!-- <node name="pilot"	pkg="pilot"	type="pilot"			/> -->
+	<node name="pilot"	pkg="pilot"	type="pilot"			/> 
 
 	<!-- <node name="record"	pkg="rosbag"	type="record"	output="screen"	args="-a -O /home/uwesub/ProjectRinzler/	/> -->
 </launch>

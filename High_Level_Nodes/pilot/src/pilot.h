@@ -68,7 +68,7 @@
 
 /* default */
 
-#define	STOPSPEED	-13.0
+#define	STOPSPEED	-7.0
 #define	STOPHEADING	290.0
 #define	STOPDEPTH	10.2
 
