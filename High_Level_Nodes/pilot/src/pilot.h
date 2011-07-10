@@ -82,8 +82,11 @@ float fRange = 0.0;
 float rRange = 0.0;
 
 float headingRamp;
+float depthRamp;
 float addArray[8] = {10.0,20.0,30.0,40.0,50.0,60.0,70.0,80.0};
 
+unsigned int dswitch=0;
+unsigned int dcounter=0;
 unsigned int spcounter=0;
 unsigned int spswitch=0;
 unsigned int switcher=0;
