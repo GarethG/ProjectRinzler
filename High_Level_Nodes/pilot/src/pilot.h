@@ -4,19 +4,19 @@
 
 #ifdef RUN
 
-#define RUNDEPTH 	11.3
+#define RUNDEPTH 	11.6
 #define RUNSPEED	80.0
 #define HACC		7.0
 #define HCOUNT		10
 
 /* state 0*/
-#define FIRSTHEADING	190.0
+#define FIRSTHEADING	60.0
 
 /* state 1 */
-#define OUTTIME		90
+#define OUTTIME		20
 
 /* state 2 */
-#define SECONDHEADING	10.0
+#define SECONDHEADING	150.0
 
 /* state 3 */
 #define FTHRESH		4
@@ -41,7 +41,7 @@
 #define HCOUNT		10
 
 /* state 0*/
-#define FIRSTHEADING	190.0
+#define FIRSTHEADING	60.0
 
 /* state 1 */
 #define OUTTIME		20
@@ -66,7 +66,7 @@
 
 /* default */
 
-#define	STOPSPEED	-10.0
+#define	STOPSPEED	-13.0
 #define	STOPHEADING	290.0
 #define	STOPDEPTH	10.2
 

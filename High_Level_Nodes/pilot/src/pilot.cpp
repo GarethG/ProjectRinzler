@@ -96,17 +96,10 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 				case	0:	pilotHeading.data = FIRSTHEADING;
 						pilotDepth.data = RUNDEPTH;
 						pilotPitch.data = 0.0f;
-						pilotSpeed.data = -10.0f;
+						pilotSpeed.data = STOPSPEED;
 
-						if((heading < (FIRSTHEADING + HACC)) && (heading > (FIRSTHEADING - HACC))){
-							if(hcounter > HCOUNT){
-								switcher++;
-								tcounter=0;
-								hcounter = 0;
-							}
-							else{
-								hcounter++;
-							}
+						if(tcounter >= 120){
+							switcher++;
 						}
 						break;
 
@@ -124,18 +117,11 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 				case	2:	pilotHeading.data = SECONDHEADING;
 						pilotDepth.data = RUNDEPTH;
 						pilotPitch.data = 0.0f;
-						pilotSpeed.data = -10.0f;
+						pilotSpeed.data = STOPSPEED;
 
-						if((heading < (SECONDHEADING + HACC)) && (heading > (SECONDHEADING - HACC))){
-							if(hcounter > HCOUNT){
-								switcher++;
-								tcounter=0;
-								hcounter = 0;
-							}
-							else{
-								hcounter++;
-							}
-						}
+						if(tcounter >= 120){
+							switcher++;
+						}						
 						break;
 
 				case	3:	pilotHeading.data = SECONDHEADING;
@@ -143,10 +129,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = RUNSPEED;
 
-						if(fRange = -1.0f){
-							pilotSpeed.data = STOPSPEED;
-						}
-						else if(fRange <= FTHRESH){
+						if(tcounter >= OUTTIME){
 							switcher++;
 							tcounter=0;
 						}
@@ -156,70 +139,12 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						pilotDepth.data = RUNDEPTH;
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = STOPSPEED;
-						if((heading < (THIRDHEADING + HACC)) && (heading > (THIRDHEADING - HACC))){
-							if(hcounter > HCOUNT){
-								switcher++;
-								tcounter=0;
-								hcounter = 0;
-							}
-							else{
-								hcounter++;
-							}
+						if(tcounter >= 120){
+							switcher++;
 						}
 						break;
 
-				case	5:	pilotSpeed.data = RUNSPEED;
-						pilotDepth.data = RUNDEPTH;
-						pilotPitch.data = 0.0f;
-						if(rRange = -1.0f){
-							pilotSpeed.data = STOPSPEED;
-						}
-						else if(rRange > (WALLRANGE + WALLACC)){
-							theading = pilotHeading.data;
-							theading = theading + 1.0;
-							pilotHeading.data = theading;
-						}
-						else if(rRange < (WALLRANGE - WALLACC)){
-							theading = pilotHeading.data;
-							theading = theading - 1.0;
-							pilotHeading.data = theading;
-						}
-						if(fRange = -1.0f){
-							pilotSpeed.data = STOPSPEED;
-						}
-						else if(fRange <= FTHRESH){
-							switcher++;
-							tcounter=0;
-						}
-						break;
-				
-				case	6:	pilotHeading.data = FOURTHHEADING;
-						pilotDepth.data = RUNDEPTH;
-						pilotPitch.data = 0.0f;
-						pilotSpeed.data = STOPSPEED;
-						if((heading < (FOURTHHEADING + HACC)) && (heading > (FOURTHHEADING - HACC))){
-							if(hcounter > HCOUNT){
-								switcher++;
-								tcounter=0;
-								hcounter = 0;
-							}
-							else{
-								hcounter++;
-							}
-						}
-						break;
-
-				case	7:	fullScan.data = 1;
-						fullScanMsg.publish(fullScan);
-						if(done){
-							tcounter = 0;
-							switcher++;
-						}
-						else if(tcounter > 300){
-							tcounter = 0;
-							switcher++;
-						}
-						break;
+				case	5:	
 
 				case	8:	pilotHeading.data = STOPHEADING;
 						pilotDepth.data = STOPDEPTH;
