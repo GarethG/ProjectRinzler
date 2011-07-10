@@ -135,7 +135,14 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 			}
 			else{
 				ROS_ERROR("SVP DEPTH READING FAILURE");
+				failCount++;
 				depth = lastDepth;
+				if(failCount > 5){
+					failCount = 0;
+					close(fd);
+					open_port();
+					config_port();
+				}
 			}
 
 			svpDepthMsg.publish(svpDepth);

@@ -1,7 +1,7 @@
 /* Defines */
 
 /* Heading */
-#define KPH 4.0
+#define KPH 2.0
 #define KDH 1.0
 #define KIH 0.1
 /* Depth */
@@ -9,8 +9,8 @@
 #define KDD 0.1
 #define KID 0.1
 /* Pitch */
-#define KPP 2.0
-#define KDP 0.1
+#define KPP 10.0
+#define KDP 1.5
 #define KIP 0.1
 /* Others */
 #define MAXSPEEDH	50.0

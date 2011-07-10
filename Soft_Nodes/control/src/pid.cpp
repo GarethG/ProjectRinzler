@@ -210,7 +210,7 @@ int main(int argc, char **argv){
 
 			ros::spinOnce();
 
-			tmp = p(pitch,targetPitch);
+			tmp = pd(pitch,targetPitch);
 
 			tmp *= -1.0f;
 
