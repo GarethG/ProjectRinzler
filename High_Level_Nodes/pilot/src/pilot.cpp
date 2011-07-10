@@ -100,6 +100,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 						if(tcounter >= 120){
 							switcher++;
+							tcounter = 0;
 						}
 						break;
 
@@ -121,6 +122,7 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 
 						if(tcounter >= 120){
 							switcher++;
+							tcounter = 0;
 						}						
 						break;
 
@@ -141,12 +143,71 @@ int main(int argc, char **argv){ //we need argc and argv for the rosInit functio
 						pilotSpeed.data = STOPSPEED;
 						if(tcounter >= 120){
 							switcher++;
+							tcounter = 0;
 						}
 						break;
 
-				case	5:	
+				case	5:	if(first){
+							headingRamp = heading;
+							first = 0;
+						}
+						
+						pilotHeading.data = headingRamp;
+						pilotDepth.data = STOPDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = SPIRALSPEED;
+						
+						spcounter++;
+						if(spcounter == 2){
+							headingRamp = headingRamp + addArray[spswitch];
+							spswitch++;
+							if(headingRamp >= 360.0){
+								headingRamp = 0;
+								spswitch = 0;
+							}
+							spcounter = 0;
+						}
 
-				case	8:	pilotHeading.data = STOPHEADING;
+						if(tcounter >= 120){
+							switcher++;
+							first = 1;
+							tcounter = 0;
+							spcounter = 0;
+							spswitch = 0;							
+						}
+						break;
+
+				case	6:	if(first){
+							headingRamp = heading;
+							first = 0;
+						}
+						
+						pilotHeading.data = headingRamp;
+						pilotDepth.data = RUNDEPTH;
+						pilotPitch.data = 0.0f;
+						pilotSpeed.data = SPIRALSPEED;
+						
+						spcounter++;
+						if(spcounter == 2){
+							headingRamp = headingRamp + addArray[spswitch];
+							spswitch++;
+							if(headingRamp >= 360.0){
+								headingRamp = 0;
+								spswitch = 0;
+							}
+							spcounter = 0;
+						}
+
+						if(tcounter >= 120){
+							switcher++;
+							first = 1;
+							tcounter = 0;
+							spcounter = 0;
+							spswitch = 0;
+						}
+						break;
+
+				case	7:	pilotHeading.data = STOPHEADING;
 						pilotDepth.data = STOPDEPTH;
 						pilotPitch.data = 0.0f;
 						pilotSpeed.data = STOPSPEED;

@@ -31,6 +31,8 @@
 /* state 6 */
 #define FOURTHHEADING	190.0
 
+#define SPIRALSPEED	60.0
+
 #endif
 
 #ifdef POOL
@@ -79,9 +81,15 @@ float depth=0.0;
 float fRange = 0.0;
 float rRange = 0.0;
 
+float headingRamp;
+float addArray[8] = {10.0,20.0,30.0,40.0,50.0,60.0,70.0,80.0};
+
+unsigned int spcounter=0;
+unsigned int spswitch=0;
 unsigned int switcher=0;
 unsigned int tcounter=0;
 unsigned int hcounter=0;
+unsigned int first=1;
 
 unsigned int go = 0;
 unsigned int latch = 0;
